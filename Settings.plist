@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>general</key>
+	<dict>
+		<key>username</key>
+		<string></string>
+		<key>password</key>
+		<string></string>
+		<key>senseEnabled</key>
+		<true/>
+		<key>synchronisationRate</key>
+		<integer>10</integer>
+		<key>pollRate</key>
+		<string>300</string>
+	</dict>
+	<key>location</key>
+	<dict>
+		<key>accuracy</key>
+		<integer>0</integer>
+		<key>minimumDistance</key>
+		<integer>0</integer>
+	</dict>
+</dict>
+</plist>
