@@ -9,8 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Sensor.h"
 
-@interface BatterySensor : Sensor {
+@interface MeterSensor : Sensor {
 }
 
-- (void) commitBatteryState:(NSNotification*) notification;
 @end

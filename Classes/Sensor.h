@@ -28,11 +28,11 @@
 - (void) enabledChanged: (id) notification;
 
 //implemented by device if it needs a 'run' method
-- (void) poll;
 - (void) dealloc;
 
 //overridden by subclass
 + (NSString*) name;
++ (NSString*) displayName;
 + (NSString*) deviceType;
 + (NSDictionary*) sensorDescription;
 + (BOOL) isAvailable;

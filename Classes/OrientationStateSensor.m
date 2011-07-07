@@ -32,7 +32,6 @@
 		[[NSNotificationCenter defaultCenter] addObserver:self
 												 selector:@selector(commitOrientation:)
 													 name:UIDeviceOrientationDidChangeNotification object:nil];
-		self.isEnabled = [[Settings sharedSettings] isSensorEnabled:[self class]];
 	}
 	return self;
 }

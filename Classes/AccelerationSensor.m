@@ -1,38 +1,38 @@
 //
-//  MotionSensor.m
+//  AccelerationSensor.m
 //  senseApp
 //
-//  Created by Pim Nijdam on 2/28/11.
-//  Copyright 2011 Almende. All rights reserved.
+//  Created by Pim Nijdam on 4/28/11.
+//  Copyright 2011 Almende B.V. All rights reserved.
 //
-#import <CoreMotion/CMAccelerometer.h>
-#import <CoreMotion/CMMotionManager.h>
-#import "OrientationSensor.h"
+
+#import <CoreMotion/CoreMotion.h>
+#import "AccelerometerSensor.h"
+#import "AccelerationSensor.h"
 #import "JSON.h"
 
 
-@implementation OrientationSensor
-
-//constants
-NSString* attitudeRollKey = @"roll";
-NSString* attitudePitchKey = @"pitch";
-NSString* attitudeYawKey = @"azimuth";
-
-static const NSInteger G = 9.81;
+@implementation AccelerationSensor
 
 
-+ (NSString*) name {return @"orientation";}
++ (NSString*) name {return @"acceleration";}
 + (NSString*) deviceType {return [self name];}
 //TODO: check for availability
-+ (BOOL) isAvailable {return YES;}
++ (BOOL) isAvailable {
+	//user acceleration can only be calculated when there is a gyro
+	CMMotionManager* motionManager = [[CMMotionManager alloc] init];
+	BOOL available = motionManager.deviceMotionAvailable;
+	[motionManager release];
+	return available;
+}
 
 + (NSDictionary*) sensorDescription {
 	//create description for data format. programmer: make SURE it matches the format used to send data
 	NSDictionary* format = [NSDictionary dictionaryWithObjectsAndKeys:
-							//attitude
-							@"float", attitudeRollKey,
-							@"float", attitudePitchKey,
-							@"float", attitudeYawKey,
+							//acceleration
+							@"float", accelerationXKey,
+							@"float", accelerationYKey,
+							@"float", accelerationZKey,
 							nil];
 	//make string, as per spec
 	NSString* json = [format JSONRepresentation];
@@ -65,4 +65,6 @@ static const NSInteger G = 9.81;
 	self.isEnabled = NO;
 	[super dealloc];
 }
+
+
 @end

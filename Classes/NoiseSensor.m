@@ -26,7 +26,8 @@
 @synthesize sampleTimer;
 @synthesize volumeTimer;
 
-+ (NSString*) name {return @"noise";}
++ (NSString*) name {return @"noise_sensor";}
++ (NSString*) displayName {return @"noise";}
 + (NSString*) deviceType {return [self name];}
 + (BOOL) isAvailable {return YES;}
 
@@ -35,6 +36,7 @@
 	//create description for data format. programmer: make SURE it matches the format used to send data
 	return [NSDictionary dictionaryWithObjectsAndKeys:
 			[self name], @"name",
+			[self displayName], @"display_name",
 			[self deviceType], @"device_type",
 			@"", @"pager_type",
 			@"float", @"data_type",
@@ -79,10 +81,9 @@
 		audioRecorder.delegate = self;
 		audioRecorder.meteringEnabled = YES;
 		
-		sampleInterval = 0;
+		sampleInterval = 60;
 		sampleDuration = 2;
 		volumeSampleInterval = 0.2;
-		self.isEnabled = [[Settings sharedSettings] isSensorEnabled:[self class]];
 	}
 	return self;
 }
@@ -202,6 +203,10 @@
 	if (isEnabled) {
 		[self scheduleRecording];
 	}
+}
+
+-(void)audioRecorderBeginInterruption:(AVAudioRecorder *)recorder {
+	NSLog(@"Noise sensor interrupted.");
 }
 
 - (void)audioRecorderEndInterruption:(AVAudioRecorder *)recorder withFlags:(NSUInteger)flags {

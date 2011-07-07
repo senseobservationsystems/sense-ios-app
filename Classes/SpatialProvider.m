@@ -25,37 +25,54 @@ static const NSInteger G = 9.81;
 		locationManager = [[CLLocationManager alloc] init];
 		locationManager.delegate = self;
 
-		//TODO: properly apply settings
-		[motionManager setDeviceMotionUpdateInterval:1];
-		[motionManager setAccelerometerUpdateInterval:1];
-		locationManager.headingFilter = 5;
+		//Set settings
+		@try {
+			int interval = [[[Settings sharedSettings] getSettingType:@"spatial" setting:@"pollInterval"] intValue];
+			motionManager.gyroUpdateInterval = interval;
+			motionManager.accelerometerUpdateInterval = interval;
+			motionManager.deviceMotionUpdateInterval = interval;
+		}
+		@catch (NSException * e) {
+			NSLog(@"spatial provider: Exception thrown while setting: %@", e);
+		}
+		//TODO: properly manage this setting
+		locationManager.headingFilter = 20;
 		
 		//operations queue
 		operations = [[NSOperationQueue alloc] init];
 		
 		//enable
-		[self setAccelerometerEnabled: accelerometer.isEnabled];
 		[[NSNotificationCenter defaultCenter] addObserver:self
 												 selector:@selector(accelerometerEnabledChanged:)
 													 name:[Settings enabledChangedNotificationNameForSensor:[accelerometerSensor class]] object:nil];
-		[self setOrientationEnabled: orientation.isEnabled];
-		orientationEnabled = orientation.isEnabled;
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(rotationEnabledChanged:)
+													 name:[Settings enabledChangedNotificationNameForSensor:[rotationSensor class]] object:nil];
+
 		[[NSNotificationCenter defaultCenter] addObserver:self
 												 selector:@selector(orientationEnabledChanged:)
 													 name:[Settings enabledChangedNotificationNameForSensor:[orientationSensor class]] object:nil];
 
-		[self setCompassEnabled: compass.isEnabled];
-		compassEnabled = compass.isEnabled;
 		[[NSNotificationCenter defaultCenter] addObserver:self
 												 selector:@selector(compassEnabledChanged:)
 													 name:[Settings enabledChangedNotificationNameForSensor:[compassSensor class]] object:nil];
+		
+		//register for setting changes
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(settingChanged:)
+													 name:[Settings settingChangedNotificationNameForType:@"spatial"] object:nil];
 	}
 
 	return self;
 }
 
 - (void) accelerometerEnabledChanged: (id) notification {
+	accelerometerEnabled = [[notification object] boolValue];
+	//only enable if orientation is disabled (orientation will also report acceleration)
+	if (orientationEnabled == false) {
 		[self setAccelerometerEnabled:[[notification object] boolValue]];
+	}
 }
 
 - (void) setAccelerometerEnabled:(BOOL) enable {
@@ -85,38 +102,88 @@ static const NSInteger G = 9.81;
 	}
 }
 
+- (void) rotationEnabledChanged: (id) notification {
+	rotationEnabled = [[notification object] boolValue];
+	//only enable if orientation is disabled (orientation will also report rotation)
+	if (orientationEnabled == false) {
+		[self setRotationEnabled:[[notification object] boolValue]];
+	}
+}
+
+- (void) setRotationEnabled:(BOOL) enable {
+	if (enable) {
+		
+		CMGyroHandler gyroHandler = ^ (CMGyroData *gyroData, NSError *error) {
+			CMRotationRate rotation = gyroData.rotationRate;
+			NSMutableDictionary* newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+											//acceleration
+											[NSNumber numberWithFloat:rotation.x * G], accelerationXKey,
+											[NSNumber numberWithFloat:rotation.y * G], accelerationYKey,
+											[NSNumber numberWithFloat:rotation.z * G], accelerationZKey,
+											nil];
+			
+			NSNumber* timestamp = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
+			
+			NSDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
+												[newItem JSONRepresentation], @"value",
+												timestamp, @"date",
+												nil];
+			[accelerometerSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:rotationSensor.sensorId];
+		};
+		[motionManager startGyroUpdatesToQueue:operations withHandler:gyroHandler];
+	}
+	else {
+		[motionManager stopGyroUpdates];
+	}
+}
+
+
 - (void) orientationEnabledChanged: (id) notification {
 	BOOL enable = [[notification object] boolValue];
 	orientationEnabled = enable;
 	[self setOrientationEnabled:enable];
 	
+	if (compassEnabled == false) {
+		[self setCompassEnabled:enable];
+	}
+	if (enable == false) { //enable acceleration/gyro, this was provided by orientation
+		if (accelerometerEnabled) {
+			[self setAccelerometerEnabled:true];
+		}
+		if (rotationEnabled) {
+			[self setRotationEnabled:true];
+		}
+	}
 }
 
 - (void) setOrientationEnabled:(BOOL) enable {
-	//TODO: add rotation sensor
 	if (enable) {
 		CMDeviceMotionHandler deviceMotionHandler = ^ (CMDeviceMotion *deviceMotion, NSError *error) {
 			NSNumber* timestamp = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
 			//report attitude
 			CMAttitude* attitude = deviceMotion.attitude;
 			//CMRotationRate rotation = deviceMotion.rotationRate;
+			const double radianInDegrees = 180 / M_PI;
+			
+			//TODO: convert to the desired format. i.e. in degrees and pitch <-180, 180] and roll <-90,90]
+			double pitch = attitude.pitch * radianInDegrees;
+			double roll = attitude.roll * radianInDegrees;
 			
 			NSMutableDictionary* newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 											//acceleration
-											[NSNumber numberWithFloat:attitude.pitch], attitudePitchKey,
-											[NSNumber numberWithFloat:attitude.roll], attitudeRollKey,
-											[NSNumber numberWithFloat:locationManager.heading.trueHeading], attitudeYawKey,
+											[NSNumber numberWithFloat:pitch], attitudePitchKey,
+											[NSNumber numberWithFloat:roll], attitudeRollKey,
+											[NSNumber numberWithFloat:locationManager.heading.magneticHeading], attitudeYawKey,
 											nil];
 			
 			NSDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
 												[newItem JSONRepresentation], @"value",
 												timestamp,@"date",
 												nil];
-			NSLog(@"prosessed: %@",valueTimestampPair);
 			[orientationSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:orientationSensor.sensorId];
 			
 			//report device acceleration without gravity
-			if (accelerationSensor != nil && [AccelerometerSensor isAvailable]) { 
+			if (accelerationSensor != nil && accelerometerSensor.isEnabled) { 
 				CMAcceleration acceleration = deviceMotion.userAcceleration;
 				newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 											//acceleration
@@ -132,10 +199,10 @@ static const NSInteger G = 9.81;
 			}
 			
 			//report device rotation rate
-			if (rotationSensor != nil && [RotationSensor isAvailable]) {
+			if (rotationSensor != nil && rotationSensor.isEnabled) {
 				CMRotationRate rotation = deviceMotion.rotationRate;
 				newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-						   //acceleration
+						   //rotation
 						   [NSNumber numberWithFloat:rotation.x], accelerationXKey,
 						   [NSNumber numberWithFloat:rotation.y], accelerationYKey,
 						   [NSNumber numberWithFloat:rotation.z], accelerationZKey,
@@ -144,9 +211,9 @@ static const NSInteger G = 9.81;
 									  [newItem JSONRepresentation], @"value",
 									  timestamp,@"date",
 									  nil];
-
+				[rotationSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:rotationSensor.sensorId];
 			}
-			[rotationSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:rotationSensor.sensorId];
+			
 			
 		};
 		[motionManager startDeviceMotionUpdatesToQueue:operations withHandler:deviceMotionHandler];
@@ -154,22 +221,21 @@ static const NSInteger G = 9.81;
 	else {
 		[motionManager stopDeviceMotionUpdates];
 	}
-	//en/dis-able compass as well
-	[self setCompassEnabled:enable];
 }
 
 - (void) compassEnabledChanged: (id) notification {
 	BOOL enable = [[notification object] boolValue];
 	compassEnabled = enable;
-	[self setCompassEnabled:enable];
 	
+	if (orientationEnabled == false)
+		[self setCompassEnabled:enable];
 }
 
 - (void) setCompassEnabled:(BOOL) enable {
 	if (enable) {
 		[locationManager startUpdatingHeading];
 		NSLog(@"Enabling compass.");
-	} else if (orientationEnabled == NO && compassEnabled == NO){
+	} else {
 		[locationManager stopUpdatingHeading];
 		NSLog(@"Disabling compass.");
 	}
@@ -212,6 +278,23 @@ static const NSInteger G = 9.81;
 										timestamp, @"date",
 										nil];
 	[compassSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:[compassSensor sensorId]];
+}
+
+- (void) settingChanged: (NSNotification*) notification {
+	@try {
+		Setting* setting = notification.object;
+		NSLog(@"Spatial: setting %@ changed to %@.", setting.name, setting.value);
+		if ([setting.name isEqualToString:@"pollInterval"]) {
+			int interval = [setting.value intValue];
+			motionManager.gyroUpdateInterval = interval;
+			motionManager.accelerometerUpdateInterval = interval;
+			motionManager.deviceMotionUpdateInterval = interval;
+		}
+	}
+	@catch (NSException * e) {
+		NSLog(@"spatial provider: Exception thrown while changing setting: %@", e);
+	}
+	
 }
 
 - (void) dealloc {

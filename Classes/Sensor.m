@@ -15,7 +15,8 @@
 @synthesize isEnabled;
 
 //constants
-+ (NSString*) name; {return @"";}
++ (NSString*) name {return @"";}
++ (NSString*) displayName {return [self name];}
 + (NSString*) deviceType {return @"";}
 
 //check name and device_type (as per senseApp)
@@ -53,8 +54,6 @@
 - (void) enabledChanged: (id) notification {
 	self.isEnabled = [[notification object] boolValue];
 }
-
-- (void) poll{}
 
 - (void) dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];

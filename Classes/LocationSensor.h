@@ -11,8 +11,10 @@
 
 @interface LocationSensor : Sensor <CLLocationManagerDelegate>{
 	CLLocationManager* locationManager;
+	int accuracyPreference;
+	NSMutableArray* samples;
 }
 
 @property BOOL isEnabled;
-- (void) applyLocationSettings;
+- (void) settingChanged: (NSNotification*) notification;
 @end

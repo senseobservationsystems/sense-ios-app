@@ -32,7 +32,6 @@
 		[[NSNotificationCenter defaultCenter] addObserver:self
 												 selector:@selector(commitUserProximity:)
 													 name:UIDeviceProximityStateDidChangeNotification object:nil];
-		self.isEnabled = [[Settings sharedSettings] isSensorEnabled:[self class]];
 	}
 	return self;
 }

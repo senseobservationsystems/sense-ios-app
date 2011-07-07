@@ -1,29 +1,29 @@
 //
-//  BatterySensor.m
+//  PreferencesSensor.m
 //  senseApp
 //
-//  Created by Pim Nijdam on 2/25/11.
-//  Copyright 2011 Almende. All rights reserved.
+//  Created by Pim Nijdam on 5/18/11.
+//  Copyright 2011 Almende B.V. All rights reserved.
 //
 
-#import "BatterySensor.h"
+#import "PreferencesSensor.h"
 #import "JSON.h"
 
 
-@implementation BatterySensor
+@implementation PreferencesSensor
 //constants
-static NSString* stateKey = @"status";
-static NSString* levelKey = @"level";
+static NSString* variableKey = @"variable";
+static NSString* valueKey = @"value";
 
-+ (NSString*) name {return @"battery";}
++ (NSString*) name {return @"preferences";}
 + (NSString*) deviceType {return [self name];}
 + (BOOL) isAvailable {return YES;}
 
 + (NSDictionary*) sensorDescription {
 	//create description for data format. programmer: make SURE it matches the format used to send data
 	NSDictionary* format = [NSDictionary dictionaryWithObjectsAndKeys:
-							@"float", levelKey,
-							@"string", stateKey,
+							@"string", variableKey,
+							@"string", valueKey,
 							nil];
 	//make string, as per spec
 	NSString* json = [format JSONRepresentation];
@@ -39,43 +39,20 @@ static NSString* levelKey = @"level";
 - (id) init {
 	[super init];
 	if (self) {
-		//register for battery notifications, notifications will be received at the current thread
+		//register for preferences notifications
 		[[NSNotificationCenter defaultCenter] addObserver:self
-												 selector:@selector(commitBatteryState:)
-													 name:UIDeviceBatteryLevelDidChangeNotification object:nil];
-		
-		[[NSNotificationCenter defaultCenter] addObserver:self
-												 selector:@selector(commitBatteryState:)
-													 name:UIDeviceBatteryStateDidChangeNotification object:nil];
+												 selector:@selector(commitPreference:)
+													 name:anySettingChangedNotification object:nil];
 	}
 	return self;
 }
 
-- (void) commitBatteryState:(NSNotification*) notification {
-	//get battery infomation
-	UIDevice* currentDevice = [UIDevice currentDevice];
-	NSString* batteryState = @"unknown";
-	//convert state to string:
-	switch ([currentDevice batteryState]) {
-		case UIDeviceBatteryStateUnknown:
-			batteryState = @"unknown";
-			break;
-		case UIDeviceBatteryStateUnplugged:
-			batteryState = @"discharging";
-			break;
-		case UIDeviceBatteryStateCharging:
-			batteryState = @"charging";
-			break;
-		case UIDeviceBatteryStateFull:
-			batteryState = @"full";
-			break;
-	}
-	//battery level as percentage
-	NSNumber* batteryLevel = [NSNumber numberWithFloat:[currentDevice batteryLevel] * 100];
+- (void) commitPreference:(NSNotification*) notification {
+	Setting* setting = notification.object;
 	
 	NSMutableDictionary* newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-									batteryLevel, levelKey,
-									batteryState, stateKey,
+									setting.name, variableKey,
+									setting.value, valueKey,
 									nil];
 	
 	NSNumber* timestamp = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];

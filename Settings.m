@@ -11,6 +11,7 @@
 //notifications
 NSString* settingSenseEnabledChangedNotification = @"settingSenseEnabledChangedNotification";
 NSString* settingLoginChangedNotification = @"settingLoginChangedNotification";
+NSString* anySettingChangedNotification = @"anySettingChangedNotification";
 
 //general settings keys
 NSString* generalSettingSenseEnabledKey = @"senseEnabled";
@@ -24,6 +25,12 @@ NSString* generalSettingPollRateKey = @"pollRate";
 //location settings keys
 NSString* locationSettingAccuracyKey = @"accuracy";
 NSString* locationSettingMinimumDistanceKey = @"minimumDistance";
+
+@implementation Setting
+@synthesize name;
+@synthesize value;
+@end
+
 
 @implementation Settings
 @synthesize general;
@@ -114,6 +121,7 @@ static Settings* sharedSettingsInstance = nil;
 	[self storeSettings];
 	//notify registered subscribers
 	[[NSNotificationCenter defaultCenter] postNotification: [NSNotification notificationWithName:settingSenseEnabledChangedNotification object:enableObject]];
+	[self anySettingChanged:@"senseApp enabled" value:enable? @"true": @"false"];
 	return YES;
 }
 
@@ -121,11 +129,28 @@ static Settings* sharedSettingsInstance = nil;
 	return [NSString stringWithFormat:@"%@EnabledChangedNotification", sensor];
 }
 
++ (NSString*) settingChangedNotificationNameForSensor:(Class) sensor {
+	return [NSString stringWithFormat:@"%@SettingChangedNotification", sensor];
+}
+
++ (NSString*) settingChangedNotificationNameForType:(NSString*) type {
+	return [NSString stringWithFormat:@"%@SettingChangedNotificationType", type];
+}
+
 - (BOOL) isSensorEnabled:(Class) sensor {
 	NSString* key = [NSString stringWithFormat:@"%@", sensor];
 	id object = [sensorEnables objectForKey:key];
 	BOOL enabled = object == nil? NO : [object boolValue];
 	return enabled;
+}
+
+- (void) sendNotificationForSensor:(Class) sensor {
+	NSString* key = [NSString stringWithFormat:@"%@", sensor];
+	id object = [sensorEnables objectForKey:key];
+	BOOL enabled = object == nil? NO : [object boolValue];
+	NSNumber* enableObject = [NSNumber numberWithBool:enabled];
+	
+	[[NSNotificationCenter defaultCenter] postNotification: [NSNotification notificationWithName:[[self class] enabledChangedNotificationNameForSensor:sensor] object:enableObject]];
 }
 
 - (BOOL) setSensor:(Class) sensor enabled:(BOOL) enable {
@@ -137,6 +162,7 @@ static Settings* sharedSettingsInstance = nil;
 	[self storeSettings];
 	//notify registered subscribers
 	[[NSNotificationCenter defaultCenter] postNotification: [NSNotification notificationWithName:[[self class] enabledChangedNotificationNameForSensor:sensor] object:enableObject]];
+	[self anySettingChanged:key value:enable?@"true":@"false"];
 	return YES;
 }
 
@@ -150,8 +176,63 @@ static Settings* sharedSettingsInstance = nil;
 	return YES;
 }
 
+
+- (id) getSettingType: (NSString*) type setting:(NSString*) setting {
+	NSString* name = [NSString stringWithFormat:@"SettingsType%@", type];
+	NSMutableDictionary* typeSettings = [settings valueForKey:name];
+	if (typeSettings != nil) {
+		return [typeSettings objectForKey: setting];
+	}
+	return nil;
+}
+
+- (BOOL) commitSettingType: (NSString*) type setting:(NSString*) setting value:(NSString*) value {
+	//get sensor settings
+	NSString* name = [NSString stringWithFormat:@"SettingsType%@", type];
+	NSMutableDictionary* typeSettings = [[settings valueForKey:name] retain];
+	if (typeSettings == nil) {
+		//create if it doesn't already exist
+		typeSettings = [NSMutableDictionary new];
+		[settings setObject:typeSettings forKey:name];
+	}
+	
+	//commit setting
+	[typeSettings setObject:value forKey:setting];
+	[self storeSettings];
+	
+	//create notification object
+	Setting* notificationObject = [[Setting alloc] init];
+	notificationObject.name = setting;
+	notificationObject.value = value;
+	
+	//send notification
+	[[NSNotificationCenter defaultCenter] postNotification: [NSNotification notificationWithName:[[self class] settingChangedNotificationNameForType:type] object:notificationObject]];
+	[self anySettingChanged:setting value:value];
+	
+	//free
+	[typeSettings release];
+	[notificationObject release];
+	
+	return YES;
+}
+
+
+
 #pragma mark -
 #pragma mark Private
+
+- (void) anySettingChanged:(NSString*)setting value:(NSString*)value {
+	//create notification object
+	Setting* notificationObject = [[Setting alloc] init];
+	notificationObject.name = setting;
+	notificationObject.value = value;
+	
+	//send notification
+	[[NSNotificationCenter defaultCenter] postNotification: [NSNotification notificationWithName:anySettingChangedNotification object:notificationObject]];
+	
+	//free
+	[notificationObject release];
+}
 
 - (void) loadSettingsFromPath:(NSString*)path {
 	NSLog(@"Loading settings from %@", path);

@@ -20,12 +20,17 @@
 	//sensors
 	NSArray* sensorClasses;
 	NSMutableArray* sensorEnableSwitches;
-	UISwitch* senseSwitch;	
+	UISwitch* senseSwitch;
+	UISwitch* motionSwitch;
+	
+	BOOL firstTimeCommonSense;
 }
 @property (assign) NSArray* sensorClasses;
 
 - (void) edited;
 - (void) gotoWebView;
+- (void) displayWelcomeMessage;
 
 - (void) switchChanged:(UISwitch*) switchButton;
+- (void) foregroundEnabled:(BOOL) enable;
 @end

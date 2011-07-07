@@ -103,7 +103,7 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 	if ([response statusCode] != 201)
 	{
 		didSucceed = NO;
-		NSLog(@"Couldn't create user.");
+		NSLog(@"Couldn't register user.");
 		NSString* responded = [[NSString alloc] initWithData:contents encoding:NSUTF8StringEncoding];
 		NSLog(@"Responded: %@", responded);
 		//interpret json response to set error
@@ -295,6 +295,11 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 	//don't handle errors in the request, just log them
 	if (error != nil) {
 		NSLog(@"Error during request \'%@\': %@",	[urlRequest description] ,	error);
+		NSLog(@"Error description: \'%@\'.", [error description] );
+		NSLog(@"Error userInfo: \'%@\'.", [error userInfo] );
+		NSLog(@"Error failure reason: \'%@\'.", [error localizedFailureReason] );
+		NSLog(@"Error recovery options reason: \'%@\'.", [error localizedRecoveryOptions] );
+		NSLog(@"Error recovery suggestion: \'%@\'.", [error localizedRecoverySuggestion] );
 	}
 	
 	//log response

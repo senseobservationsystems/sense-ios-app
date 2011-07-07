@@ -48,7 +48,6 @@ static NSString* disconnected = @"idle";
 	[super init];
 	if (self) {
 		callCenter = [[CTCallCenter alloc] init];
-		self.isEnabled = [[Settings sharedSettings] isSensorEnabled:[self class]];
 	}
 	return self;
 }

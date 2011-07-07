@@ -28,8 +28,8 @@
 	[super loadView];
 	//setup navigationbar
 	self.navigationItem.title = @"CommonSense";
-	settingsButton = [[[UIBarButtonItem alloc] initWithTitle:@"Sense settings" style:UIBarButtonItemStylePlain target:self action:@selector(gotoSettings)] retain];
-	self.navigationItem.leftBarButtonItem = settingsButton;
+	//settingsButton = [[[UIBarButtonItem alloc] initWithTitle:@"Sense" style:UIBarButtonItemStylePlain target:self action:@selector(gotoSettings)] retain];
+	//self.navigationItem.leftBarButtonItem = settingsButton;
 	
 	//instantiate button to go to the start page
 	//loadHomeButton = [[[UIBarButtonItem alloc] initWithTitle:@"Common sense" style:UIBarButtonItemStylePlain target:self action:@selector(loadHome)] retain];
@@ -74,7 +74,7 @@
 }
 
 - (void) loadHome {
-	NSURL* url = [NSURL URLWithString:@"http://common-sense-test.appspot.com"];
+	NSURL* url = [NSURL URLWithString:@"http://common.sense-os.nl"];
 	NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
 	[webView loadRequest:request];
 }

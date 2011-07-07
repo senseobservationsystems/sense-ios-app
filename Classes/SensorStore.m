@@ -18,6 +18,9 @@
 #import "OrientationStateSensor.h"
 #import "NoiseSensor.h"
 #import "CallSensor.h"
+#import "ConnectionSensor.h"
+#import "PreferencesSensor.h"
+#import "MiscSensor.h"
 
 
 @implementation SensorStore
@@ -74,15 +77,18 @@ static SensorStore* sharedSensorStoreInstance = nil;
 		allSensorClasses = [[NSArray arrayWithObjects:
 							[LocationSensor class],
 							[BatterySensor class],
-							[NoiseSensor class],
+							//[NoiseSensor class],
 							[CallSensor class],
+ 							[ConnectionSensor class],
 							[OrientationSensor class],
 							[CompassSensor class],
-							[UserProximity class],
-							[OrientationStateSensor class],
+							//[UserProximity class],
+							//[OrientationStateSensor class],
  							[AccelerometerSensor class],
 							[AccelerationSensor class],
 							[RotationSensor class],
+							//[PreferencesSensor class],
+							//[MiscSensor class],
 							nil] retain];
 		
 		NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"isAvailable == YES"];
@@ -96,6 +102,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 		//register for change in settings
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enabledChanged:) name:settingSenseEnabledChangedNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginChanged) name:settingLoginChangedNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(generalSettingChanged:) name:[Settings settingChangedNotificationNameForType:@"general"] object:nil];
 	}
 	return self;
 }
@@ -173,6 +180,11 @@ static SensorStore* sharedSensorStoreInstance = nil;
 	}
 	
 	spatialProvider = [[SpatialProvider alloc] initWithCompass:compass orientation:orientation accelerometer:accelerometer acceleration:acceleration rotation:rotation];
+	
+	//enable sensors.
+	for (Sensor* sensor in sensors) {
+			[[Settings sharedSettings] sendNotificationForSensor:[sensor class]];
+	}
 }
 
 - (void) commitFormattedData:(NSDictionary*) data forSensorId:(NSInteger)sensorId {
@@ -227,23 +239,13 @@ static SensorStore* sharedSensorStoreInstance = nil;
 	}
 }
 
-- (void) pollSensors {
-	for (Sensor* sensor in sensors){
-		@try {
-			[sensor poll];
-		}
-		@catch (NSException * e) {
-			NSLog(@"Catched exception while polling sensor %@. Exception: %@", [sensor class], e);
-		}
-	}
-}
-
 - (void) scheduleUpload {
+	NSLog(@"Schedule upload");
 	@try {
 		//make an upload operation
 		NSInvocationOperation* uploadOp = [[NSInvocationOperation alloc]
 											initWithTarget:self selector:@selector(uploadData) object:nil];
-		
+
 		[operationQueue addOperation:uploadOp];
 		[uploadOp release];
 	}
@@ -252,30 +254,46 @@ static SensorStore* sharedSensorStoreInstance = nil;
 	}
 }
 
-- (void) uploadData {
-	NSMutableDictionary* myData = sensorData;
-	//take over sensorData
+- (void) uploadAndClearData {
+	[self uploadData];
 	@synchronized(self){
-		sensorData = [NSMutableDictionary new];
+		[sensorData removeAllObjects];
 	}
 		
+}
+
+- (void) uploadData {
+	NSMutableDictionary* myData;
+	//take over sensorData
+	@synchronized(self){
+		myData = sensorData;
+		sensorData = [NSMutableDictionary new];
+	}
+	
 	for (NSString* sensorId in myData) {
 		@try {
 			NSMutableArray* data= [myData valueForKey:sensorId];
-
-			if (nil != data) {
-				NSLog(@"Uploading data for sensor %@", sensorId);
-				if (NO == [sender uploadData:data forSensorId: [sensorId integerValue]])
-					NSLog(@"Upload failed");
+			if (data == nil) continue;
+			NSLog(@"Uploading data for sensor %@", sensorId);
+			if (NO == [sender uploadData:data forSensorId: [sensorId integerValue]]) {
+				NSLog(@"Upload failed");
+				//reinsert data into sensorData
+				@synchronized(self) {
+					NSMutableArray* entry = [sensorData valueForKey:sensorId];
+					if (entry == nil) {
+						[sensorData setValue:data forKey:sensorId];
+					}
+					else {
+						[entry addObjectsFromArray:data];
+					}
+				}
 			}
-		}  @catch (NSException* e) {
+		} @catch (NSException* e) {
 			NSLog(@"SenseStore: Exception while uploading data: %@", e);
 		}
 	}
-
 	[myData release];
 }
-
 
 - (void) applyGeneralSettings {
 	@try {
@@ -285,10 +303,9 @@ static SensorStore* sharedSensorStoreInstance = nil;
 	
 		//apply properties one by one
 		[sender setUser:[settings valueForKey:generalSettingUsernameKey] andPassword:[settings valueForKey:generalSettingPasswordKey]];
-		syncRate = [[settings valueForKey:generalSettingSynchronisationRateKey] doubleValue];
-		pollRate = [[settings valueForKey:generalSettingPollRateKey] doubleValue];
-		
-		serviceEnabled = [[settings valueForKey:generalSettingSenseEnabledKey] boolValue];
+		syncRate = [[[Settings sharedSettings] getSettingType:@"general" setting:generalSettingSynchronisationRateKey] doubleValue];
+				
+		serviceEnabled = [[settings valueForKey: generalSettingSenseEnabledKey] boolValue];
 		if (serviceEnabled) {
 			//instantiate sensors in the background using operation
 			//NSInvocationOperation* instantiateOp = [[NSInvocationOperation alloc]
@@ -310,13 +327,35 @@ static SensorStore* sharedSensorStoreInstance = nil;
 }
 
 - (void) forceDataFlush {
-	[self uploadData];
-	//TODO: flush to disk
-	//make sure data is removed from memory, whether or not uploading succeeded
-	for (NSString* sensorId in sensorData) {
-		NSMutableArray* data = [sensorData valueForKey:sensorId];
-		[data removeAllObjects];
+	@try {
+		//make an upload operation
+		NSInvocationOperation* uploadOp = [[NSInvocationOperation alloc]
+										   initWithTarget:self selector:@selector(uploadAndClearData) object:nil];
+		
+		[operationQueue addOperation:uploadOp];
+		[uploadOp release];
 	}
+	@catch (NSException * e) {
+		NSLog(@"Catched exception while scheduling upload. Exception: %@", e);
+	}
+}
+
+- (void) generalSettingChanged: (NSNotification*) notification {
+	if ([notification.object isKindOfClass:[Setting class]]) {
+		Setting* setting = notification.object;
+		NSLog(@"general setting changed: %@,%@", setting.name, setting.value);
+		if ([setting.name isEqualToString:generalSettingSynchronisationRateKey]) {
+			[self setSyncRate:[setting.value intValue]];
+		}
+	}
+
+}
+
+- (void) setSyncRate: (int) newRate {
+	[uploadTimer invalidate];
+	//[uploadTimer release];
+	syncRate = newRate;
+	uploadTimer = [NSTimer scheduledTimerWithTimeInterval:syncRate target:self selector:@selector(scheduleUpload) userInfo:nil repeats:YES];
 }
 
 + (NSDictionary*) device {

@@ -26,7 +26,6 @@
 	NSOperationQueue* operationQueue;
 	
 	NSTimer* uploadTimer;
-	NSTimer* pollTimer;
 	
 	//Sensor classes, this variable is used to instantiate sensors
 	NSArray* allSensorClasses;
@@ -48,9 +47,8 @@
 - (void) applyGeneralSettings;
 - (void) loginChanged;
 - (void) enabledChanged:(id) notification;
-//run hook is used to give SensorStore execution time to upload data
 - (void) scheduleUpload;
-- (void) pollSensors;
+- (void) setSyncRate: (int) newRate;
 
 /* Ensure all sensor data is flushed, used to reduce memory usage.
  * Flushing in this order, on failure continue with the next:
@@ -59,6 +57,7 @@
  * - delete
  */
 - (void) forceDataFlush;
+- (void) generalSettingChanged: (NSNotification*) notification;
 
 
 @end

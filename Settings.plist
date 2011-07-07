@@ -2,6 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>SettingsTypespatial</key>
+	<dict>
+		<key>pollInterval</key>
+		<string>60</string>
+	</dict>
 	<key>general</key>
 	<dict>
 		<key>username</key>
@@ -10,17 +15,16 @@
 		<string></string>
 		<key>senseEnabled</key>
 		<true/>
+	</dict>
+	<key>SettingsTypegeneral</key>
+	<dict>
 		<key>synchronisationRate</key>
-		<integer>10</integer>
-		<key>pollRate</key>
 		<string>300</string>
 	</dict>
-	<key>location</key>
+	<key>SettingsTypeposition</key>
 	<dict>
 		<key>accuracy</key>
-		<integer>0</integer>
-		<key>minimumDistance</key>
-		<integer>0</integer>
+		<string>100</string>
 	</dict>
 </dict>
 </plist>

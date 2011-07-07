@@ -45,7 +45,6 @@ NSString* accelerationZKey = @"z-axis";
 - (id) init {
 	[super init];
 	if (self) {
-		self.isEnabled = [[Settings sharedSettings] isSensorEnabled:[self class]];
 	}
 	
 	return self;

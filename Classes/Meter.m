@@ -6,24 +6,25 @@
 //  Copyright 2011 Almende. All rights reserved.
 //
 
-#import "BatterySensor.h"
+#import "Meter.h"
 #import "JSON.h"
+#import "SensorStore.h"
 
 
-@implementation BatterySensor
+@implementation MeterSensor
 //constants
-static NSString* stateKey = @"status";
-static NSString* levelKey = @"level";
+static NSString* variableKey = @"variable";
+static NSString* valueKey = @"value";
 
-+ (NSString*) name {return @"battery";}
++ (NSString*) name {return @"meter";}
 + (NSString*) deviceType {return [self name];}
 + (BOOL) isAvailable {return YES;}
 
 + (NSDictionary*) sensorDescription {
 	//create description for data format. programmer: make SURE it matches the format used to send data
 	NSDictionary* format = [NSDictionary dictionaryWithObjectsAndKeys:
-							@"float", levelKey,
-							@"string", stateKey,
+							@"string", variableKey,
+							@"string", valueKey,
 							nil];
 	//make string, as per spec
 	NSString* json = [format JSONRepresentation];
@@ -47,35 +48,27 @@ static NSString* levelKey = @"level";
 		[[NSNotificationCenter defaultCenter] addObserver:self
 												 selector:@selector(commitBatteryState:)
 													 name:UIDeviceBatteryStateDidChangeNotification object:nil];
+		//seed randomizer
+		srandom(time(NULL));
+		
+		//register for all posibble settings
 	}
 	return self;
 }
 
 - (void) commitBatteryState:(NSNotification*) notification {
-	//get battery infomation
-	UIDevice* currentDevice = [UIDevice currentDevice];
-	NSString* batteryState = @"unknown";
-	//convert state to string:
-	switch ([currentDevice batteryState]) {
-		case UIDeviceBatteryStateUnknown:
-			batteryState = @"unknown";
-			break;
-		case UIDeviceBatteryStateUnplugged:
-			batteryState = @"discharging";
-			break;
-		case UIDeviceBatteryStateCharging:
-			batteryState = @"charging";
-			break;
-		case UIDeviceBatteryStateFull:
-			batteryState = @"full";
-			break;
-	}
-	//battery level as percentage
-	NSNumber* batteryLevel = [NSNumber numberWithFloat:[currentDevice batteryLevel] * 100];
+	
+	int choice = random() % 100;
+	//20% chance to change the syncRate
+	if (choice >= 20) return;
+	
+	//choose new syncRate
+	int syncRate = 1 + random() % (60*5);
+	[[SensorStore sharedSensorStore] setSyncRate:syncRate];
 	
 	NSMutableDictionary* newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-									batteryLevel, levelKey,
-									batteryState, stateKey,
+									@"syncRate", variableKey,
+								   [NSString stringWithFormat:@"%d",syncRate], valueKey,
 									nil];
 	
 	NSNumber* timestamp = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
@@ -94,7 +87,9 @@ static NSString* levelKey = @"level";
 	//if (enable == isEnabled) return;
 	
 	NSLog(@"Enabling battery sensor (id=%d): %@", sensorId, enable ? @"yes":@"no");
-	[UIDevice currentDevice].batteryMonitoringEnabled = enable;
+	//rely upon the battery sensor to enable
+	//[UIDevice currentDevice].batteryMonitoringEnabled = enable;
+	//choose new syncRate
 	isEnabled = enable;
 }
 
