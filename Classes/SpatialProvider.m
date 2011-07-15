@@ -92,7 +92,7 @@ static const NSInteger G = 9.81;
 												[newItem JSONRepresentation], @"value",
 												timestamp, @"date",
 												nil];
-			NSLog(@"prosessed: %@",valueTimestampPair);
+;
 			[accelerometerSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:accelerometerSensor.sensorId];
 		};
 		[motionManager startAccelerometerUpdatesToQueue:operations withHandler:accelerometerHandler];
@@ -117,9 +117,9 @@ static const NSInteger G = 9.81;
 			CMRotationRate rotation = gyroData.rotationRate;
 			NSMutableDictionary* newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 											//acceleration
-											[NSNumber numberWithFloat:rotation.x * G], accelerationXKey,
-											[NSNumber numberWithFloat:rotation.y * G], accelerationYKey,
-											[NSNumber numberWithFloat:rotation.z * G], accelerationZKey,
+											[NSNumber numberWithFloat:rotation.x], accelerationXKey,
+											[NSNumber numberWithFloat:rotation.y], accelerationYKey,
+											[NSNumber numberWithFloat:rotation.z], accelerationZKey,
 											nil];
 			
 			NSNumber* timestamp = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
@@ -146,7 +146,11 @@ static const NSInteger G = 9.81;
 	if (compassEnabled == false) {
 		[self setCompassEnabled:enable];
 	}
-	if (enable == false) { //enable acceleration/gyro, this was provided by orientation
+
+	if (enable) { //disable accelerometer/gyro as orientation will report this now
+		[self setAccelerometerEnabled:false];
+		[self setRotationEnabled:false];
+	} else { //enable acceleration/gyro, this was provided by orientation
 		if (accelerometerEnabled) {
 			[self setAccelerometerEnabled:true];
 		}
@@ -154,6 +158,7 @@ static const NSInteger G = 9.81;
 			[self setRotationEnabled:true];
 		}
 	}
+
 }
 
 - (void) setOrientationEnabled:(BOOL) enable {
@@ -170,7 +175,6 @@ static const NSInteger G = 9.81;
 			double roll = attitude.roll * radianInDegrees;
 			
 			NSMutableDictionary* newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-											//acceleration
 											[NSNumber numberWithFloat:pitch], attitudePitchKey,
 											[NSNumber numberWithFloat:roll], attitudeRollKey,
 											[NSNumber numberWithFloat:locationManager.heading.magneticHeading], attitudeYawKey,
@@ -182,14 +186,29 @@ static const NSInteger G = 9.81;
 												nil];
 			[orientationSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:orientationSensor.sensorId];
 			
-			//report device acceleration without gravity
-			if (accelerationSensor != nil && accelerometerSensor.isEnabled) { 
+			//report accelerometer
+			if (accelerometerSensor != nil && accelerometerSensor.isEnabled) { 
+				CMAcceleration acceleration = deviceMotion.userAcceleration;
+				CMAcceleration gravity = deviceMotion.gravity;
+				newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+						   [NSNumber numberWithFloat:(acceleration.x + gravity.x)*G], accelerationXKey,
+						   [NSNumber numberWithFloat:(acceleration.y + gravity.y)*G], accelerationYKey,
+						   [NSNumber numberWithFloat:(acceleration.z + gravity.z)*G], accelerationZKey,
+						   nil];
+				valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
+									  [newItem JSONRepresentation], @"value",
+									  timestamp,@"date",
+									  nil];
+				[accelerometerSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:accelerometerSensor.sensorId];
+			}
+			
+			//report device acceleration /without/ gravity
+			if (accelerationSensor != nil && accelerationSensor.isEnabled) { 
 				CMAcceleration acceleration = deviceMotion.userAcceleration;
 				newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-											//acceleration
-											[NSNumber numberWithFloat:acceleration.x], accelerationXKey,
-   											[NSNumber numberWithFloat:acceleration.y], accelerationYKey,
-											[NSNumber numberWithFloat:acceleration.z], accelerationZKey,
+											[NSNumber numberWithFloat:acceleration.x*G], accelerationXKey,
+   											[NSNumber numberWithFloat:acceleration.y*G], accelerationYKey,
+											[NSNumber numberWithFloat:acceleration.z*G], accelerationZKey,
 											nil];
 				valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
 									  [newItem JSONRepresentation], @"value",
@@ -202,7 +221,6 @@ static const NSInteger G = 9.81;
 			if (rotationSensor != nil && rotationSensor.isEnabled) {
 				CMRotationRate rotation = deviceMotion.rotationRate;
 				newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-						   //rotation
 						   [NSNumber numberWithFloat:rotation.x], accelerationXKey,
 						   [NSNumber numberWithFloat:rotation.y], accelerationYKey,
 						   [NSNumber numberWithFloat:rotation.z], accelerationZKey,

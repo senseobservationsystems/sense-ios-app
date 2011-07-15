@@ -77,9 +77,9 @@ static SensorStore* sharedSensorStoreInstance = nil;
 		allSensorClasses = [[NSArray arrayWithObjects:
 							[LocationSensor class],
 							[BatterySensor class],
-							//[NoiseSensor class],
 							[CallSensor class],
  							[ConnectionSensor class],
+   							[NoiseSensor class],
 							[OrientationSensor class],
 							[CompassSensor class],
 							//[UserProximity class],

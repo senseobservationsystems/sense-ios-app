@@ -53,11 +53,10 @@ enum GeneralSectionRow{
 	//self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Help" style:UIBarButtonItemStylePlain target:self action:@selector(displayWelcomeMessage)];
 	
 	//setup sensors
-	
 	NSArray* sensors = [SensorStore sharedSensorStore].allAvailableSensorClasses;
 	//filter out motion sensors
-	NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"NOT (name == '')"];
-	//NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"NOT (name == 'orientation' OR name == 'accelerometer' OR name == 'acceleration' OR name == 'gyroscope')"];
+	//NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"NOT (name == '')"];
+	NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"NOT (name == 'orientation' OR name == 'accelerometer' OR name == 'acceleration' OR name == 'gyroscope')"];
 
 	self.sensorClasses = [[sensors filteredArrayUsingPredicate:availablePredicate] retain];
 	//create single button for motion sensors
@@ -65,8 +64,7 @@ enum GeneralSectionRow{
 	[motionSwitch setOn:[[Settings sharedSettings] isSensorEnabled:[AccelerometerSensor class]]];
 	[motionSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
 	[self foregroundEnabled: motionSwitch.on];
-	
-	
+
 	//setup switches
 	senseSwitch = [[[UISwitch alloc]init] retain];
 	[senseSwitch setOn:[[generalSettings valueForKey:generalSettingSenseEnabledKey] boolValue]];
@@ -263,10 +261,10 @@ enum GeneralSectionRow{
 	if (senseSwitch == switchButton)
 		[[Settings sharedSettings] setSenseEnabled:switchButton.on];
 	else if (motionSwitch == switchButton) {
-		//[[Settings sharedSettings] setSensor:[AccelerometerSensor class] enabled:switchButton.on];
-		//[[Settings sharedSettings] setSensor:[AccelerationSensor class] enabled:switchButton.on];
-		//[[Settings sharedSettings] setSensor:[RotationSensor class] enabled:switchButton.on];
-		//[[Settings sharedSettings] setSensor:[OrientationSensor class] enabled:switchButton.on];
+		[[Settings sharedSettings] setSensor:[AccelerometerSensor class] enabled:switchButton.on];
+		[[Settings sharedSettings] setSensor:[AccelerationSensor class] enabled:switchButton.on];
+		[[Settings sharedSettings] setSensor:[RotationSensor class] enabled:switchButton.on];
+		[[Settings sharedSettings] setSensor:[OrientationSensor class] enabled:switchButton.on];
 		
 		[self foregroundEnabled: motionSwitch.on]; 
 		if (switchButton.on) {

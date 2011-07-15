@@ -50,7 +50,7 @@
 		//define audio category to allow mixing
 		NSError *setCategoryError = nil;
 		[[AVAudioSession sharedInstance]
-		 setCategory: AVAudioSessionCategoryRecord
+		 setCategory: AVAudioSessionCategoryPlayAndRecord
 		 error: &setCategoryError];
 		OSStatus propertySetError = 0;
 		UInt32 allowMixing = true;
