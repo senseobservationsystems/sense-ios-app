@@ -26,9 +26,9 @@
 }
 
 - (id) init {
-	[super init];
+	self = [super init];
 	if (self) {
-		    internetReach = [[Reachability reachabilityForInternetConnection] retain];
+		    internetReach = [Reachability reachabilityForInternetConnection];
 		    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: kReachabilityChangedNotification object: nil];
 	}
 	return self;
@@ -60,7 +60,7 @@
     }
 	
 	
-	NSNumber* timestamp = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
+	NSNumber* timestamp = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
 	
 	NSDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
 										statusString, @"value",
@@ -88,10 +88,8 @@
 
 - (void) dealloc {
 	self.isEnabled = NO;
-	[internetReach release];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
-	[super dealloc];
 }
 
 @end

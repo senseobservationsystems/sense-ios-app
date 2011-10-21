@@ -51,15 +51,15 @@ extern NSString* locationSettingMinimumDistanceKey;
 - (BOOL) isSensorEnabled:(Class) sensor;
 - (void) sendNotificationForSensor:(Class) sensor;
 - (id) getSettingType: (NSString*) type setting:(NSString*) setting;
-- (BOOL) commitSettingType: (NSString*) type setting:(NSString*) setting value:(NSString*) value;
+- (BOOL) commitSettingType: (NSString*) type setting:(NSString*) setting value:(NSString*) value persistent:(BOOL)persistent;
 
 - (void) storeSettings;
 - (void) loadSettingsFromPath:(NSString*)path;
 - (void) anySettingChanged:(NSString*)setting value:(NSString*)value;
 
 //used to get groups of properties
-@property (assign, readonly) NSMutableDictionary* general;
-@property (assign, readonly) NSMutableDictionary* location;
+@property (retain, readonly) NSMutableDictionary* general;
+@property (retain, readonly) NSMutableDictionary* location;
 
 //used to set individual settings, returns whether the setting was accepted
 - (BOOL) setSenseEnabled:(BOOL) enable;

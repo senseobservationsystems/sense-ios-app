@@ -22,15 +22,17 @@
 	NSMutableArray* sensorEnableSwitches;
 	UISwitch* senseSwitch;
 	UISwitch* motionSwitch;
+    UISwitch* phoneStateSwitch;
 	
 	BOOL firstTimeCommonSense;
 }
-@property (assign) NSArray* sensorClasses;
+@property (retain) NSArray* sensorClasses;
 
 - (void) edited;
 - (void) gotoWebView;
 - (void) displayWelcomeMessage;
 
 - (void) switchChanged:(UISwitch*) switchButton;
+- (BOOL) supportsBackground;
 - (void) foregroundEnabled:(BOOL) enable;
 @end

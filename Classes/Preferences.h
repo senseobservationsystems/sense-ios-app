@@ -10,7 +10,12 @@
 
 
 @interface Preferences : UITableViewController {
-
+    UISwitch* adaptiveSwitch;
+    UISwitch* locationMotionSwitch;
+    UISlider* chargeCycleSlider;
 }
+
+- (void) switchChanged:(UISwitch*) switchButton;
+- (void) sliderChanged:(UISlider*) slider;
 
 @end

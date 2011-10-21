@@ -44,7 +44,7 @@ NSString* accuracyKey = @"accuracy";
 }
 
 - (id) init {
-	[super init];
+	self = [super init];
 	if (self) {
 	}
 	
@@ -63,7 +63,6 @@ NSString* accuracyKey = @"accuracy";
 	self.isEnabled = NO;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
-	[super dealloc];
 }
 
 @end

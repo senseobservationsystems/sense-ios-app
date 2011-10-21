@@ -26,7 +26,7 @@
 }
 
 - (id) init {
-	[super init];
+	self = [super init];
 	if (self) {
 		//register for proximity notification
 		[[NSNotificationCenter defaultCenter] addObserver:self
@@ -40,7 +40,7 @@
 	//get proximity infomation
 	NSString* proximityState = [[UIDevice currentDevice] proximityState] ? @"true": @"false";
 	
-	NSNumber* timestamp = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
+	NSNumber* timestamp = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
 	
 	NSDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
 										proximityState, @"value",
@@ -65,7 +65,6 @@
 	self.isEnabled = NO;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
-	[super dealloc];
 }
 
 @end

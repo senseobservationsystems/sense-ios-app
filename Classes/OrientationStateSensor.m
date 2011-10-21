@@ -26,7 +26,7 @@
 }
 
 - (id) init {
-	[super init];
+	self = [super init];
 	if (self) {
 		//register for proximity notification
 		[[NSNotificationCenter defaultCenter] addObserver:self
@@ -65,7 +65,7 @@
 			break;
 	}
 	
-	NSNumber* timestamp = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
+	NSNumber* timestamp = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
 	
 	NSDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
 										orientationString, @"value",
@@ -95,7 +95,6 @@
 	self.isEnabled = NO;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
-	[super dealloc];
 }
 
 @end

@@ -22,6 +22,10 @@
 		3E2C85BB1309821500B1C6CC /* Sensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E2C85BA1309821500B1C6CC /* Sensor.m */; };
 		3E2C86AD130A8CEC00B1C6CC /* SensorStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E2C86AC130A8CEC00B1C6CC /* SensorStore.m */; };
 		3E2C86F8130A98B400B1C6CC /* LocationSensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E2C86F7130A98B400B1C6CC /* LocationSensor.m */; };
+<<<<<<< HEAD
+=======
+		3E325B7E1427875900D0E6A8 /* MovingSensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E325B7D1427875900D0E6A8 /* MovingSensor.m */; };
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 		3E562A51135D9A6D00B54448 /* CallSensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E562A50135D9A6D00B54448 /* CallSensor.m */; };
 		3E562A66135D9DA800B54448 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E562A65135D9DA800B54448 /* CoreTelephony.framework */; };
 		3E5D41C9136957640057D124 /* AccelerationSensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5D41C8136957640057D124 /* AccelerationSensor.m */; };
@@ -29,6 +33,10 @@
 		3E5D4253136ADD850057D124 /* ConnectionSensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5D4252136ADD850057D124 /* ConnectionSensor.m */; };
 		3E5D425D136AE0EC0057D124 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5D425C136AE0EC0057D124 /* Reachability.m */; };
 		3E5D4287136AE4970057D124 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E5D4286136AE4970057D124 /* SystemConfiguration.framework */; };
+<<<<<<< HEAD
+=======
+		3E670BDC13F16909008BCB99 /* SampleStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E670BDB13F16909008BCB99 /* SampleStrategy.m */; };
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 		3E7DC1B21305430C00B28337 /* Sender.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E7DC1B11305430C00B28337 /* Sender.m */; };
 		3E7DC21013054E8400B28337 /* NSObject+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E7DC20713054E8400B28337 /* NSObject+SBJSON.m */; };
 		3E7DC21113054E8400B28337 /* NSString+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E7DC20913054E8400B28337 /* NSString+SBJSON.m */; };
@@ -88,6 +96,11 @@
 		3E2C86AC130A8CEC00B1C6CC /* SensorStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SensorStore.m; sourceTree = "<group>"; };
 		3E2C86F6130A98B400B1C6CC /* LocationSensor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationSensor.h; sourceTree = "<group>"; };
 		3E2C86F7130A98B400B1C6CC /* LocationSensor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationSensor.m; sourceTree = "<group>"; };
+<<<<<<< HEAD
+=======
+		3E325B7C1427875900D0E6A8 /* MovingSensor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MovingSensor.h; sourceTree = "<group>"; };
+		3E325B7D1427875900D0E6A8 /* MovingSensor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MovingSensor.m; sourceTree = "<group>"; };
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 		3E562A4F135D9A6D00B54448 /* CallSensor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallSensor.h; sourceTree = "<group>"; };
 		3E562A50135D9A6D00B54448 /* CallSensor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallSensor.m; sourceTree = "<group>"; };
 		3E562A65135D9DA800B54448 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
@@ -101,6 +114,11 @@
 		3E5D425B136AE0EC0057D124 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		3E5D425C136AE0EC0057D124 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		3E5D4286136AE4970057D124 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+<<<<<<< HEAD
+=======
+		3E670BDA13F16909008BCB99 /* SampleStrategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SampleStrategy.h; sourceTree = "<group>"; };
+		3E670BDB13F16909008BCB99 /* SampleStrategy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SampleStrategy.m; sourceTree = "<group>"; };
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 		3E7DC1B01305430C00B28337 /* Sender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sender.h; sourceTree = "<group>"; };
 		3E7DC1B11305430C00B28337 /* Sender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Sender.m; sourceTree = "<group>"; };
 		3E7DC20513054E8400B28337 /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
@@ -190,6 +208,11 @@
 				1D3623250D0F684500981E51 /* senseLocationAppAppDelegate.m */,
 				3E2C86AB130A8CEC00B1C6CC /* SensorStore.h */,
 				3E2C86AC130A8CEC00B1C6CC /* SensorStore.m */,
+<<<<<<< HEAD
+=======
+				3E670BDA13F16909008BCB99 /* SampleStrategy.h */,
+				3E670BDB13F16909008BCB99 /* SampleStrategy.m */,
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 				3EBA22A3130E8C2700C5B924 /* Settings.h */,
 				3EBA22A4130E8C2700C5B924 /* Settings.m */,
 			);
@@ -295,6 +318,11 @@
 				3EA387B5133C9FB7007E0309 /* SpatialProvider.m */,
 				3E5D41C7136957640057D124 /* AccelerationSensor.h */,
 				3E5D41C8136957640057D124 /* AccelerationSensor.m */,
+<<<<<<< HEAD
+=======
+				3E325B7C1427875900D0E6A8 /* MovingSensor.h */,
+				3E325B7D1427875900D0E6A8 /* MovingSensor.m */,
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 			);
 			name = spatial;
 			sourceTree = "<group>";
@@ -488,6 +516,11 @@
 				3EA62382137BFF90007F60D2 /* Preferences.m in Sources */,
 				3EA6281A13840A80007F60D2 /* PreferencesSensor.m in Sources */,
 				3EA62864138BF185007F60D2 /* MiscSensor.m in Sources */,
+<<<<<<< HEAD
+=======
+				3E670BDC13F16909008BCB99 /* SampleStrategy.m in Sources */,
+				3E325B7E1427875900D0E6A8 /* MovingSensor.m in Sources */,
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -498,12 +531,29 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+<<<<<<< HEAD
 				CODE_SIGN_ENTITLEMENTS = "~/Documents/senseAppPort/senseLocationApp/EntitlementsDebug.plist";
 				COPY_PHASE_STRIP = NO;
+=======
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_ENTITLEMENTS = "~/Documents/senseAppPort/senseLocationApp/EntitlementsDebug.plist";
+				COPY_PHASE_STRIP = NO;
+				GCC_CHECK_RETURN_VALUE_OF_OPERATOR_NEW = YES;
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = sensePlatform_Prefix.pch;
+<<<<<<< HEAD
+=======
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 				INFOPLIST_FILE = "sensePlatform-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PRODUCT_NAME = sensePlatform;
@@ -516,11 +566,28 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+<<<<<<< HEAD
 				CODE_SIGN_ENTITLEMENTS = "~/Documents/senseAppPort/senseLocationApp/EntitlementsDebug.plist";
 				COPY_PHASE_STRIP = YES;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = sensePlatform_Prefix.pch;
+=======
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_ENTITLEMENTS = "~/Documents/senseAppPort/senseLocationApp/EntitlementsDebug.plist";
+				COPY_PHASE_STRIP = YES;
+				GCC_CHECK_RETURN_VALUE_OF_OPERATOR_NEW = YES;
+				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = sensePlatform_Prefix.pch;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 				INFOPLIST_FILE = "sensePlatform-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PRODUCT_NAME = sensePlatform;
@@ -538,6 +605,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Almende B V";
 				GCC_C_LANGUAGE_STANDARD = c99;
+<<<<<<< HEAD
+=======
+				GCC_OPTIMIZATION_LEVEL = s;
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -551,6 +622,10 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "82DDD513-E882-4349-BEE1-A61B933FF8C4";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
+<<<<<<< HEAD
+=======
+				STRIP_INSTALLED_PRODUCT = NO;
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Distribute;
@@ -559,11 +634,28 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+<<<<<<< HEAD
 				CODE_SIGN_ENTITLEMENTS = "~/Documents/senseAppPort/senseLocationApp/EntitlementsDebug.plist";
 				COPY_PHASE_STRIP = YES;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = sensePlatform_Prefix.pch;
+=======
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_ENTITLEMENTS = "~/Documents/senseAppPort/senseLocationApp/EntitlementsDebug.plist";
+				COPY_PHASE_STRIP = YES;
+				GCC_CHECK_RETURN_VALUE_OF_OPERATOR_NEW = YES;
+				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = sensePlatform_Prefix.pch;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 				INFOPLIST_FILE = "sensePlatform-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PRODUCT_NAME = sensePlatform;
@@ -582,6 +674,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Almende B V";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+<<<<<<< HEAD
+=======
+				GCC_OPTIMIZATION_LEVEL = s;
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -595,6 +691,10 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "82DDD513-E882-4349-BEE1-A61B933FF8C4";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
+<<<<<<< HEAD
+=======
+				STRIP_INSTALLED_PRODUCT = NO;
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = "Distribute appStore";
@@ -603,11 +703,28 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+<<<<<<< HEAD
 				CODE_SIGN_ENTITLEMENTS = "~/Documents/senseAppPort/senseLocationApp/EntitlementsDebug.plist";
 				COPY_PHASE_STRIP = YES;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = sensePlatform_Prefix.pch;
+=======
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_ENTITLEMENTS = "~/Documents/senseAppPort/senseLocationApp/EntitlementsDebug.plist";
+				COPY_PHASE_STRIP = YES;
+				GCC_CHECK_RETURN_VALUE_OF_OPERATOR_NEW = YES;
+				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = sensePlatform_Prefix.pch;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 				INFOPLIST_FILE = "sensePlatform-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PRODUCT_NAME = sensePlatform;
@@ -626,6 +743,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+<<<<<<< HEAD
+=======
+				GCC_OPTIMIZATION_LEVEL = s;
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -640,6 +761,10 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
+<<<<<<< HEAD
+=======
+				STRIP_INSTALLED_PRODUCT = NO;
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -651,6 +776,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Almende B V";
 				GCC_C_LANGUAGE_STANDARD = c99;
+<<<<<<< HEAD
+=======
+				GCC_OPTIMIZATION_LEVEL = s;
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -664,6 +793,10 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "82DDD513-E882-4349-BEE1-A61B933FF8C4";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
+<<<<<<< HEAD
+=======
+				STRIP_INSTALLED_PRODUCT = NO;
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
@@ -680,7 +813,11 @@
 				3EA627C713816F1E007F60D2 /* Distribute appStore */,
 			);
 			defaultConfigurationIsVisible = 0;
+<<<<<<< HEAD
 			defaultConfigurationName = Release;
+=======
+			defaultConfigurationName = Debug;
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 		};
 		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "sensePlatform" */ = {
 			isa = XCConfigurationList;
@@ -691,7 +828,11 @@
 				3EA627C613816F1E007F60D2 /* Distribute appStore */,
 			);
 			defaultConfigurationIsVisible = 0;
+<<<<<<< HEAD
 			defaultConfigurationName = Release;
+=======
+			defaultConfigurationName = Debug;
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 		};
 /* End XCConfigurationList section */
 	};

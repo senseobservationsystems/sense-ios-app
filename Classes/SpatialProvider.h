@@ -27,6 +27,8 @@
 	RotationSensor* rotationSensor;
 	
 	NSOperationQueue* operations;
+    NSCondition* headingAvailable;
+    BOOL updatingHeading;
 	
 	BOOL deallocating;
 	
@@ -35,6 +37,8 @@
 	BOOL orientationEnabled;
 	BOOL accelerometerEnabled;
 	BOOL rotationEnabled;
+    
+    NSTimeInterval interval;
 }
 
 - (id) initWithCompass:(CompassSensor*)compass orientation:(OrientationSensor*)orientation accelerometer:(AccelerometerSensor*)accelerometer acceleration:(AccelerationSensor*)acceleration rotation:(RotationSensor*)rotation;

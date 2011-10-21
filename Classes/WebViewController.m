@@ -36,7 +36,7 @@
 	//self.navigationItem.rightBarButtonItem = loadHomeButton;
 	
 	//setup webview
-	webView = [[[UIWebView alloc] init] retain];
+	webView = [[UIWebView alloc] init];
 	webView.userInteractionEnabled = YES;
 	webView.multipleTouchEnabled = YES;
 	webView.scalesPageToFit = YES;
@@ -86,11 +86,6 @@
 }
 
 
-- (void)dealloc {
-	[settingsButton release];
-	[webView release];
-    [super dealloc];
-}
 
 
 @end

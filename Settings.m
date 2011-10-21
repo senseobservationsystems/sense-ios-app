@@ -49,7 +49,7 @@ static Settings* sharedSettingsInstance = nil;
 //override to ensure singleton
 + (id)allocWithZone:(NSZone *)zone
 {
-    return [[self sharedSettings] retain];
+    return [self sharedSettings];
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -57,28 +57,9 @@ static Settings* sharedSettingsInstance = nil;
     return self;
 }
 
-- (id)retain
-{
-    return self;
-}
-
-- (NSUInteger)retainCount
-{
-    return NSUIntegerMax;  //denotes an object that cannot be released
-}
-
-- (void)release
-{
-    //do nothing
-}
-
-- (id)autorelease
-{
-    return self;
-}
 
 - (id) init {
-	[super init];
+	self = [super init];
 	if (self) {
 		//initialise settings from plist
         NSString* plistPath;
@@ -186,19 +167,21 @@ static Settings* sharedSettingsInstance = nil;
 	return nil;
 }
 
-- (BOOL) commitSettingType: (NSString*) type setting:(NSString*) setting value:(NSString*) value {
-	//get sensor settings
-	NSString* name = [NSString stringWithFormat:@"SettingsType%@", type];
-	NSMutableDictionary* typeSettings = [[settings valueForKey:name] retain];
-	if (typeSettings == nil) {
-		//create if it doesn't already exist
-		typeSettings = [NSMutableDictionary new];
-		[settings setObject:typeSettings forKey:name];
-	}
-	
-	//commit setting
-	[typeSettings setObject:value forKey:setting];
-	[self storeSettings];
+- (BOOL) commitSettingType: (NSString*) type setting:(NSString*) setting value:(NSString*) value persistent:(BOOL)persistent {
+    if (persistent) {
+        //get sensor settings;
+        NSString* name = [NSString stringWithFormat:@"SettingsType%@", type];
+        NSMutableDictionary* typeSettings = [settings valueForKey:name];
+        if (typeSettings == nil) {
+            //create if it doesn't already exist
+            typeSettings = [NSMutableDictionary new];
+            [settings setObject:typeSettings forKey:name];
+        }
+        
+        //commit setting
+        [typeSettings setObject:value forKey:setting];
+        [self storeSettings];
+    }
 	
 	//create notification object
 	Setting* notificationObject = [[Setting alloc] init];
@@ -210,8 +193,6 @@ static Settings* sharedSettingsInstance = nil;
 	[self anySettingChanged:setting value:value];
 	
 	//free
-	[typeSettings release];
-	[notificationObject release];
 	
 	return YES;
 }
@@ -231,7 +212,6 @@ static Settings* sharedSettingsInstance = nil;
 	[[NSNotificationCenter defaultCenter] postNotification: [NSNotification notificationWithName:anySettingChangedNotification object:notificationObject]];
 	
 	//free
-	[notificationObject release];
 }
 
 - (void) loadSettingsFromPath:(NSString*)path {
@@ -245,16 +225,15 @@ static Settings* sharedSettingsInstance = nil;
 									   mutabilityOption:NSPropertyListMutableContainersAndLeaves
 									   format:&format
 									   errorDescription:&errorDesc];
-	[settings retain];
 	if (!settings)
 	{
 		NSLog(@"Error reading plist: %@, format: %d", errorDesc, format);
 		return;
 	}
 	//instantiate subsections of settings
-	general = [[settings valueForKey:@"general"] retain];
-	location = [[settings valueForKey:@"location"] retain];
-	sensorEnables = [[settings valueForKey:@"sensorEnables"] retain];
+	general = [settings valueForKey:@"general"];
+	location = [settings valueForKey:@"location"];
+	sensorEnables = [settings valueForKey:@"sensorEnables"];
 	if (sensorEnables == nil) {
 		sensorEnables = [NSMutableDictionary new];
 		[settings setObject:sensorEnables forKey:@"sensorEnables"];
@@ -274,7 +253,6 @@ static Settings* sharedSettingsInstance = nil;
 		}
 		else {
 			NSLog(@"%@", error);
-			[error release];
 		}
 	}
 	@catch (NSException * e) {

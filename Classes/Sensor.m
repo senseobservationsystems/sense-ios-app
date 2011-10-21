@@ -40,7 +40,7 @@
 + (BOOL) isAvailable {return NO;}
 
 - (id) init {
-	[super init];
+	self = [super init];
 	 if (self) {
 		 sensorId = -1;
 		 //register for enable changed notification
@@ -57,8 +57,6 @@
 
 - (void) dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[dataStore release];
-	[super dealloc];
 }
 
 @end

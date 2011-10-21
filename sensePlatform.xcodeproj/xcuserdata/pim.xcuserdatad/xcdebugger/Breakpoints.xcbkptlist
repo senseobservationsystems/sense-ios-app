@@ -9,6 +9,7 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "Classes/Preferences.m"
+<<<<<<< HEAD
          timestampString = "330536722.836915"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
@@ -17,15 +18,37 @@
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "Yes"
+=======
+         timestampString = "338213051.075266"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "244"
+         endingLineNumber = "244"
+         landmarkName = "-tableView:didSelectRowAtIndexPath:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "Settings.m"
+<<<<<<< HEAD
          timestampString = "330536722.87427"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "189"
          endingLineNumber = "189">
+=======
+         timestampString = "340880010.158004"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "171"
+         endingLineNumber = "171"
+         landmarkName = "-commitSettingType:setting:value:persistent:"
+         landmarkType = "5">
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "Yes"
@@ -33,11 +56,21 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "Classes/SensorStore.m"
+<<<<<<< HEAD
          timestampString = "330536722.903631"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "347"
          endingLineNumber = "347">
+=======
+         timestampString = "340881009.00103"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "336"
+         endingLineNumber = "336"
+         landmarkName = "-generalSettingChanged:"
+         landmarkType = "5">
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "Yes"
@@ -56,24 +89,130 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          isPathRelative = "1"
+<<<<<<< HEAD
          filePath = "Classes/SettingsViewController.m"
          timestampString = "332329688.460406"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "370"
          endingLineNumber = "370">
+=======
+         filePath = "Classes/Preferences.m"
+         timestampString = "338213051.075266"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "334"
+         endingLineNumber = "334"
+         landmarkName = "-tableView:didSelectRowAtIndexPath:"
+         landmarkType = "5">
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          isPathRelative = "1"
+<<<<<<< HEAD
          filePath = "Classes/SensorStore.m"
          timestampString = "330536723.0060011"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "320"
          endingLineNumber = "320">
+=======
+         filePath = "Classes/Preferences.m"
+         timestampString = "338213051.075266"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "360"
+         endingLineNumber = "360"
+         landmarkName = "-tableView:didSelectRowAtIndexPath:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "Classes/Preferences.m"
+         timestampString = "338213051.075266"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "350"
+         endingLineNumber = "350"
+         landmarkName = "-tableView:didSelectRowAtIndexPath:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "Classes/LocationSensor.m"
+         timestampString = "334686942.675714"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "102"
+         endingLineNumber = "102"
+         landmarkName = "-locationManager:didUpdateToLocation:fromLocation:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "Classes/SampleStrategy.m"
+         timestampString = "338906374.860398"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "99"
+         endingLineNumber = "99"
+         landmarkName = "-updateStrategy"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "Classes/Preferences.m"
+         timestampString = "336666489.779991"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "49"
+         endingLineNumber = "49"
+         landmarkName = "-viewDidLoad"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "Settings.m"
+         timestampString = "340880010.158004"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "161"
+         endingLineNumber = "161"
+         landmarkName = "-getSettingType:setting:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "Classes/SampleStrategy.m"
+         timestampString = "338906374.860398"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "127"
+         endingLineNumber = "127"
+         landmarkName = "-updateStrategy"
+         landmarkType = "5">
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
       </FileBreakpoint>
    </FileBreakpoints>
    <SymbolicBreakpoints>

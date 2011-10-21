@@ -56,13 +56,6 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
     return self;
 }
 
-- (void) dealloc {
-	[sessionCookie release];
-	[urls release];
-	[username release];
-	[passwordHash release];
-	[super dealloc];
-}
 
 #pragma mark -
 #pragma mark Public methods
@@ -74,10 +67,8 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 - (void) setUser:(NSString*)user andPassword:(NSString*) password {
 	if (sessionCookie != nil)
 		[self logout];
-	[username release];
-	[passwordHash release];
-	username = [user retain];
-	passwordHash = [[password MD5Hash] retain];
+	username = user;
+	passwordHash = [password MD5Hash];
 }
 
 - (BOOL) registerUser:(NSString*) user withPassword:(NSString*) pass error:(NSString**) error
@@ -108,9 +99,7 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 		NSLog(@"Responded: %@", responded);
 		//interpret json response to set error
 		*error = [[responded JSONValue] valueForKey:@"error"];
-		[responded release];
 	}
-	[contents release];
 	return didSucceed;
 }
 
@@ -139,17 +128,14 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 		NSLog(@"Couldn't login.");
 		NSString* responded = [[NSString alloc] initWithData:contents encoding:NSUTF8StringEncoding];		
 		NSLog(@"Responded: %@", responded);
-		[responded release];
 		succeeded = NO;
 	} else {
 		//interpret JSON
 		NSString* jsonString = [[NSString alloc] initWithData:contents encoding:NSUTF8StringEncoding];
 		NSDictionary* jsonResponse = [jsonString JSONValue];
 		self.sessionCookie = [NSString stringWithFormat:@"session_id=%@",[jsonResponse valueForKey:@"session_id"]];
-		[jsonString release];
 	}
 
-	[contents release];
 	return succeeded;
 }
 
@@ -250,15 +236,12 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 		NSLog(@"%@ \"%@\" failed with status code %d", method, url, [response statusCode]);
 		NSString* responded = [[NSString alloc] initWithData:contents encoding:NSUTF8StringEncoding];
 		NSLog(@"Responded: %@", responded);
-		[responded release];
 		return nil;
 	}
-	
 	//interpret JSON
 	NSString* jsonString = [[NSString alloc] initWithData:contents encoding:NSUTF8StringEncoding];
-	[contents release];
+    //NSLog(@"contents: %@", jsonString);
 	NSDictionary* jsonResponse = [jsonString JSONValue];
-	[jsonString release];
 	return jsonResponse;
 }
 
@@ -309,7 +292,7 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 	
 	if (output != nil)
 	{
-		*output = [responseData retain];
+		*output = responseData;
 	}
 	
 	return response;

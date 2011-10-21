@@ -22,7 +22,6 @@
 	//user acceleration can only be calculated when there is a gyro
 	CMMotionManager* motionManager = [[CMMotionManager alloc] init];
 	BOOL available = motionManager.deviceMotionAvailable;
-	[motionManager release];
 	return available;
 }
 
@@ -46,7 +45,7 @@
 }
 
 - (id) init {
-	[super init];
+	self = [super init];
 	if (self) {
 	}
 	
@@ -63,7 +62,7 @@
 
 - (void) dealloc {
 	self.isEnabled = NO;
-	[super dealloc];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 

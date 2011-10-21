@@ -22,6 +22,11 @@
 #import "PreferencesSensor.h"
 #import "MiscSensor.h"
 
+#define IGNORE_DATA 0
+#if IGNORE_DATA != 0
+#warning Compiling with IGNORE_DATA, so no data will be committed to commonSense
+#endif
+
 
 @implementation SensorStore
 @synthesize sender;
@@ -39,42 +44,25 @@ static SensorStore* sharedSensorStoreInstance = nil;
 
 //override to ensure singleton
 + (id)allocWithZone:(NSZone *)zone {
-    return [[self sharedSensorStore] retain];
+    return [self sharedSensorStore];
 }
 
 - (id)copyWithZone:(NSZone *)zone {
     return self;
 }
 
-- (id)retain {
-    return self;
-}
-
-- (NSUInteger)retainCount {
-    return NSUIntegerMax;  //denotes an object that cannot be released
-}
-
-- (void)release {
-    //do nothing
-}
-
-- (id)autorelease {
-    return self;
-}
-
-
 - (id) init {
-	[super init];
+	self = [super init];
 	if (self) {
 		sender = [[Sender alloc] init];
 		//setup attributes
 		sensorData = [[NSMutableDictionary alloc] init];
 		operationQueue = [[NSOperationQueue alloc] init];
-		lastUpload = [[NSDate date] retain];
-		lastPoll = [[NSDate date] retain];
+		lastUpload = [NSDate date];
+		lastPoll = [NSDate date];
 		
 		//all sensor classes
-		allSensorClasses = [[NSArray arrayWithObjects:
+		allSensorClasses = [NSArray arrayWithObjects:
 							[LocationSensor class],
 							[BatterySensor class],
 							[CallSensor class],
@@ -87,16 +75,20 @@ static SensorStore* sharedSensorStoreInstance = nil;
  							[AccelerometerSensor class],
 							[AccelerationSensor class],
 							[RotationSensor class],
-							//[PreferencesSensor class],
-							//[MiscSensor class],
-							nil] retain];
+							[PreferencesSensor class],
+							[MiscSensor class],
+							nil];
 		
 		NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"isAvailable == YES"];
-		allAvailableSensorClasses = [[allSensorClasses filteredArrayUsingPredicate:availablePredicate] retain];
+		allAvailableSensorClasses = [allSensorClasses filteredArrayUsingPredicate:availablePredicate];
 		sensors = [[NSMutableArray alloc] init];
 
+        //instantiate sample strategy
+        sampleStrategy = [[SampleStrategy alloc] init];
+        
 		//set settings and initialise sensors
 		[self applyGeneralSettings];
+        
 		
 
 		//register for change in settings
@@ -143,7 +135,6 @@ static SensorStore* sharedSensorStoreInstance = nil;
 
 - (void) instantiateSensors {
 	//release current sensors
-	[spatialProvider dealloc];
 	spatialProvider=nil;
 	[sensors removeAllObjects];
 
@@ -152,7 +143,6 @@ static SensorStore* sharedSensorStoreInstance = nil;
 		if ([aClass isAvailable]) {
 			id newSensor = [[aClass alloc] init];
 			[sensors addObject:newSensor];
-			[newSensor release];
 		}
 	}
 	
@@ -188,6 +178,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 }
 
 - (void) commitFormattedData:(NSDictionary*) data forSensorId:(NSInteger)sensorId {
+    if (IGNORE_DATA) return;
 	//retrieve/create entry for this sensor
 	NSString* key = [NSString stringWithFormat:@"%d", sensorId];
 	@synchronized(self) {
@@ -195,7 +186,6 @@ static SensorStore* sharedSensorStoreInstance = nil;
 		if (entry == nil) {
 			entry = [[NSMutableArray alloc] init];
 			[sensorData setValue:entry forKey:key];
-			[entry release];
 		}
 
 		//add data
@@ -213,7 +203,6 @@ static SensorStore* sharedSensorStoreInstance = nil;
 			sensor.isEnabled = NO;
 		}
 		//release sensors
-		[spatialProvider dealloc];
 		spatialProvider = nil;
 		[sensors removeAllObjects];
 		//flush data
@@ -240,14 +229,12 @@ static SensorStore* sharedSensorStoreInstance = nil;
 }
 
 - (void) scheduleUpload {
-	NSLog(@"Schedule upload");
 	@try {
 		//make an upload operation
 		NSInvocationOperation* uploadOp = [[NSInvocationOperation alloc]
 											initWithTarget:self selector:@selector(uploadData) object:nil];
 
 		[operationQueue addOperation:uploadOp];
-		[uploadOp release];
 	}
 	@catch (NSException * e) {
 		NSLog(@"Catched exception while scheduling upload. Exception: %@", e);
@@ -292,7 +279,6 @@ static SensorStore* sharedSensorStoreInstance = nil;
 			NSLog(@"SenseStore: Exception while uploading data: %@", e);
 		}
 	}
-	[myData release];
 }
 
 - (void) applyGeneralSettings {
@@ -333,7 +319,6 @@ static SensorStore* sharedSensorStoreInstance = nil;
 										   initWithTarget:self selector:@selector(uploadAndClearData) object:nil];
 		
 		[operationQueue addOperation:uploadOp];
-		[uploadOp release];
 	}
 	@catch (NSException * e) {
 		NSLog(@"Catched exception while scheduling upload. Exception: %@", e);

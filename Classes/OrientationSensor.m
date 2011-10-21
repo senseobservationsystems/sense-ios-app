@@ -18,13 +18,17 @@ NSString* attitudeRollKey = @"roll";
 NSString* attitudePitchKey = @"pitch";
 NSString* attitudeYawKey = @"azimuth";
 
-static const NSInteger G = 9.81;
+static const double G = 9.81;
 
 
 + (NSString*) name {return @"orientation";}
 + (NSString*) deviceType {return [self name];}
 //TODO: check for availability
-+ (BOOL) isAvailable {return YES;}
++ (BOOL) isAvailable {
+    CMMotionManager* motionManager = [[CMMotionManager alloc] init];
+	BOOL available = motionManager.deviceMotionAvailable;
+	return available;
+}
 
 + (NSDictionary*) sensorDescription {
 	//create description for data format. programmer: make SURE it matches the format used to send data
@@ -46,7 +50,7 @@ static const NSInteger G = 9.81;
 }
 
 - (id) init {
-	[super init];
+	self = [super init];
 	if (self) {
 	}
 	
@@ -63,6 +67,6 @@ static const NSInteger G = 9.81;
 
 - (void) dealloc {
 	self.isEnabled = NO;
-	[super dealloc];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 @end

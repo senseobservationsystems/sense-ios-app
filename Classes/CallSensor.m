@@ -45,7 +45,7 @@ static NSString* disconnected = @"idle";
 }
 
 - (id) init {
-	[super init];
+	self = [super init];
 	if (self) {
 		callCenter = [[CTCallCenter alloc] init];
 	}
@@ -77,13 +77,13 @@ static NSString* disconnected = @"idle";
 											callState, stateKey,
 											nil];
 			
-			NSNumber* timestamp = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
+			NSNumber* timestamp = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
 			
 			NSDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
 												[newItem JSONRepresentation], @"value",
 												timestamp,@"date",
 												nil];
-			[dataStore commitFormattedData:valueTimestampPair forSensorId:[self sensorId]];
+			[self.dataStore commitFormattedData:valueTimestampPair forSensorId:self.sensorId];
 			
 		};
 	} else {
@@ -95,9 +95,7 @@ static NSString* disconnected = @"idle";
 
 -(void) dealloc {
 	self.isEnabled = NO;
-	[callCenter release];
 	
-	[super dealloc];
 }
 
 

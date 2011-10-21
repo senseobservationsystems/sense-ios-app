@@ -44,7 +44,7 @@
 }
 
 - (id) init {
-	[super init];
+	self = [super init];
 	if (self) {
 		
 		//define audio category to allow mixing
@@ -74,15 +74,20 @@
 										nil];
 		 */
 		NSError* error;
-		audioRecorder = [[[AVAudioRecorder alloc] initWithURL:recording settings:nil error:&error] retain];
+		audioRecorder = [[AVAudioRecorder alloc] initWithURL:recording settings:nil error:&error];
 		if (nil == audioRecorder) {
 			NSLog(@"Recorder could not be initialised. Error: %@", error);
 		}
 		audioRecorder.delegate = self;
 		audioRecorder.meteringEnabled = YES;
 		
-		sampleInterval = 60;
-		sampleDuration = 2;
+        
+        //register for setting changes
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(settingChanged:)
+													 name:[Settings settingChangedNotificationNameForType:@"noise"] object:nil];
+        sampleInterval = [[[Settings sharedSettings] getSettingType:@"noise" setting:@"interval"] doubleValue];
+        sampleDuration = 2;
 		volumeSampleInterval = 0.2;
 	}
 	return self;
@@ -98,7 +103,7 @@
 	[[AVAudioSession sharedInstance] setActive:YES error:&error];
 	audioRecorder.delegate = self;
 	BOOL started = [audioRecorder recordForDuration:sampleDuration];
-	NSLog(@"recorder %@", started? @"started":@"failed to start");
+	//NSLog(@"recorder %@", started? @"started":@"failed to start");
 	if (NO == started) {
 		//try again later
 		[self scheduleRecording];
@@ -134,7 +139,7 @@
 		//cancel a scheduled recording
 		[volumeTimer invalidate];
 		self.volumeTimer = nil;
-		//[sampleTimer invalidate];
+		[sampleTimer invalidate];
 		self.sampleTimer = nil;
 	}
 }
@@ -143,20 +148,11 @@
 	[volumeTimer invalidate];
 	self.volumeTimer = nil;
 	if (didSucceed && nrVolumeSamples > 0)	{
-		NSLog(@"recorder finished succesfully");
 		//take timestamp
-		NSNumber* timestamp = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
+		NSNumber* timestamp = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
 
 		/*
-		NSData* linearSamples = [NSData dataWithContentsOfURL:recorder.url];
-		Byte* samples = (Byte*)[linearSamples bytes];
-		NSInteger sum=0;
-		NSInteger nrSamples = [linearSamples length];
-		for (int i = 0; i<nrSamples;i+=2) {
-			sum += (samples[i+1]<<8) | samples[i];
-		}
-		 */
-		/*
+		NSInteger nrSamples;
 		AVURLAsset *recording = [AVURLAsset URLAssetWithURL:recorder.url options:nil];
 		AVAssetReader* recordingReader = [AVAssetReader assetReaderWithAsset:recording error:nil];
 		AVAssetReaderOutput* output =
@@ -168,24 +164,26 @@
 		CMSampleBufferRef nextBuffer;
 		NSInteger sum=0;
 	
+        [recordingReader startReading];
 		while (NULL != (nextBuffer =[output copyNextSampleBuffer])) {
 			size_t remaining, totalLength;
 			char* data;
 			OSStatus status = CMBlockBufferGetDataPointer (CMSampleBufferGetDataBuffer(nextBuffer),
 												  0,
 												  &remaining,
-												  totalLength,
+												  &totalLength,
 												  &data);
-			length += remaining;
+			nrSamples += remaining;
 			while (remaining) {
 				--remaining;
-				sum += data[remaining];
+				sum += data[remaining] * data[remaining];
 			}
 		}
-		 */
+         NSLog(@"noise level: %g", 20 * log10(sqrt(sum * 1.0 / nrSamples)));
+        */
+		 
 
 		NSNumber* level = [NSNumber numberWithFloat:20 * log10(volumeSum / nrVolumeSamples)];
-		NSLog(@"level: %@", level);
  
 		//TODO: save file...
 		[recorder deleteRecording];
@@ -219,13 +217,27 @@
 	}
 }
 
+
+- (void) settingChanged: (NSNotification*) notification {
+	@try {
+		Setting* setting = notification.object;
+		NSLog(@"noise: setting %@ changed to %@.", setting.name, setting.value);
+		if ([setting.name isEqualToString:@"interval"]) {
+			sampleInterval = [setting.value doubleValue];
+		}
+	}
+	@catch (NSException * e) {
+		NSLog(@"spatial provider: Exception thrown while changing setting: %@", e);
+	}
+	
+}
+
 - (void) dealloc {
 	NSLog(@"DEALLOCating noise sensor");
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	self.isEnabled = NO;
-	[audioRecorder release];
+    [audioRecorder stop];
 	
-	[super dealloc];
 }
 
 @end

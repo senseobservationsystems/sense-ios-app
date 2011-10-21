@@ -60,9 +60,6 @@
 }
 
 
-- (void)dealloc {
-    [super dealloc];
-}
 
 - (BOOL)textFieldShouldReturn:(UITextField *)theTextField {
     [theTextField resignFirstResponder];
@@ -84,13 +81,11 @@
 	BOOL succes = [[SensorStore sharedSensorStore].sender registerUser:username.text withPassword:password.text error:&error];
 	[activityIndicator stopAnimating];
 	[activityIndicator removeFromSuperview];
-	[activityIndicator release];
 	
 	//Alert on failure
 	if (!succes) {
 		UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Failed to register" message:error delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil];
 		[alert show];
-		[alert release];
 	} else {
 		//and login
 		[self loginAccount];
@@ -109,14 +104,12 @@
 	BOOL succes = [[SensorStore sharedSensorStore].sender login];
 	[activityIndicator stopAnimating];
 	[activityIndicator removeFromSuperview];
-	[activityIndicator release];
 	
 	
 	//Alert on failure
 	if (!succes) {
 		UIAlertView* alert = [[UIAlertView alloc] initWithTitle:nil message:@"Couldn't login" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
 		[alert show];
-		[alert release];
 	} else {
 		//save settings
 		[[Settings sharedSettings] setLogin:username.text withPassword:password.text];

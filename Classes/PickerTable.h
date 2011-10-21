@@ -18,6 +18,6 @@ typedef void (^PickerCallback)();
 
 @property (copy) NSArray* options;
 @property (assign) int picked;
-@property (assign) PickerCallback callback;
+@property (retain) PickerCallback callback;
 
 @end

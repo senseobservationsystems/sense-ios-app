@@ -23,6 +23,8 @@
 	@private NSInteger nrVolumeSamples;
 }
 
-@property (assign) NSTimer* sampleTimer;
-@property (assign) NSTimer* volumeTimer;
+- (void) settingChanged: (NSNotification*) notification;
+
+@property (retain) NSTimer* sampleTimer;
+@property (retain) NSTimer* volumeTimer;
 @end

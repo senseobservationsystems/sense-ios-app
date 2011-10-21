@@ -12,6 +12,7 @@
 #import "Sender.h"
 #import "DataStore.h"
 #import "SpatialProvider.h"
+#import "SampleStrategy.h"
 
 
 @interface SensorStore : NSObject <DataStore> {
@@ -26,6 +27,7 @@
 	NSOperationQueue* operationQueue;
 	
 	NSTimer* uploadTimer;
+    SampleStrategy* sampleStrategy;
 	
 	//Sensor classes, this variable is used to instantiate sensors
 	NSArray* allSensorClasses;
@@ -36,7 +38,7 @@
 }
 
 @property (readonly) Sender* sender;
-@property (readonly, assign) NSArray* allAvailableSensorClasses;
+@property (readonly, retain) NSArray* allAvailableSensorClasses;
 
 + (SensorStore*) sharedSensorStore;
 + (NSDictionary*) device;

@@ -37,7 +37,7 @@ static NSString* levelKey = @"level";
 }
 
 - (id) init {
-	[super init];
+	self = [super init];
 	if (self) {
 		//register for battery notifications, notifications will be received at the current thread
 		[[NSNotificationCenter defaultCenter] addObserver:self
@@ -78,7 +78,7 @@ static NSString* levelKey = @"level";
 									batteryState, stateKey,
 									nil];
 	
-	NSNumber* timestamp = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
+	NSNumber* timestamp = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
 	
 	NSDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
 										[newItem JSONRepresentation], @"value",
@@ -102,7 +102,6 @@ static NSString* levelKey = @"level";
 	self.isEnabled = NO;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
-	[super dealloc];
 }
 
 @end

@@ -37,7 +37,7 @@ static NSString* valueKey = @"value";
 }
 
 - (id) init {
-	[super init];
+	self = [super init];
 	if (self) {
 		//register for preferences notifications
 		[[NSNotificationCenter defaultCenter] addObserver:self
@@ -50,12 +50,17 @@ static NSString* valueKey = @"value";
 - (void) commitPreference:(NSNotification*) notification {
 	Setting* setting = notification.object;
 	
+    /*
 	NSMutableDictionary* newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 									setting.name, variableKey,
 									setting.value, valueKey,
 									nil];
+     */
+    NSMutableDictionary* newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+									setting.value, setting.name,
+									nil];
 	
-	NSNumber* timestamp = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
+	NSNumber* timestamp = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
 	
 	NSDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
 										[newItem JSONRepresentation], @"value",
@@ -79,7 +84,6 @@ static NSString* valueKey = @"value";
 	self.isEnabled = NO;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
-	[super dealloc];
 }
 
 @end

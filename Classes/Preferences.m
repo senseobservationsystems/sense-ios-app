@@ -14,6 +14,7 @@
 enum Sections {
 	generalSection=0,
 	sensorSection,
+    adaptiveSection,
 	NR_SECTIONS
 };
 
@@ -25,7 +26,15 @@ enum GeneralSectionRow{
 enum SensorSectionRow{ 
 	sensorSectionPositionAccuracy = 0,
 	sensorSectionMotionPollInterval,
+    sensorSectionNoisePollInterval,
 	NR_SENSORSECTION_ROWS
+};
+
+enum AdaptiveSectionRow {
+    adaptiveSectionEnableAdaptive = 0,
+    adaptiveSectionLocationMotion,
+    adaptiveSectionChargeCycle,
+  	NR_ADAPTIVESECTION_ROWS
 };
 
 #pragma mark -
@@ -35,6 +44,25 @@ enum SensorSectionRow{
 - (void)viewDidLoad {
     [super viewDidLoad];
 	self.title = @"Preferences";
+    
+    //initialise switches
+	adaptiveSwitch = [[UISwitch alloc]init];
+	[adaptiveSwitch setOn:[[[Settings sharedSettings] getSettingType:@"adaptive" setting:@"energyAdaptive"] boolValue]];
+	[adaptiveSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
+    
+    locationMotionSwitch = [[UISwitch alloc]init];
+	[locationMotionSwitch setOn:[[[Settings sharedSettings] getSettingType:@"adaptive" setting:@"locationAdaptive"] boolValue]];
+	[locationMotionSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
+    
+    //charge cycle slider
+    chargeCycleSlider = [[UISlider alloc] init];
+    chargeCycleSlider.minimumValue = 1;
+    chargeCycleSlider.maximumValue = 48;
+    chargeCycleSlider.continuous = NO;
+    //[chargeCycleSlider setShowValue:YES];
+    [chargeCycleSlider setValue: [[[Settings sharedSettings] getSettingType:@"adaptive" setting:@"chargeCycle"] floatValue] / 3600
+     ];
+    [chargeCycleSlider addTarget:self action:@selector(sliderChanged:) forControlEvents:UIControlEventValueChanged];
 }
 
 
@@ -85,6 +113,8 @@ enum SensorSectionRow{
 			return NR_GENERALSECTION_ROWS;
 		case sensorSection:
 			return NR_SENSORSECTION_ROWS;
+        case adaptiveSection:
+            return NR_ADAPTIVESECTION_ROWS;
 		default:
 			return 0; //ai
 	}
@@ -96,6 +126,8 @@ enum SensorSectionRow{
 			return @"General";
 		case sensorSection:
 			return @"Sensors";
+        case adaptiveSection:
+			return @"Adaptive (experimental)";
 		default:
 			return @"Unknown settings";
 	}
@@ -109,7 +141,7 @@ enum SensorSectionRow{
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
 	cell.detailTextLabel.text = @"";
 	cell.accessoryView = nil;
@@ -132,8 +164,29 @@ enum SensorSectionRow{
 			case sensorSectionMotionPollInterval:
 				cell.textLabel.text = @"Motion update interval";
 				break;
+            case sensorSectionNoisePollInterval:
+				cell.textLabel.text = @"Noise update interval";
+				break;
 		}
-	}
+	} else if (indexPath.section == adaptiveSection) {
+		switch (indexPath.row) {
+			case adaptiveSectionEnableAdaptive: {
+				cell.textLabel.text = @"Adapt to energy";
+                cell.accessoryView = adaptiveSwitch;
+				break;
+			}
+            case adaptiveSectionLocationMotion: {
+				cell.textLabel.text = @"Location adapt to motion";
+                cell.accessoryView = locationMotionSwitch;
+				break;
+			}
+            case adaptiveSectionChargeCycle: {
+                cell.textLabel.text = @"Charge cycle";
+                cell.accessoryView = chargeCycleSlider;
+				break;
+            }
+        }
+    }
     
     return cell;
 }
@@ -220,11 +273,9 @@ enum SensorSectionRow{
 						interval = 300;
 					}
 
-					[[Settings sharedSettings] commitSettingType:@"general" setting:generalSettingSynchronisationRateKey value:[NSString stringWithFormat:@"%d",interval]];
+					[[Settings sharedSettings] commitSettingType:@"general" setting:generalSettingSynchronisationRateKey value:[NSString stringWithFormat:@"%d",interval] persistent:YES];
 				};
 				[self.navigationController pushViewController:picker animated:YES];
-				[picker release];
-				[options release];
 
 			} break;
 		}
@@ -267,22 +318,56 @@ enum SensorSectionRow{
 						accuracy = 100;
 					}
 					
-					[[Settings sharedSettings] commitSettingType:@"position" setting:@"accuracy" value:[NSString stringWithFormat:@"%d",accuracy]];
+					[[Settings sharedSettings] commitSettingType:@"position" setting:@"accuracy" value:[NSString stringWithFormat:@"%d",accuracy] persistent:YES];
 				};
 				[self.navigationController pushViewController:picker animated:YES];
-				[picker release];
-				[options release];
 			} break;
 			case sensorSectionMotionPollInterval: {
-				int prePicked = -1;
+				NSInteger prePicked = -1;
 				//get current option
 				NSString* currentOption = [[Settings sharedSettings] getSettingType:@"spatial" setting:@"pollInterval"];
+				NSTimeInterval optionValue = currentOption == nil ? -1 : [currentOption doubleValue];
+                double epsilon = 0.001;
+				if (fabsf(optionValue - 1) < epsilon) {
+                    prePicked = 0;
+                } else if (fabsf(optionValue - 15) < epsilon) {
+                    prePicked = 1;
+                } else if (fabsf(optionValue - 60) < epsilon) {
+                    prePicked = 2;
+                } else if (fabsf(optionValue - 300) < epsilon) {
+                    prePicked = 3;
+                } else {
+                    prePicked = 2;
+                }
+				
+				NSArray* options = [[NSArray alloc] initWithObjects:@"every second", @"every 15 seconds", @"every minute ", @"every 5 minutes", nil];
+				PickerTable* picker = [[PickerTable alloc] initWithStyle:UITableViewStyleGrouped name:@"Motion update" options: options prePicked: prePicked];
+				picker.callback = ^void (int picked) {
+					NSTimeInterval interval;
+					if (picked == 0) interval = 1;
+					else if (picked == 1) interval = 15;
+					else if (picked == 2) interval = 60;
+					else if (picked == 3) interval = 300;
+					else {
+						NSLog(@"Error unknown option picked for spatial update frequency.");
+						interval = 15;
+					}
+					
+					[[Settings sharedSettings] commitSettingType:@"spatial" setting:@"pollInterval" value:[NSString stringWithFormat:@"%g",interval] persistent:YES];
+				};
+				[self.navigationController pushViewController:picker animated:YES];
+				
+		} break;
+            case sensorSectionNoisePollInterval: {
+				int prePicked = -1;
+				//get current option
+				NSString* currentOption = [[Settings sharedSettings] getSettingType:@"noise" setting:@"interval"];
 				int optionValue = currentOption == nil ? -1 : [currentOption intValue];
 				switch (optionValue) {
-					case 1:
+					case 5:
 						prePicked = 0;
 						break;
-					case 10:
+					case 30:
 						prePicked = 1;
 						break;
 					case 60:
@@ -293,31 +378,44 @@ enum SensorSectionRow{
 						break;
 				}
 				
-				NSArray* options = [[NSArray alloc] initWithObjects:@"every second", @"every 10 seconds", @"every minute (recommended)", @"every 5 minutes", nil];
-				PickerTable* picker = [[PickerTable alloc] initWithStyle:UITableViewStyleGrouped name:@"Motion update" options: options prePicked: prePicked];
+				NSArray* options = [[NSArray alloc] initWithObjects:@"every 5 seconds", @"every 30 seconds", @"every minute", @"every 5 minutes", nil];
+				PickerTable* picker = [[PickerTable alloc] initWithStyle:UITableViewStyleGrouped name:@"noise update" options: options prePicked: prePicked];
 				picker.callback = ^void (int picked) {
 					int interval;
-					if (picked == 0) interval = 1;
-					else if (picked == 1) interval = 10;
+					if (picked == 0) interval = 5;
+					else if (picked == 1) interval = 30;
 					else if (picked == 2) interval = 60;
 					else if (picked == 3) interval = 300;
 					else {
-						NSLog(@"Error unknown option picked for spatial update frequency.");
+						NSLog(@"Error unknown option picked for noise sample interval.");
 						interval = 60;
 					}
 					
-					[[Settings sharedSettings] commitSettingType:@"spatial" setting:@"pollInterval" value:[NSString stringWithFormat:@"%d",interval]];
+					[[Settings sharedSettings] commitSettingType:@"noise" setting:@"interval" value:[NSString stringWithFormat:@"%d", interval] persistent:YES];
 				};
 				[self.navigationController pushViewController:picker animated:YES];
-				[picker release];
-				[options release];
-				
-		} break;
-		
-
+			} break;		
 		}
-	}
-	
+	} 
+}
+
+- (void) switchChanged:(UISwitch*) switchButton {
+    NSString* on = switchButton.on ? @"1" : @"0";
+	if (switchButton == adaptiveSwitch) {
+        [[Settings sharedSettings] commitSettingType:@"adaptive" setting:@"energyAdaptive" value:on persistent:YES];
+        
+    } else if (switchButton == locationMotionSwitch) {
+        [[Settings sharedSettings] commitSettingType:@"adaptive" setting:@"locationAdaptive" value:on persistent:YES];
+        
+    }
+}
+
+- (void) sliderChanged:(UISlider*) slider {
+    NSString* value = [NSString stringWithFormat:@"%f", round(slider.value) * 3600];
+    if (slider == chargeCycleSlider) {
+        [chargeCycleSlider setValue:round(slider.value)];
+        [[Settings sharedSettings] commitSettingType:@"adaptive" setting:@"chargeCycle" value:value persistent:YES];
+    }
 }
 
 #pragma mark -
@@ -336,8 +434,5 @@ enum SensorSectionRow{
 }
 
 
-- (void)dealloc {
-    [super dealloc];
-}
 
 @end

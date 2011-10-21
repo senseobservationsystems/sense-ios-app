@@ -15,8 +15,8 @@
 
 }
 
-@property (nonatomic, retain) IBOutlet UITextField* username;
-@property (nonatomic, retain) IBOutlet UITextField* password;
+@property (nonatomic, strong) IBOutlet UITextField* username;
+@property (nonatomic, strong) IBOutlet UITextField* password;
 
 - (IBAction) registerAccount;
 - (IBAction) loginAccount;

@@ -15,6 +15,9 @@
 
 //sensors
 #import "BatterySensor.h"
+#import "CallSensor.h"
+#import "ConnectionSensor.h"
+
 
 
 @implementation SettingsViewController
@@ -43,12 +46,12 @@ enum GeneralSectionRow{
     [super viewDidLoad];
 	firstTimeCommonSense = YES;
 	//load properties
-	generalSettings = [[Settings sharedSettings].general retain];
-	locationSettings = [[Settings sharedSettings].location retain];
+	generalSettings = [Settings sharedSettings].general;
+	locationSettings = [Settings sharedSettings].location;
 	
 	//setup navigation bar
 	self.navigationItem.title = @"Sense";
-	webViewButton= [[[UIBarButtonItem alloc] initWithTitle:@"CommonSense" style:UIBarButtonItemStylePlain target:self action:@selector(gotoWebView)] retain];
+	webViewButton= [[UIBarButtonItem alloc] initWithTitle:@"CommonSense" style:UIBarButtonItemStylePlain target:self action:@selector(gotoWebView)];
 	self.navigationItem.rightBarButtonItem = webViewButton;
 	//self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Help" style:UIBarButtonItemStylePlain target:self action:@selector(displayWelcomeMessage)];
 	
@@ -56,17 +59,33 @@ enum GeneralSectionRow{
 	NSArray* sensors = [SensorStore sharedSensorStore].allAvailableSensorClasses;
 	//filter out motion sensors
 	//NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"NOT (name == '')"];
+<<<<<<< HEAD
 	NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"NOT (name == 'orientation' OR name == 'accelerometer' OR name == 'acceleration' OR name == 'gyroscope')"];
+=======
+	NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"NOT (name == 'orientation' OR name == 'accelerometer' OR name == 'acceleration' OR name == 'gyroscope'\
+                                       OR name == 'battery' OR name == 'call state' OR name == 'connection type')"];
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 
-	self.sensorClasses = [[sensors filteredArrayUsingPredicate:availablePredicate] retain];
-	//create single button for motion sensors
-	motionSwitch = [[[UISwitch alloc]init] retain];
+	self.sensorClasses = [sensors filteredArrayUsingPredicate:availablePredicate];
+	//create single switch for motion sensors
+	motionSwitch = [[UISwitch alloc]init];
 	[motionSwitch setOn:[[Settings sharedSettings] isSensorEnabled:[AccelerometerSensor class]]];
 	[motionSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
+<<<<<<< HEAD
 	[self foregroundEnabled: motionSwitch.on];
+=======
+    if (false == [self supportsBackground]) {
+        [self foregroundEnabled: motionSwitch.on];
+    }
+    
+    //create single switch for phone state
+    phoneStateSwitch = [[UISwitch alloc]init];
+	[phoneStateSwitch setOn:[[Settings sharedSettings] isSensorEnabled:[BatterySensor class]]];
+	[phoneStateSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 
 	//setup switches
-	senseSwitch = [[[UISwitch alloc]init] retain];
+	senseSwitch = [[UISwitch alloc]init];
 	[senseSwitch setOn:[[generalSettings valueForKey:generalSettingSenseEnabledKey] boolValue]];
 	[senseSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
 	
@@ -76,12 +95,11 @@ enum GeneralSectionRow{
 		[enableSwitch setOn:[[Settings sharedSettings] isSensorEnabled:sensorClass]];
 		[enableSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
 		[sensorEnableSwitches addObject:enableSwitch];
-		[enableSwitch release];
 	}
 	NSString* displayed = [[Settings sharedSettings] getSettingType: @"messages" setting:@"welcomeMessageDisplayed"];
 	if (![displayed isEqual:@"true"]) {
 		[self displayWelcomeMessage];
-		[[Settings sharedSettings] commitSettingType: @"messages" setting:@"welcomeMessageDisplayed" value:@"true"];
+		[[Settings sharedSettings] commitSettingType: @"messages" setting:@"welcomeMessageDisplayed" value:@"true" persistent:YES];
 	}
 	
 	//show login immediately if we can't login
@@ -89,7 +107,6 @@ enum GeneralSectionRow{
 			//create LoginSettings
 			LoginSettings* login = [[LoginSettings alloc] initWithNibName:@"LoginSettings" bundle:[NSBundle mainBundle]];
 			[self.navigationController pushViewController:login animated:YES];
-			[login release];
 	}	
 }
 
@@ -140,7 +157,7 @@ enum GeneralSectionRow{
 		case generalSection:
 			return NR_GENERALSECTION_ROWS;
 		case enableSection:
-			return [sensorClasses count] + 1; //switches + motionSwitch
+			return [sensorClasses count] + 2; //switches + motionSwitch + phoneStateSwitch
 		default:
 			return 0; //ai
 	}
@@ -165,7 +182,7 @@ enum GeneralSectionRow{
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
 	cell.detailTextLabel.text = @"";
 	cell.accessoryView = nil;
@@ -199,18 +216,24 @@ enum GeneralSectionRow{
 			}
 		}
 	} else if (indexPath.section == enableSection) {
-		if (indexPath.row == [sensorClasses count]) {
+        if (indexPath.row == 0) {
+			cell.textLabel.text = @"Phone state";
+			cell.accessoryView = phoneStateSwitch;
+        } else if (indexPath.row == 1) {
 			cell.textLabel.text = @"Motion";
-			cell.detailTextLabel.text = @"works only in foreground";
+            if (false == [self supportsBackground]) {
+                cell.detailTextLabel.text = @"works only in foreground";
+            }
 			cell.accessoryView = motionSwitch;
-		} else{
-		Class sensorClass = [sensorClasses objectAtIndex:indexPath.row];
-		cell.textLabel.text = [sensorClass displayName];
-		if (sensorClass == [LocationSensor class])
-			cell.detailTextLabel.text = @"Required for background mode";
-		else
+		} else {
+            NSInteger idx = indexPath.row - 2;
+            Class sensorClass = [sensorClasses objectAtIndex:idx];
+            cell.textLabel.text = [sensorClass displayName];
+            if (sensorClass == [LocationSensor class])
+                cell.detailTextLabel.text = @"Required for background mode";
+            else
 				cell.detailTextLabel.text = nil;//[sensorClass guiDescription];
-		cell.accessoryView = [sensorEnableSwitches objectAtIndex:indexPath.row];
+            cell.accessoryView = [sensorEnableSwitches objectAtIndex:idx];
 		}
 	}
     
@@ -265,6 +288,7 @@ enum GeneralSectionRow{
 		[[Settings sharedSettings] setSensor:[AccelerationSensor class] enabled:switchButton.on];
 		[[Settings sharedSettings] setSensor:[RotationSensor class] enabled:switchButton.on];
 		[[Settings sharedSettings] setSensor:[OrientationSensor class] enabled:switchButton.on];
+<<<<<<< HEAD
 		
 		[self foregroundEnabled: motionSwitch.on]; 
 		if (switchButton.on) {
@@ -274,6 +298,21 @@ enum GeneralSectionRow{
 		}
 		
 	} else {
+=======
+		if (false == [self supportsBackground]) {
+            [self foregroundEnabled: motionSwitch.on]; 
+            if (switchButton.on) {
+                UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Foreground" message:@"Motion sensors only work when this app is running in the foreground. Autolocking is disabled and the display will be    disabled when you put the device in your pocket." delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
+                [alert show];
+            }
+        }
+	} else if (phoneStateSwitch == switchButton) {
+		[[Settings sharedSettings] setSensor:[BatterySensor class] enabled:switchButton.on];
+		[[Settings sharedSettings] setSensor:[CallSensor class] enabled:switchButton.on];
+		[[Settings sharedSettings] setSensor:[ConnectionSensor class] enabled:switchButton.on];
+    }
+    else {
+>>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 		NSInteger sensorClassIdx = [sensorEnableSwitches indexOfObject:switchButton];
 		if (sensorClassIdx == NSNotFound) {
 			NSLog(@"Internal error in gui switch logic");
@@ -283,6 +322,11 @@ enum GeneralSectionRow{
 		[[Settings sharedSettings] setSensor:sensorClass enabled:switchButton.on];
 	}
 	//[self edited];
+}
+
+- (BOOL) supportsBackground {
+    //it seems that as of ios5.0 motion sensor work in the background
+    return [[UIDevice currentDevice].systemVersion floatValue] >= 5;
 }
 
 - (void) foregroundEnabled:(BOOL) enable {
@@ -304,14 +348,12 @@ enum GeneralSectionRow{
 				//create LoginSettings
 				LoginSettings* login = [[LoginSettings alloc] initWithNibName:@"LoginSettings" bundle:[NSBundle mainBundle]];
 				[self.navigationController pushViewController:login animated:YES];
-				[login release];
 				[self edited];
 				break;
 			}
 			case generalSectionPreferences: {
 				Preferences* prefs = [[Preferences alloc] init];
 				[self.navigationController pushViewController:prefs animated:YES];
-				[prefs release];
 				break;
 			}
 		}
@@ -335,18 +377,10 @@ enum GeneralSectionRow{
 }
 
 
-- (void)dealloc {
-	[generalSettings release];
-	[locationSettings release];
-	[webViewButton release];
-    [super dealloc];
-}
 
 - (void) edited {
-	[generalSettings release];
-	[locationSettings release];
-	generalSettings = [[Settings sharedSettings].general retain];
-	locationSettings = [[Settings sharedSettings].location retain];
+	generalSettings = [Settings sharedSettings].general;
+	locationSettings = [Settings sharedSettings].location;
 	[self.tableView reloadData];
 }
 
@@ -360,7 +394,6 @@ enum GeneralSectionRow{
 	if (firstTimeCommonSense) {
 		UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"CommonSense" message:@"At CommonSense you can manage, view and share your data. You can learn CommonSense to recognise your state (e.g. your pose). Although accessible through your phone it is recommended to use a pc to access CommonSense." delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
 		[alert show];
-		[alert release];
 		firstTimeCommonSense = NO;
 	}
 		
@@ -369,7 +402,6 @@ enum GeneralSectionRow{
 - (void) displayWelcomeMessage {
 	UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Welcome" message:@"This app gathers data about your activities and shares it with the CommonSense data storage.\n\nOver time, it will learn to recognize your behaviour and current status. This makes it possible for your phone to help you avoid repetitive or stupid tasks, and alert you about interesting events.\n\nPlease login, or register a free CommonSense account. Manage, view and share your data at CommonSense\'s web interface: http://common.sense-os.nl." delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
 	[alert show];
-	[alert release];
 	
 }
 

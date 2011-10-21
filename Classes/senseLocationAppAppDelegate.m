@@ -21,7 +21,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
 	//We need the sensorstore to be up and running, so make sure it is created.
-	sensorStore = [[SensorStore sharedSensorStore] retain];
+	sensorStore = [SensorStore sharedSensorStore];
 
 	[window addSubview:[navigationController view]];
    
@@ -86,10 +86,6 @@
 }
 
 
-- (void)dealloc {
-    [window release];
-    [super dealloc];
-}
 
 
 @end
