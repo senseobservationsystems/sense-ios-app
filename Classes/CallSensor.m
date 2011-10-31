@@ -83,7 +83,7 @@ static NSString* disconnected = @"idle";
 												[newItem JSONRepresentation], @"value",
 												timestamp,@"date",
 												nil];
-			[self.dataStore commitFormattedData:valueTimestampPair forSensorId:self.sensorId];
+			[dataStore commitFormattedData:valueTimestampPair forSensorId:sensorId];
 			
 		};
 	} else {

@@ -39,10 +39,7 @@
 	<string>MainWindow-iPad</string>
 	<key>UIBackgroundModes</key>
 	<array>
-<<<<<<< HEAD
-=======
 		<string>voip</string>
->>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 		<string>location</string>
 		<string>audio</string>
 	</array>

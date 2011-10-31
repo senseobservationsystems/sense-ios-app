@@ -94,11 +94,7 @@ static const double G = 9.81;
 												[newItem JSONRepresentation], @"value",
 												timestamp, @"date",
 												nil];
-<<<<<<< HEAD
-;
-=======
 
->>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 			[accelerometerSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:accelerometerSensor.sensorId];
 		};
 		[motionManager startAccelerometerUpdatesToQueue:operations withHandler:accelerometerHandler];
@@ -149,15 +145,7 @@ static const double G = 9.81;
 	orientationEnabled = enable && (orientationSensor != nil);
 	[self setOrientationEnabled:enable];
 	
-<<<<<<< HEAD
-	if (compassEnabled == false) {
-		[self setCompassEnabled:enable];
-	}
-
-	if (enable) { //disable accelerometer/gyro as orientation will report this now
-=======
 	if (orientationEnabled) { //disable accelerometer/gyro as orientation will report this now
->>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 		[self setAccelerometerEnabled:false];
 		[self setRotationEnabled:false];
 	} else { //enable acceleration/gyro, this was provided by orientation

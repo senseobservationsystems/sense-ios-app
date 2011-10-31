@@ -18,7 +18,7 @@
 
 @property (assign) BOOL isEnabled;
 @property (assign) NSInteger sensorId;
-@property (strong) id dataStore;
+@property (retain) id dataStore;
 
 
 //TODO: use selector for comparison

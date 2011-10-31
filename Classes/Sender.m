@@ -238,11 +238,16 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 		NSLog(@"Responded: %@", responded);
 		return nil;
 	}
-	//interpret JSON
-	NSString* jsonString = [[NSString alloc] initWithData:contents encoding:NSUTF8StringEncoding];
-    //NSLog(@"contents: %@", jsonString);
-	NSDictionary* jsonResponse = [jsonString JSONValue];
-	return jsonResponse;
+
+    if (contents) {
+        //interpret JSON
+        NSString* jsonString = [[NSString alloc] initWithData:contents encoding:NSUTF8StringEncoding];
+        //NSLog(@"contents: %@", jsonString);
+        NSDictionary* jsonResponse = [jsonString JSONValue];
+        return jsonResponse;
+    } else {
+        return nil;
+    }
 }
 
 - (NSHTTPURLResponse*) doRequestTo:(NSURL *)url method:(NSString*)method input:(NSString*)input output:(NSData**)output cookie:(NSString*) cookie

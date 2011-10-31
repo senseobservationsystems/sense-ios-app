@@ -59,21 +59,14 @@ enum GeneralSectionRow{
 	NSArray* sensors = [SensorStore sharedSensorStore].allAvailableSensorClasses;
 	//filter out motion sensors
 	//NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"NOT (name == '')"];
-<<<<<<< HEAD
-	NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"NOT (name == 'orientation' OR name == 'accelerometer' OR name == 'acceleration' OR name == 'gyroscope')"];
-=======
 	NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"NOT (name == 'orientation' OR name == 'accelerometer' OR name == 'acceleration' OR name == 'gyroscope'\
                                        OR name == 'battery' OR name == 'call state' OR name == 'connection type')"];
->>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 
 	self.sensorClasses = [sensors filteredArrayUsingPredicate:availablePredicate];
 	//create single switch for motion sensors
 	motionSwitch = [[UISwitch alloc]init];
 	[motionSwitch setOn:[[Settings sharedSettings] isSensorEnabled:[AccelerometerSensor class]]];
 	[motionSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
-<<<<<<< HEAD
-	[self foregroundEnabled: motionSwitch.on];
-=======
     if (false == [self supportsBackground]) {
         [self foregroundEnabled: motionSwitch.on];
     }
@@ -82,7 +75,6 @@ enum GeneralSectionRow{
     phoneStateSwitch = [[UISwitch alloc]init];
 	[phoneStateSwitch setOn:[[Settings sharedSettings] isSensorEnabled:[BatterySensor class]]];
 	[phoneStateSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
->>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 
 	//setup switches
 	senseSwitch = [[UISwitch alloc]init];
@@ -288,17 +280,6 @@ enum GeneralSectionRow{
 		[[Settings sharedSettings] setSensor:[AccelerationSensor class] enabled:switchButton.on];
 		[[Settings sharedSettings] setSensor:[RotationSensor class] enabled:switchButton.on];
 		[[Settings sharedSettings] setSensor:[OrientationSensor class] enabled:switchButton.on];
-<<<<<<< HEAD
-		
-		[self foregroundEnabled: motionSwitch.on]; 
-		if (switchButton.on) {
-			UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Foreground" message:@"Motion sensors only work when this app is running in the foreground. Autolocking is disabled and the display will be disabled when you put the device in your pocket." delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
-			[alert show];
-			[alert release];
-		}
-		
-	} else {
-=======
 		if (false == [self supportsBackground]) {
             [self foregroundEnabled: motionSwitch.on]; 
             if (switchButton.on) {
@@ -312,7 +293,6 @@ enum GeneralSectionRow{
 		[[Settings sharedSettings] setSensor:[ConnectionSensor class] enabled:switchButton.on];
     }
     else {
->>>>>>> 78113cbfd815dc4a11444c2535077b87bbfbd9e6
 		NSInteger sensorClassIdx = [sensorEnableSwitches indexOfObject:switchButton];
 		if (sensorClassIdx == NSNotFound) {
 			NSLog(@"Internal error in gui switch logic");
