@@ -200,8 +200,7 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 
 - (BOOL) uploadData:(NSArray*) data forSensorId:(NSInteger)sensorId {	
 	NSDictionary* sensorData = [NSDictionary dictionaryWithObjectsAndKeys:
-							  data, @"data",
-							  nil];
+							  data, @"data", nil];
     
 	//NSLog(@"%d uploading: %@", sensorId, sensorData);
     ///

@@ -27,6 +27,8 @@
 #warning Compiling with IGNORE_DATA, so no data will be committed to commonSense
 #endif
 
+#define MAX_POINTS_TO_UPLOAD_AT_ONCE 500
+
 
 @implementation SensorStore
 @synthesize sender;
@@ -261,19 +263,33 @@ static SensorStore* sharedSensorStoreInstance = nil;
 		@try {
 			NSMutableArray* data= [myData valueForKey:sensorId];
 			if (data == nil) continue;
-			NSLog(@"Uploading data for sensor %@", sensorId);
-			if (NO == [sender uploadData:data forSensorId: [sensorId integerValue]]) {
-				NSLog(@"Upload failed");
-				//reinsert data into sensorData
-				@synchronized(self) {
-					NSMutableArray* entry = [sensorData valueForKey:sensorId];
-					if (entry == nil) {
-						[sensorData setValue:data forKey:sensorId];
-					}
-					else {
-						[entry addObjectsFromArray:data];
-					}
-				}
+			NSLog(@"Uploading data for sensor %@. %u points.", sensorId, data.count);
+            //split the data, as the server doesn't like very big requests.
+            int i=0;
+            while (i < data.count) {
+                //take subset
+                int points = MIN(data.count-i, MAX_POINTS_TO_UPLOAD_AT_ONCE);
+                NSRange range = NSMakeRange(i, points);
+                NSArray* dataPart = [data subarrayWithRange:range];
+                
+                BOOL succeed = [sender uploadData:dataPart forSensorId: [sensorId integerValue]];
+
+                if (succeed == NO ) {
+                    NSLog(@"Upload failed");
+                    //reinsert data into sensorData
+                    @synchronized(self) {
+                        //only insert data from i, as the data before this was sent succesfully
+                        NSArray* unsent = [data subarrayWithRange:NSMakeRange(i, data.count - i)];
+                        NSMutableArray* entry = [sensorData valueForKey:sensorId];
+                        if (entry == nil) {
+                            [sensorData setValue:unsent forKey:sensorId];
+                        }
+                        else {
+                            [entry addObjectsFromArray:unsent];
+                        }
+                    }
+                }
+                i += points;
 			}
 		} @catch (NSException* e) {
 			NSLog(@"SenseStore: Exception while uploading data: %@", e);
