@@ -102,7 +102,7 @@ enum AdaptiveSectionRow {
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
-    return NR_SECTIONS;
+    return NR_SECTIONS -1; //minus adaptive
 }
 
 
