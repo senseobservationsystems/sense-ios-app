@@ -21,6 +21,7 @@
 	NSMutableDictionary* sensorData;
 	BOOL serviceEnabled;
 	NSTimeInterval syncRate;
+    NSTimeInterval waitTime;
 	NSDate* lastUpload;
 	NSTimeInterval pollRate;
 	NSDate* lastPoll;

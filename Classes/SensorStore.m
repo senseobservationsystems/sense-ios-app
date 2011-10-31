@@ -252,6 +252,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 }
 
 - (void) uploadData {
+    BOOL succeed = YES;
 	NSMutableDictionary* myData;
 	//take over sensorData
 	@synchronized(self){
@@ -263,7 +264,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 		@try {
 			NSMutableArray* data= [myData valueForKey:sensorId];
 			if (data == nil) continue;
-			NSLog(@"Uploading data for sensor %@. %u points.", sensorId, data.count);
+			NSLog(@"Uploading data for sensor %@. %u point(s).", sensorId, data.count);
             //split the data, as the server doesn't like very big requests.
             int i=0;
             while (i < data.count) {
@@ -272,14 +273,14 @@ static SensorStore* sharedSensorStoreInstance = nil;
                 NSRange range = NSMakeRange(i, points);
                 NSArray* dataPart = [data subarrayWithRange:range];
                 
-                BOOL succeed = [sender uploadData:dataPart forSensorId: [sensorId integerValue]];
+                succeed = [sender uploadData:dataPart forSensorId: [sensorId integerValue]];
 
                 if (succeed == NO ) {
                     NSLog(@"Upload failed");
                     //reinsert data into sensorData
-                    @synchronized(self) {
-                        //only insert data from i, as the data before this was sent succesfully
-                        NSArray* unsent = [data subarrayWithRange:NSMakeRange(i, data.count - i)];
+                    //only insert data from i, as the data before this was sent succesfully
+                    NSMutableArray* unsent = [[data subarrayWithRange:NSMakeRange(i, data.count - i)] mutableCopy];
+                        @synchronized(self) {
                         NSMutableArray* entry = [sensorData valueForKey:sensorId];
                         if (entry == nil) {
                             [sensorData setValue:unsent forKey:sensorId];
@@ -288,6 +289,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
                             [entry addObjectsFromArray:unsent];
                         }
                     }
+                    goto breakSensorsLoop;
                 }
                 i += points;
 			}
@@ -295,6 +297,23 @@ static SensorStore* sharedSensorStoreInstance = nil;
 			NSLog(@"SenseStore: Exception while uploading data: %@", e);
 		}
 	}
+    breakSensorsLoop:
+    
+    //exponentially back off at failures (max 1 hour), to avoid spamming the server
+    if (succeed)
+        waitTime = 0;
+    else {
+        waitTime = MAX(2 * syncRate, MIN(2 * waitTime, 3600));
+    }
+        
+    NSTimeInterval interval = MAX(waitTime, syncRate);
+    if (uploadTimer.isValid)
+        [uploadTimer invalidate];
+   	uploadTimer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(scheduleUpload) userInfo:nil repeats:NO];
+    NSRunLoop* runLoop = [NSRunLoop currentRunLoop];
+    [runLoop addTimer:uploadTimer forMode:NSRunLoopCommonModes];
+    [runLoop run];
+    NSLog(@"Uploading again in %f seconds.", interval);
 }
 
 - (void) applyGeneralSettings {
@@ -306,6 +325,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 		//apply properties one by one
 		[sender setUser:[settings valueForKey:generalSettingUsernameKey] andPassword:[settings valueForKey:generalSettingPasswordKey]];
 		syncRate = [[[Settings sharedSettings] getSettingType:@"general" setting:generalSettingSynchronisationRateKey] doubleValue];
+        [self setSyncRate:syncRate];
 				
 		serviceEnabled = [[settings valueForKey: generalSettingSenseEnabledKey] boolValue];
 		if (serviceEnabled) {
@@ -319,7 +339,6 @@ static SensorStore* sharedSensorStoreInstance = nil;
 			[self instantiateSensors];
 		}
 		
-		uploadTimer = [NSTimer scheduledTimerWithTimeInterval:syncRate target:self selector:@selector(scheduleUpload) userInfo:nil repeats:YES];
 		//pollTimer = [NSTimer scheduledTimerWithTimeInterval:pollRate target:self selector:@selector(pollSensors) userInfo:nil repeats:YES];
 	}
 	@catch (NSException * e) {
@@ -353,10 +372,10 @@ static SensorStore* sharedSensorStoreInstance = nil;
 }
 
 - (void) setSyncRate: (int) newRate {
-	[uploadTimer invalidate];
-	//[uploadTimer release];
+    if (uploadTimer.isValid )
+        [uploadTimer invalidate];
 	syncRate = newRate;
-	uploadTimer = [NSTimer scheduledTimerWithTimeInterval:syncRate target:self selector:@selector(scheduleUpload) userInfo:nil repeats:YES];
+	uploadTimer = [NSTimer scheduledTimerWithTimeInterval:syncRate target:self selector:@selector(scheduleUpload) userInfo:nil repeats:NO];
 }
 
 + (NSDictionary*) device {
