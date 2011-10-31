@@ -202,9 +202,41 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 	NSDictionary* sensorData = [NSDictionary dictionaryWithObjectsAndKeys:
 							  data, @"data",
 							  nil];
+    
 	//NSLog(@"%d uploading: %@", sensorId, sensorData);
+    ///
 	NSDictionary* reply = [self doJsonRequestTo:[self makeUrlForSensor:sensorId] withMethod:@"POST" withInput:sensorData];
 	return reply != nil;
+    
+    //make session
+	if (sessionCookie == nil) {
+		if (![self login])
+			return NO;
+	}
+	NSString* method = @"POST";
+    NSURL* url = [self makeUrlForSensor:sensorId];
+	NSData* contents;
+    NSString* jsonData = [sensorData JSONRepresentation];
+	NSHTTPURLResponse* response = [self doRequestTo:url method:method input:jsonData output:&contents cookie:sessionCookie];
+	
+	//handle unauthorized error
+	if ([response statusCode] == STATUSCODE_UNAUTHORIZED) {
+		//relogin (session might've expired)
+		if ([self login]) {
+            //redo request
+            response = [self doRequestTo:url method:method input:jsonData output:&contents cookie:sessionCookie];
+        }
+	}
+    
+	//check response code
+	if ([response statusCode] < 200 || [response statusCode] > 300)
+	{
+		//Ai, some error that couldn't be resolved. Log and return error
+		NSLog(@"%@ \"%@\" failed with status code %d", method, url, [response statusCode]);
+		NSString* responded = [[NSString alloc] initWithData:contents encoding:NSUTF8StringEncoding];
+		NSLog(@"Responded: %@", responded);
+		return NO;
+	}
 }
 
 #pragma mark -
