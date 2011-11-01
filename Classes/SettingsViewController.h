@@ -12,7 +12,6 @@
 
 @interface SettingsViewController : UITableViewController {
 	NSDictionary* generalSettings;
-	NSDictionary* locationSettings;
 	
 	UIBarButtonItem* webViewButton;
 	WebViewController* webViewController;

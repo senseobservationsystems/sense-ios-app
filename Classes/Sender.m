@@ -43,8 +43,7 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 											  mutabilityOption:NSPropertyListImmutable
 											  format:&format
 											  errorDescription:&errorDesc];
-        if (!temp)
-		{
+        if (!temp) {
             NSLog(@"Error reading plist: %@, format: %d", errorDesc, format);
         }
 		
@@ -116,7 +115,7 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 						  nil];
 
 	NSString* json = [post JSONRepresentation];;
-	
+
 	NSURL* url = [self makeUrlFor:@"login"];
 	NSData* contents;
 	NSHTTPURLResponse* response = [self doRequestTo:url method:@"POST" input:json output:&contents cookie:nil];
@@ -135,7 +134,7 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 		NSDictionary* jsonResponse = [jsonString JSONValue];
 		self.sessionCookie = [NSString stringWithFormat:@"session_id=%@",[jsonResponse valueForKey:@"session_id"]];
 	}
-
+    
 	return succeeded;
 }
 
@@ -180,7 +179,6 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 	//if device unknown, then it follows it has no sensors
 	if (deviceId == -1) return nil;
 	
-	//
 	return[self doJsonRequestTo:[self makeSensorsUrlForDeviceId:deviceId] withMethod:@"GET" withInput:nil];
 }
 
@@ -354,7 +352,6 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 					 [urls valueForKey:@"jsonSuffix"]];
 	
 	return [NSURL URLWithString:url];
-	
 }
 
 - (NSURL*) makeSensorsUrlForDeviceId:(NSInteger)deviceId {
@@ -366,7 +363,6 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 					 [urls valueForKey:@"jsonSuffix"]];
 	
 	return [NSURL URLWithString:url];
-	
 }
 
 - (NSURL*) makeUrlForAddingSensorToDevice:(NSString*) sensorId {
@@ -378,6 +374,5 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 					 [urls valueForKey:@"jsonSuffix"]];
 	
 	return [NSURL URLWithString:url];
-	
 }
 @end

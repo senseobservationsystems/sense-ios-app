@@ -47,7 +47,6 @@ enum GeneralSectionRow{
 	firstTimeCommonSense = YES;
 	//load properties
 	generalSettings = [Settings sharedSettings].general;
-	locationSettings = [Settings sharedSettings].location;
 	
 	//setup navigation bar
 	self.navigationItem.title = @"Sense";
@@ -193,7 +192,8 @@ enum GeneralSectionRow{
 			}
 			case generalSectionLogin:
 			{
-				NSString* detail = [[SensorStore sharedSensorStore].sender isLoggedIn] ? [generalSettings valueForKey:generalSettingUsernameKey] : @"Not logged in";
+                NSString* user = [generalSettings valueForKey:generalSettingUsernameKey];
+				NSString* detail = [user isEqualToString:@""] ? @"No account" : user;
 				cell.textLabel.text = @"Account";
 				cell.detailTextLabel.text = detail;
 				cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -361,7 +361,6 @@ enum GeneralSectionRow{
 
 - (void) edited {
 	generalSettings = [Settings sharedSettings].general;
-	locationSettings = [Settings sharedSettings].location;
 	[self.tableView reloadData];
 }
 

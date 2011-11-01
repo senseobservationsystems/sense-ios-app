@@ -60,8 +60,7 @@ enum AdaptiveSectionRow {
     chargeCycleSlider.maximumValue = 48;
     chargeCycleSlider.continuous = NO;
     //[chargeCycleSlider setShowValue:YES];
-    [chargeCycleSlider setValue: [[[Settings sharedSettings] getSettingType:@"adaptive" setting:@"chargeCycle"] floatValue] / 3600
-     ];
+    [chargeCycleSlider setValue: [[[Settings sharedSettings] getSettingType:@"adaptive" setting:@"chargeCycle"] floatValue] / 3600];
     [chargeCycleSlider addTarget:self action:@selector(sliderChanged:) forControlEvents:UIControlEventValueChanged];
 }
 
