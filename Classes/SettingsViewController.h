@@ -8,6 +8,7 @@
 #import <UIKit/UIKit.h>
 #import "SensorStore.h"
 #import "WebViewController.h"
+#import "ApplicationStateChange.h"
 
 
 @interface SettingsViewController : UITableViewController {
@@ -24,6 +25,7 @@
     UISwitch* phoneStateSwitch;
 	
 	BOOL firstTimeCommonSense;
+    NSString* applicationState;
 }
 @property (retain) NSArray* sensorClasses;
 
@@ -34,4 +36,5 @@
 - (void) switchChanged:(UISwitch*) switchButton;
 - (BOOL) supportsBackground;
 - (void) foregroundEnabled:(BOOL) enable;
+- (void) applicationStateChanged:(NSNotification*) notification;
 @end

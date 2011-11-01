@@ -87,11 +87,17 @@ enum GeneralSectionRow{
 		[enableSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
 		[sensorEnableSwitches addObject:enableSwitch];
 	}
+    
+    //register for notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationStateChanged:) name:applicationStateChangeNotification object:nil];
+    
+    
 	NSString* displayed = [[Settings sharedSettings] getSettingType: @"messages" setting:@"welcomeMessageDisplayed"];
 	if (![displayed isEqual:@"true"]) {
 		[self displayWelcomeMessage];
 		[[Settings sharedSettings] commitSettingType: @"messages" setting:@"welcomeMessageDisplayed" value:@"true" persistent:YES];
 	}
+    
 	
 	//show login immediately if we don't have a username
     NSLog(@"username: '%@'",[generalSettings valueForKey:generalSettingUsernameKey]);
@@ -186,6 +192,7 @@ enum GeneralSectionRow{
 		switch (indexPath.row) {
 			case generalSectionEnabled:
 			{
+                cell.detailTextLabel.text = applicationState;
 				cell.textLabel.text = @"Sense";
 				cell.accessoryView = senseSwitch;
 				break;
@@ -383,6 +390,20 @@ enum GeneralSectionRow{
 	UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Welcome" message:@"This app gathers data about your activities and shares it with the CommonSense data storage.\n\nOver time, it will learn to recognize your behaviour and current status. This makes it possible for your phone to help you avoid repetitive or stupid tasks, and alert you about interesting events.\n\nPlease login, or register a free CommonSense account. Manage, view and share your data at CommonSense\'s web interface: http://common.sense-os.nl." delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
 	[alert show];
 	
+}
+
+- (void) applicationStateChanged:(NSNotification*) notification {
+   ApplicationStateChangeMsg* msg = notification.object;
+    switch (msg.applicationStateChange) {
+        case kUPLOAD_OK:
+            applicationState = nil;
+            break;
+        case kUPLOAD_FAILED:
+            applicationState = @"Upload problems";
+            break;
+    }
+        
+    [self edited];
 }
 
 @end

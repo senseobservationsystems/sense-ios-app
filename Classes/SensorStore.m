@@ -8,6 +8,7 @@
 
 #import "SensorStore.h"
 #import "Settings.h"
+#import "ApplicationStateChange.h"
 
 #import "LocationSensor.h"
 #import "BatterySensor.h"
@@ -328,8 +329,14 @@ static SensorStore* sharedSensorStoreInstance = nil;
    	uploadTimer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(scheduleUpload) userInfo:nil repeats:NO];
     NSRunLoop* runLoop = [NSRunLoop currentRunLoop];
     [runLoop addTimer:uploadTimer forMode:NSRunLoopCommonModes];
-    [runLoop run];
     NSLog(@"Uploading again in %f seconds.", interval);
+    
+    //send notification about upload
+    ApplicationStateChangeMsg* msg = [[ApplicationStateChangeMsg alloc] init];
+    msg.applicationStateChange = succeed ? kUPLOAD_OK :kUPLOAD_FAILED;
+    [[NSNotificationCenter defaultCenter] postNotification: [NSNotification notificationWithName:applicationStateChangeNotification object:msg]];
+    
+    [runLoop run];
 }
 
 - (void) applyGeneralSettings {
