@@ -29,6 +29,6 @@
 - (NSDictionary*) listSensors;
 - (NSDictionary*) listSensorsForDevice:(NSDictionary*)device;
 - (NSDictionary*) createSensorWithDescription:(NSDictionary*) description;
-- (BOOL) connectSensor:(NSInteger)sensorId ToDevice:(NSDictionary*) device;
-- (BOOL) uploadData:(NSArray*) data forSensorId:(NSInteger)sensorId;
+- (BOOL) connectSensor:(NSString*)sensorId ToDevice:(NSDictionary*) device;
+- (BOOL) uploadData:(NSArray*) data forSensorId:(NSString*)sensorId;
 @end

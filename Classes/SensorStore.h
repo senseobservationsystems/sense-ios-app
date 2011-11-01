@@ -34,6 +34,7 @@
 	NSArray* allSensorClasses;
 	NSArray* allAvailableSensorClasses;
 	NSMutableArray* sensors;
+    NSMutableDictionary* sensorIdMap;
 	
 	SpatialProvider* spatialProvider;
 }

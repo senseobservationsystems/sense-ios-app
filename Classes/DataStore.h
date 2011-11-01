@@ -7,5 +7,5 @@
 //
 
 @protocol DataStore
-- (void) commitFormattedData:(NSDictionary*)data forSensorId:(NSInteger)sensorId;
+- (void) commitFormattedData:(NSDictionary*)data forSensorId:(NSString*)sensorClass;
 @end

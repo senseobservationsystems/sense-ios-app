@@ -27,7 +27,7 @@
 #warning Compiling with IGNORE_DATA, so no data will be committed to commonSense
 #endif
 
-#define MAX_POINTS_TO_UPLOAD_AT_ONCE 500
+#define MAX_POINTS_TO_UPLOAD_AT_ONCE 1000
 
 
 @implementation SensorStore
@@ -102,6 +102,10 @@ static SensorStore* sharedSensorStoreInstance = nil;
 }
 
 - (void) makeRemoteDeviceSensors {
+    if (sensorIdMap == nil)
+        sensorIdMap = [NSMutableDictionary new];
+
+
 	//get list of sensors from the server
 	NSDictionary* response = [sender listSensorsForDevice:[SensorStore device]];
 	NSArray* remoteSensors = [response valueForKey:@"sensors"];
@@ -114,22 +118,27 @@ static SensorStore* sharedSensorStoreInstance = nil;
 			if ([remoteSensor isKindOfClass:[NSDictionary class]] && [[sensor class] matchesDescription:remoteSensor]) {
 				NSLog(@"Matched sensor of type %@", [sensor class]);
 				id sensorId = [remoteSensor valueForKey:@"id"];
-				sensor.sensorId = [sensorId integerValue];
+                //update dictionary
+				[sensorIdMap setValue:sensorId forKey:sensor.sensorId];
 				break;
 			}
 		}
 	}
+    
+    NSLog(@"List: %@", sensorIdMap);
 	
 	//create sensors that aren't assigned an id yet
 	for (Sensor* sensor in sensors) {
-		if (sensor.sensorId == -1) {
+		if ([sensorIdMap objectForKey:sensor.sensorId] == NULL) {
+            NSLog(@"Making sensor for id %@", [sensorIdMap objectForKey:sensor.sensorId]);
 			NSDictionary* description = [sender createSensorWithDescription:[[sensor class] sensorDescription]];
-			id sensorId = [description valueForKey:@"id"];
-			if (description != nil && sensorId != nil) {
-				sensor.sensorId = [sensorId integerValue];
+            id sensorIdString = [description valueForKey:@"id"];
+   			if (description != nil && sensorIdString != nil) {
 				//link sensor to this device
-				[sender connectSensor:sensor.sensorId ToDevice:[SensorStore device]];
-				NSLog(@"Created %@ sensor with id %@", [sensor class], sensorId);
+				[sender connectSensor:sensorIdString ToDevice:[SensorStore device]];
+                //store sensor id in the map
+  				[sensorIdMap setValue:sensorIdString forKey:sensor.sensorId];
+				NSLog(@"Created %@ sensor with id %@", [sensor class], sensorIdString);
 			}
 		}
 	}
@@ -147,10 +156,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 			[sensors addObject:newSensor];
 		}
 	}
-	
-	//get or create online sensors, this will assign ids to the local sensors
-	[self makeRemoteDeviceSensors];
-	
+
 	//set self as data storage
 	for (Sensor* sensor in sensors) {
 		sensor.dataStore = self;
@@ -179,15 +185,14 @@ static SensorStore* sharedSensorStoreInstance = nil;
 	}
 }
 
-- (void) commitFormattedData:(NSDictionary*) data forSensorId:(NSInteger)sensorId {
+- (void) commitFormattedData:(NSDictionary*) data forSensorId:(NSString *)sensorId {
     if (IGNORE_DATA) return;
 	//retrieve/create entry for this sensor
-	NSString* key = [NSString stringWithFormat:@"%d", sensorId];
 	@synchronized(self) {
-		NSMutableArray* entry = [sensorData valueForKey:key];
+		NSMutableArray* entry = [sensorData valueForKey:sensorId];
 		if (entry == nil) {
 			entry = [[NSMutableArray alloc] init];
-			[sensorData setValue:entry forKey:key];
+			[sensorData setValue:entry forKey:sensorId];
 		}
 
 		//add data
@@ -228,6 +233,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 		//instantiate sensors
 		[self instantiateSensors];
 	}
+    sensorIdMap = nil;
 }
 
 - (void) scheduleUpload {
@@ -259,7 +265,15 @@ static SensorStore* sharedSensorStoreInstance = nil;
 		myData = sensorData;
 		sensorData = [NSMutableDictionary new];
 	}
-	
+    
+    //refresh sensors, if one of the id's isn't in the map
+	for (NSString* sensorId in myData) {    
+        if ([sensorIdMap objectForKey:sensorId] == NULL) {
+            [self makeRemoteDeviceSensors];
+            break;
+        }
+    }
+
 	for (NSString* sensorId in myData) {
 		@try {
 			NSMutableArray* data= [myData valueForKey:sensorId];
@@ -273,10 +287,12 @@ static SensorStore* sharedSensorStoreInstance = nil;
                 NSRange range = NSMakeRange(i, points);
                 NSArray* dataPart = [data subarrayWithRange:range];
                 
-                succeed = [sender uploadData:dataPart forSensorId: [sensorId integerValue]];
+                succeed = [sender uploadData:dataPart forSensorId: [sensorIdMap valueForKey:sensorId]];
 
                 if (succeed == NO ) {
                     NSLog(@"Upload failed");
+                    //don't check the reason for failure, just erase this sensor id and reinsert the data
+                    [sensorIdMap removeObjectForKey:sensorId];
                     //reinsert data into sensorData
                     //only insert data from i, as the data before this was sent succesfully
                     NSMutableArray* unsent = [[data subarrayWithRange:NSMakeRange(i, data.count - i)] mutableCopy];
@@ -329,22 +345,15 @@ static SensorStore* sharedSensorStoreInstance = nil;
 				
 		serviceEnabled = [[settings valueForKey: generalSettingSenseEnabledKey] boolValue];
 		if (serviceEnabled) {
-			//instantiate sensors in the background using operation
-			//NSInvocationOperation* instantiateOp = [[NSInvocationOperation alloc]
-			//								   initWithTarget:self selector:@selector(instantiateSensors) object:nil];
-			
-			//[operationQueue addOperation:instantiateOp];
-			//[instantiateOp release];
 			//it seems some sensors don't like to be launched from a non-main thread, locationManager seems to prefer the mainthread...
 			[self instantiateSensors];
 		}
-		
+
 		//pollTimer = [NSTimer scheduledTimerWithTimeInterval:pollRate target:self selector:@selector(pollSensors) userInfo:nil repeats:YES];
 	}
 	@catch (NSException * e) {
 		NSLog(@"SenseStore: Exception thrown while updating general settings: %@", e);
-	}
-	
+	}	
 }
 
 - (void) forceDataFlush {

@@ -10,7 +10,6 @@
 
 
 @implementation Sensor
-@synthesize sensorId;
 @synthesize dataStore;
 @synthesize isEnabled;
 
@@ -42,7 +41,6 @@
 - (id) init {
 	self = [super init];
 	 if (self) {
-		 sensorId = -1;
 		 //register for enable changed notification
 		 [[NSNotificationCenter defaultCenter] addObserver:self
 												  selector:@selector(enabledChanged:)
@@ -57,6 +55,10 @@
 
 - (void) dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (NSString*) sensorId {
+    return [NSString stringWithFormat:@"%@", self.class];
 }
 
 @end

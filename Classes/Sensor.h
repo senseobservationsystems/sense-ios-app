@@ -9,16 +9,14 @@
 #import "DataStore.h"
 
 @interface Sensor : NSObject {
-	NSInteger sensorId;
-	
 	BOOL isEnabled;
 	//delegate
 	id dataStore;
 }
 
 @property (assign) BOOL isEnabled;
-@property (assign) NSInteger sensorId;
 @property (retain) id dataStore;
+@property (readonly) NSString* sensorId;
 
 
 //TODO: use selector for comparison

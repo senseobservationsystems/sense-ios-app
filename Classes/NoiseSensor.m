@@ -127,7 +127,7 @@
 	//only react to changes
 	//if (enable == isEnabled) return;
 	
-	NSLog(@"Enabling noise sensor (id=%d): %@", sensorId, enable ? @"yes":@"no");
+	NSLog(@"Enabling noise sensor (id=%@): %@", self.sensorId, enable ? @"yes":@"no");
 	isEnabled = enable;
 	if (enable) {
 		if (NO==audioRecorder.recording) {

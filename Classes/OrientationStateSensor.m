@@ -81,7 +81,7 @@
 	//only react to changes
 	//if (enable == isEnabled) return;
 	
-	NSLog(@"Enabling orientation sensor (id=%d): %@", sensorId, enable ? @"yes":@"no");
+	NSLog(@"Enabling orientation sensor (id=%@): %@", self.sensorId, enable ? @"yes":@"no");
 	if (enable) {
 		[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 	} else {

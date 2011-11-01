@@ -56,7 +56,7 @@
 	//only react to changes
 	//if (enable == isEnabled) return;
 	
-	NSLog(@"Enabling user proximity sensor (id=%d): %@", sensorId, enable ? @"yes":@"no");
+	NSLog(@"Enabling user proximity sensor (id=%@): %@", self.sensorId, enable ? @"yes":@"no");
 	[UIDevice currentDevice].proximityMonitoringEnabled = enable;
 	isEnabled = enable;
 }

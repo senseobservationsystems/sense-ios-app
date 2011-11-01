@@ -14,8 +14,8 @@
 - (NSDictionary*) doJsonRequestTo:(NSURL*) url withMethod:(NSString*)method withInput:(NSDictionary*) input;
 - (NSHTTPURLResponse*) doRequestTo:(NSURL *)url method:(NSString*)method input:(NSString*)input output:(NSData**)output cookie:(NSString*) cookie;
 - (NSURL*) makeUrlFor:(NSString*) action;
-- (NSURL*) makeUrlForSensor:(NSInteger) sensorId;
-- (NSURL*) makeUrlForAddingSensorToDevice:(NSInteger) sensorId;
+- (NSURL*) makeUrlForSensor:(NSString*) sensorId;
+- (NSURL*) makeUrlForAddingSensorToDevice:(NSString*) sensorId;
 - (NSURL*) makeSensorsUrlForDeviceId:(NSInteger)deviceId;
 @end
 
@@ -191,14 +191,14 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 	return [response valueForKey:@"sensor"];
 }
 
-- (BOOL) connectSensor:(NSInteger)sensorId ToDevice:(NSDictionary*) device {
+- (BOOL) connectSensor:(NSString*)sensorId ToDevice:(NSDictionary*) device {
 	NSDictionary* request = [NSDictionary dictionaryWithObject:device forKey:@"device"];
 	
 	[self doJsonRequestTo:[self makeUrlForAddingSensorToDevice:sensorId] withMethod:@"POST" withInput:request];
 	return YES;
 }
 
-- (BOOL) uploadData:(NSArray*) data forSensorId:(NSInteger)sensorId {	
+- (BOOL) uploadData:(NSArray*) data forSensorId:(NSString*)sensorId {	
 	NSDictionary* sensorData = [NSDictionary dictionaryWithObjectsAndKeys:
 							  data, @"data", nil];
     
@@ -345,8 +345,8 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 	return [NSURL URLWithString:url];
 }
 
-- (NSURL*) makeUrlForSensor:(NSInteger) sensorId {
-	NSString* url = [NSString stringWithFormat: @"%@/%@/%d/%@%@",
+- (NSURL*) makeUrlForSensor:(NSString*) sensorId {
+	NSString* url = [NSString stringWithFormat: @"%@/%@/%@/%@%@",
 					 [urls valueForKey:@"baseUrl"],
 					 [urls valueForKey:@"sensors"],
 					 sensorId,
@@ -369,8 +369,8 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 	
 }
 
-- (NSURL*) makeUrlForAddingSensorToDevice:(NSInteger) sensorId {
-	NSString* url = [NSString stringWithFormat: @"%@/%@/%d/%@%@",
+- (NSURL*) makeUrlForAddingSensorToDevice:(NSString*) sensorId {
+	NSString* url = [NSString stringWithFormat: @"%@/%@/%@/%@%@",
 					 [urls valueForKey:@"baseUrl"],
 					 [urls valueForKey:@"sensors"],
 					 sensorId,

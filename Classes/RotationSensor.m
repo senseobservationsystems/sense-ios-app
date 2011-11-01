@@ -54,7 +54,7 @@
 - (BOOL) isEnabled {return isEnabled;}
 
 - (void) setIsEnabled:(BOOL) enable {
-	NSLog(@"%@ %@ sensor (id=%d).", enable ? @"Enabling":@"Disabling", [self class], sensorId);
+	NSLog(@"%@ %@ sensor (id=%@).", enable ? @"Enabling":@"Disabling", [self class], self.sensorId);
 	isEnabled = enable;
 }
 

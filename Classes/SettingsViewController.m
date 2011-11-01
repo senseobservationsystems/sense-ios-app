@@ -94,12 +94,13 @@ enum GeneralSectionRow{
 		[[Settings sharedSettings] commitSettingType: @"messages" setting:@"welcomeMessageDisplayed" value:@"true" persistent:YES];
 	}
 	
-	//show login immediately if we can't login
-	if (![[SensorStore sharedSensorStore].sender isLoggedIn]) {
+	//show login immediately if we don't have a username
+    NSLog(@"username: '%@'",[generalSettings valueForKey:generalSettingUsernameKey]);
+	if ([[generalSettings valueForKey:generalSettingUsernameKey] isEqualToString:@""]) {
 			//create LoginSettings
 			LoginSettings* login = [[LoginSettings alloc] initWithNibName:@"LoginSettings" bundle:[NSBundle mainBundle]];
 			[self.navigationController pushViewController:login animated:YES];
-	}	
+	}
 }
 
 

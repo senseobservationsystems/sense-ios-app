@@ -137,7 +137,7 @@ static int maxSamples = 7;
 										[newItem JSONRepresentation], @"value",
 										timestamp,@"date",
 										nil];
-	[dataStore commitFormattedData:valueTimestampPair forSensorId:[self sensorId]];
+	[dataStore commitFormattedData:valueTimestampPair forSensorId:self.sensorId];
     
     /* implement strategy to disable location for some time */
     //noise is already filtered, so don't filter for accuracy
@@ -194,7 +194,7 @@ static int maxSamples = 7;
 	//only react to changes
 	//if (enable == isEnabled) return;
 	
-	NSLog(@"Enabling location sensor (id=%d): %@", sensorId, enable ? @"yes":@"no");
+	NSLog(@"Enabling location sensor (id=%@): %@", self.sensorId, enable ? @"yes":@"no");
 	if (enable) {
 		@try {
 			locationManager.desiredAccuracy = [[[Settings sharedSettings] getSettingType:@"position" setting:@"accuracy"] intValue];
