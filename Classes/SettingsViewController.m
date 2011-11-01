@@ -394,16 +394,20 @@ enum GeneralSectionRow{
 
 - (void) applicationStateChanged:(NSNotification*) notification {
    ApplicationStateChangeMsg* msg = notification.object;
+    NSString* newState;
     switch (msg.applicationStateChange) {
         case kUPLOAD_OK:
-            applicationState = nil;
+            newState = nil;
             break;
         case kUPLOAD_FAILED:
-            applicationState = @"Upload problems";
+            newState = @"Upload problems";
             break;
     }
         
-    [self edited];
+    if ((newState == nil && applicationState != nil) || (newState != nil && applicationState == nil)) {
+        applicationState = newState;
+        [self edited];
+    }
 }
 
 @end
