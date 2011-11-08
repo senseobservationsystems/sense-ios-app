@@ -78,8 +78,8 @@ static SensorStore* sharedSensorStoreInstance = nil;
  							[AccelerometerSensor class],
 							[AccelerationSensor class],
 							[RotationSensor class],
-							[PreferencesSensor class],
-							[MiscSensor class],
+							//[PreferencesSensor class],
+							//[MiscSensor class],
 							nil];
 		
 		NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"isAvailable == YES"];
@@ -218,6 +218,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 	} else {
 		[self instantiateSensors];
 	}
+    waitTime = 0;
 }
 
 - (void) loginChanged {
@@ -226,7 +227,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 	
 	//get new settings
 	NSDictionary* settings = [Settings sharedSettings].general;
-	
+
 	//change login
 	[sender setUser:[settings valueForKey:generalSettingUsernameKey] andPassword:[settings valueForKey:generalSettingPasswordKey]];
 	
@@ -235,6 +236,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 		[self instantiateSensors];
 	}
     sensorIdMap = nil;
+    waitTime = 0;
 }
 
 - (void) scheduleUpload {

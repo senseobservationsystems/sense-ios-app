@@ -193,7 +193,7 @@ enum GeneralSectionRow{
 			case generalSectionEnabled:
 			{
                 cell.detailTextLabel.text = applicationState;
-				cell.textLabel.text = @"Sense";
+				cell.textLabel.text = @"Sense (main switch)";
 				cell.accessoryView = senseSwitch;
 				break;
 			}
