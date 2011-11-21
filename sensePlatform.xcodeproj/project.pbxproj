@@ -23,6 +23,7 @@
 		3E2C86AD130A8CEC00B1C6CC /* SensorStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E2C86AC130A8CEC00B1C6CC /* SensorStore.m */; };
 		3E2C86F8130A98B400B1C6CC /* LocationSensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E2C86F7130A98B400B1C6CC /* LocationSensor.m */; };
 		3E325B7E1427875900D0E6A8 /* MovingSensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E325B7D1427875900D0E6A8 /* MovingSensor.m */; };
+		3E36DC781460292200C456C3 /* ApplicationStateChange.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E36DC771460292100C456C3 /* ApplicationStateChange.m */; };
 		3E562A51135D9A6D00B54448 /* CallSensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E562A50135D9A6D00B54448 /* CallSensor.m */; };
 		3E562A66135D9DA800B54448 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E562A65135D9DA800B54448 /* CoreTelephony.framework */; };
 		3E5D41C9136957640057D124 /* AccelerationSensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5D41C8136957640057D124 /* AccelerationSensor.m */; };
@@ -92,6 +93,8 @@
 		3E2C86F7130A98B400B1C6CC /* LocationSensor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationSensor.m; sourceTree = "<group>"; };
 		3E325B7C1427875900D0E6A8 /* MovingSensor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MovingSensor.h; sourceTree = "<group>"; };
 		3E325B7D1427875900D0E6A8 /* MovingSensor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MovingSensor.m; sourceTree = "<group>"; };
+		3E36DC761460292000C456C3 /* ApplicationStateChange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationStateChange.h; sourceTree = "<group>"; };
+		3E36DC771460292100C456C3 /* ApplicationStateChange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApplicationStateChange.m; sourceTree = "<group>"; };
 		3E562A4F135D9A6D00B54448 /* CallSensor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallSensor.h; sourceTree = "<group>"; };
 		3E562A50135D9A6D00B54448 /* CallSensor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallSensor.m; sourceTree = "<group>"; };
 		3E562A65135D9DA800B54448 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
@@ -200,6 +203,8 @@
 				3E670BDB13F16909008BCB99 /* SampleStrategy.m */,
 				3EBA22A3130E8C2700C5B924 /* Settings.h */,
 				3EBA22A4130E8C2700C5B924 /* Settings.m */,
+				3E36DC761460292000C456C3 /* ApplicationStateChange.h */,
+				3E36DC771460292100C456C3 /* ApplicationStateChange.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -501,6 +506,7 @@
 				3EA62864138BF185007F60D2 /* MiscSensor.m in Sources */,
 				3E670BDC13F16909008BCB99 /* SampleStrategy.m in Sources */,
 				3E325B7E1427875900D0E6A8 /* MovingSensor.m in Sources */,
+				3E36DC781460292200C456C3 /* ApplicationStateChange.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -511,8 +517,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					armv7,
+					armv6,
+				);
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_ENTITLEMENTS = "~/Documents/senseAppPort/senseLocationApp/EntitlementsDebug.plist";
+				CODE_SIGN_ENTITLEMENTS = EntitlementsDebug.plist;
 				COPY_PHASE_STRIP = NO;
 				GCC_CHECK_RETURN_VALUE_OF_OPERATOR_NEW = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -538,8 +548,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					armv7,
+					armv6,
+				);
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_ENTITLEMENTS = "~/Documents/senseAppPort/senseLocationApp/EntitlementsDebug.plist";
+				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
 				COPY_PHASE_STRIP = YES;
 				GCC_CHECK_RETURN_VALUE_OF_OPERATOR_NEW = YES;
 				GCC_OPTIMIZATION_LEVEL = 2;
@@ -591,8 +605,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					armv7,
+					armv6,
+				);
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_ENTITLEMENTS = "~/Documents/senseAppPort/senseLocationApp/EntitlementsDebug.plist";
+				CODE_SIGN_ENTITLEMENTS = EntitlementsDebug.plist;
 				COPY_PHASE_STRIP = YES;
 				GCC_CHECK_RETURN_VALUE_OF_OPERATOR_NEW = YES;
 				GCC_OPTIMIZATION_LEVEL = 2;
@@ -645,8 +663,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					armv7,
+					armv6,
+				);
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_ENTITLEMENTS = "~/Documents/senseAppPort/senseLocationApp/EntitlementsDebug.plist";
+				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
 				COPY_PHASE_STRIP = YES;
 				GCC_CHECK_RETURN_VALUE_OF_OPERATOR_NEW = YES;
 				GCC_OPTIMIZATION_LEVEL = 2;
@@ -732,7 +754,7 @@
 				3EA627C713816F1E007F60D2 /* Distribute appStore */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
+			defaultConfigurationName = "Distribute appStore";
 		};
 		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "sensePlatform" */ = {
 			isa = XCConfigurationList;
@@ -743,7 +765,7 @@
 				3EA627C613816F1E007F60D2 /* Distribute appStore */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
+			defaultConfigurationName = "Distribute appStore";
 		};
 /* End XCConfigurationList section */
 	};
