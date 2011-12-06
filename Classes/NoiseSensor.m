@@ -149,7 +149,7 @@
 	self.volumeTimer = nil;
 	if (didSucceed && nrVolumeSamples > 0)	{
 		//take timestamp
-		NSNumber* timestamp = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
+		double timestamp = [[NSDate date] timeIntervalSince1970];
 
 		/*
 		NSInteger nrSamples;
@@ -183,14 +183,14 @@
         */
 		 
 
-		NSNumber* level = [NSNumber numberWithFloat:20 * log10(volumeSum / nrVolumeSamples)];
+		double level = 20 * log10(volumeSum / nrVolumeSamples);
  
 		//TODO: save file...
 		[recorder deleteRecording];
 	
 		NSDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
-											level, @"value",
-											timestamp, @"date",
+											[NSString stringWithFormat:@"%.1f", level], @"value",
+											[NSString stringWithFormat:@"%.0f",timestamp], @"date",
 											nil];
 	
 		[dataStore commitFormattedData:valueTimestampPair forSensorId:[self sensorId]];

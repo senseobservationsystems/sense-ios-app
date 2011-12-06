@@ -83,16 +83,16 @@ static const double G = 9.81;
 			CMAcceleration acceleration = accelerometerData.acceleration;
 			NSMutableDictionary* newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 											//acceleration
-											[NSNumber numberWithFloat:acceleration.x * G], accelerationXKey,
-											[NSNumber numberWithFloat:acceleration.y * G], accelerationYKey,
-											[NSNumber numberWithFloat:acceleration.z * G], accelerationZKey,
+											[NSString stringWithFormat:@"%.3f", acceleration.x * G], accelerationXKey,
+											[NSString stringWithFormat:@"%.3f", acceleration.y * G], accelerationYKey,
+											[NSString stringWithFormat:@"%.3f", acceleration.z * G], accelerationZKey,
 											nil];
 			
-            NSNumber* timestamp = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
+            double timestamp = [[NSDate date] timeIntervalSince1970];
 			
 			NSDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
 												[newItem JSONRepresentation], @"value",
-												timestamp, @"date",
+												[NSString stringWithFormat:@"%.3f", timestamp], @"date",
 												nil];
 
 			[accelerometerSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:accelerometerSensor.sensorId];
@@ -119,16 +119,16 @@ static const double G = 9.81;
 			CMRotationRate rotation = gyroData.rotationRate;
 			NSMutableDictionary* newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 											//acceleration
-											[NSNumber numberWithFloat:rotation.x], accelerationXKey,
-											[NSNumber numberWithFloat:rotation.y], accelerationYKey,
-											[NSNumber numberWithFloat:rotation.z], accelerationZKey,
+											[NSString stringWithFormat:@"%.3f", rotation.x], accelerationXKey,
+											[NSString stringWithFormat:@"%.3f", rotation.y], accelerationYKey,
+											[NSString stringWithFormat:@"%.3f", rotation.z], accelerationZKey,
 											nil];
 			
-            NSNumber* timestamp = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
+            double timestamp = [[NSDate date] timeIntervalSince1970];
 			
 			NSDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
 												[newItem JSONRepresentation], @"value",
-												timestamp, @"date",
+												[NSString stringWithFormat:@"%.3f", timestamp], @"date",
 												nil];
 			[rotationSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:rotationSensor.sensorId];
 		};
@@ -162,7 +162,7 @@ static const double G = 9.81;
 - (void) setOrientationEnabled:(BOOL) enable {
 	if (enable) {
 		CMDeviceMotionHandler deviceMotionHandler = ^ (CMDeviceMotion *deviceMotion, NSError *error) {
-            NSNumber* timestamp = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
+            double timestamp = [[NSDate date] timeIntervalSince1970];
 			//report attitude
 			CMAttitude* attitude = deviceMotion.attitude;
 			//CMRotationRate rotation = deviceMotion.rotationRate;
@@ -184,14 +184,14 @@ static const double G = 9.81;
             float heading = locationManager.heading.magneticHeading;
 
 			NSMutableDictionary* newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-											[NSNumber numberWithFloat:pitch], attitudePitchKey,
-											[NSNumber numberWithFloat:roll], attitudeRollKey,
-											[NSNumber numberWithFloat:heading], attitudeYawKey,
+											[NSString stringWithFormat:@"%.3f", pitch], attitudePitchKey,
+											[NSString stringWithFormat:@"%.3f", roll], attitudeRollKey,
+											[NSString stringWithFormat:@"%.0f", heading], attitudeYawKey,
 											nil];
 			
 			NSDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
 												[newItem JSONRepresentation], @"value",
-												timestamp,@"date",
+												[NSString stringWithFormat:@"%.3f", timestamp],@"date",
 												nil];
 			[orientationSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:orientationSensor.sensorId];
 			
@@ -200,13 +200,13 @@ static const double G = 9.81;
 				CMAcceleration acceleration = deviceMotion.userAcceleration;
 				CMAcceleration gravity = deviceMotion.gravity;
 				newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-						   [NSNumber numberWithFloat:(acceleration.x + gravity.x)*G], accelerationXKey,
-						   [NSNumber numberWithFloat:(acceleration.y + gravity.y)*G], accelerationYKey,
-						   [NSNumber numberWithFloat:(acceleration.z + gravity.z)*G], accelerationZKey,
+						   [NSString stringWithFormat:@"%.3f", (acceleration.x + gravity.x)*G], accelerationXKey,
+						   [NSString stringWithFormat:@"%.3f", (acceleration.y + gravity.y)*G], accelerationYKey,
+						   [NSString stringWithFormat:@"%.3f", (acceleration.z + gravity.z)*G], accelerationZKey,
 						   nil];
 				valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
 									  [newItem JSONRepresentation], @"value",
-									  timestamp,@"date",
+									  [NSString stringWithFormat:@"%.3f", timestamp],@"date",
 									  nil];
 				[accelerometerSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:accelerometerSensor.sensorId];
 			}
@@ -215,13 +215,13 @@ static const double G = 9.81;
 			if (accelerationSensor != nil && accelerationSensor.isEnabled) { 
 				CMAcceleration acceleration = deviceMotion.userAcceleration;
 				newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-											[NSNumber numberWithFloat:acceleration.x*G], accelerationXKey,
-   											[NSNumber numberWithFloat:acceleration.y*G], accelerationYKey,
-											[NSNumber numberWithFloat:acceleration.z*G], accelerationZKey,
+											[NSString stringWithFormat:@"%.3f", acceleration.x*G], accelerationXKey,
+   											[NSString stringWithFormat:@"%.3f", acceleration.y*G], accelerationYKey,
+											[NSString stringWithFormat:@"%.3f", acceleration.z*G], accelerationZKey,
 											nil];
 				valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
 									  [newItem JSONRepresentation], @"value",
-									  timestamp,@"date",
+									  [NSString stringWithFormat:@"%.3f", timestamp],@"date",
 									  nil];
 				[accelerationSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:accelerationSensor.sensorId];
 			}
@@ -230,13 +230,13 @@ static const double G = 9.81;
 			if (rotationSensor != nil && rotationSensor.isEnabled) {
 				CMRotationRate rotation = deviceMotion.rotationRate;
 				newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-						   [NSNumber numberWithFloat:rotation.x], accelerationXKey,
-						   [NSNumber numberWithFloat:rotation.y], accelerationYKey,
-						   [NSNumber numberWithFloat:rotation.z], accelerationZKey,
+						   [NSString stringWithFormat:@"%.3f", rotation.x], accelerationXKey,
+						   [NSString stringWithFormat:@"%.3f", rotation.y], accelerationYKey,
+						   [NSString stringWithFormat:@"%.3f", rotation.z], accelerationZKey,
 						   nil];
 				valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
 									  [newItem JSONRepresentation], @"value",
-									  timestamp,@"date",
+									  [NSString stringWithFormat:@"%.3f", timestamp],@"date",
 									  nil];
 				[rotationSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:rotationSensor.sensorId];
 			}
@@ -290,23 +290,23 @@ static const double G = 9.81;
 	NSNumber* devZ = [NSNumber numberWithFloat:newHeading.z / 128.0];
 	
 	NSMutableDictionary* newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-									devX, devXKey,
-									devY, devYKey,
-									devZ, devZKey,
+									[NSString stringWithFormat:@"%.4f", devX], devXKey,
+									[NSString stringWithFormat:@"%.4f", devY], devYKey,
+									[NSString stringWithFormat:@"%.4f", devZ], devZKey,
 									nil];
 	
 	//include heading if no error indicated
 	if (newHeading.headingAccuracy >=0) {
-		[newItem setObject:heading forKey:magneticHeadingKey];
-		[newItem setObject:accuracy forKey:accuracyKey];
+		[newItem setObject:[NSString stringWithFormat:@"%.0f", heading] forKey:magneticHeadingKey];
+		[newItem setObject:[NSString stringWithFormat:@"%.0f", accuracy] forKey:accuracyKey];
 	}
   	
 	
-	NSNumber* timestamp = [NSNumber numberWithDouble:[newHeading.timestamp timeIntervalSince1970]];
+	double timestamp = [newHeading.timestamp timeIntervalSince1970];
 	
 	NSDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
 										[newItem JSONRepresentation], @"value",
-										timestamp, @"date",
+										[NSString stringWithFormat:@"%.3f", timestamp], @"date",
 										nil];
 	[compassSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:[compassSensor sensorId]];
 }
