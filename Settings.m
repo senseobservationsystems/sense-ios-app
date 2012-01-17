@@ -9,7 +9,6 @@
 #import "Settings.h"
 
 //notifications
-NSString* settingSenseEnabledChangedNotification = @"settingSenseEnabledChangedNotification";
 NSString* settingLoginChangedNotification = @"settingLoginChangedNotification";
 NSString* anySettingChangedNotification = @"anySettingChangedNotification";
 
@@ -96,16 +95,6 @@ static Settings* sharedSettingsInstance = nil;
 #pragma mark - 
 #pragma mark Settings
 
-- (BOOL) setSenseEnabled:(BOOL) enable {
-	NSNumber* enableObject = [NSNumber numberWithBool:enable];
-	//write back to file
-	[self storeSettings];
-	//notify registered subscribers
-	[[NSNotificationCenter defaultCenter] postNotification: [NSNotification notificationWithName:settingSenseEnabledChangedNotification object:enableObject]];
-	[self anySettingChanged:@"senseApp enabled" value:enable? @"true": @"false"];
-	return YES;
-}
-
 + (NSString*) enabledChangedNotificationNameForSensor:(Class) sensor {
 	return [NSString stringWithFormat:@"%@EnabledChangedNotification", sensor];
 }
@@ -135,12 +124,18 @@ static Settings* sharedSettingsInstance = nil;
 }
 
 - (BOOL) setSensor:(Class) sensor enabled:(BOOL) enable {
+    return [self setSensor:sensor enabled:enable permanent:YES];
+}
+
+- (BOOL) setSensor:(Class) sensor enabled:(BOOL) enable permanent:(BOOL) permanent {
 	NSNumber* enableObject = [NSNumber numberWithBool:enable];
-	//store enable settings
-	NSString* key = [NSString stringWithFormat:@"%@", sensor];
-	[sensorEnables setObject:enableObject forKey:key];
-	//write back to file
-	[self storeSettings];
+    NSString* key = [NSString stringWithFormat:@"%@", sensor];
+    if (permanent) {
+        //store enable settings
+        [sensorEnables setObject:enableObject forKey:key];
+        //write back to file
+        [self storeSettings];
+    }
 	//notify registered subscribers
 	[[NSNotificationCenter defaultCenter] postNotification: [NSNotification notificationWithName:[[self class] enabledChangedNotificationNameForSensor:sensor] object:enableObject]];
 	[self anySettingChanged:key value:enable?@"true":@"false"];

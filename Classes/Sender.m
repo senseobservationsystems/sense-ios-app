@@ -199,12 +199,6 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 - (BOOL) uploadData:(NSArray*) data forSensorId:(NSString*)sensorId {	
 	NSDictionary* sensorData = [NSDictionary dictionaryWithObjectsAndKeys:
 							  data, @"data", nil];
-    
-	//NSLog(@"%d uploading: %@", sensorId, sensorData);
-    ///
-	NSDictionary* reply = [self doJsonRequestTo:[self makeUrlForSensor:sensorId] withMethod:@"POST" withInput:sensorData];
-	return reply != nil;
-    
     //make session
 	if (sessionCookie == nil) {
 		if (![self login])
@@ -234,6 +228,7 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 		NSLog(@"Responded: %@", responded);
 		return NO;
 	}
+    return YES;
 }
 
 #pragma mark -
@@ -271,8 +266,16 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
     if (contents) {
         //interpret JSON
         NSString* jsonString = [[NSString alloc] initWithData:contents encoding:NSUTF8StringEncoding];
-        //NSLog(@"contents: %@", jsonString);
-        NSDictionary* jsonResponse = [jsonString JSONValue];
+        NSDictionary* jsonResponse = nil;
+        @try {
+            jsonResponse = [jsonString JSONValue];
+        }
+        @catch (NSException *exception) {
+            
+        }
+        @finally {
+            
+        }
         return jsonResponse;
     } else {
         return nil;

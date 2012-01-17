@@ -46,12 +46,9 @@
 + (NSDictionary*) device;
 
 - (id)init;
-- (void) uploadData;
-- (void) instantiateSensors;
-- (void) applyGeneralSettings;
 - (void) loginChanged;
+- (void) setEnabled:(BOOL) enable;
 - (void) enabledChanged:(id) notification;
-- (void) scheduleUpload;
 - (void) setSyncRate: (int) newRate;
 
 /* Ensure all sensor data is flushed, used to reduce memory usage.

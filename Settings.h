@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 
 //notifications
-extern NSString* settingSenseEnabledChangedNotification;
 extern NSString* settingLoginChangedNotification;
 extern NSString* settingSynchronisationChangedNotification;
 extern NSString* anySettingChangedNotification;
@@ -48,6 +47,7 @@ extern NSString* locationSettingMinimumDistanceKey;
 + (NSString*) settingChangedNotificationNameForSensor:(Class) sensor;
 + (NSString*) settingChangedNotificationNameForType:(NSString*) type;
 - (BOOL) setSensor:(Class) sensor enabled:(BOOL) enable;
+- (BOOL) setSensor:(Class) sensor enabled:(BOOL) enable permanent:(BOOL) permanent;
 - (BOOL) isSensorEnabled:(Class) sensor;
 - (void) sendNotificationForSensor:(Class) sensor;
 - (id) getSettingType: (NSString*) type setting:(NSString*) setting;
@@ -62,6 +62,5 @@ extern NSString* locationSettingMinimumDistanceKey;
 @property (retain, readonly) NSMutableDictionary* location;
 
 //used to set individual settings, returns whether the setting was accepted
-- (BOOL) setSenseEnabled:(BOOL) enable;
 - (BOOL) setLogin:(NSString*)user withPassword:(NSString*) password;
 @end

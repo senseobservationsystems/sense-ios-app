@@ -17,7 +17,6 @@ static const double G = 9.81;
 - (id) initWithCompass:(CompassSensor*)compass orientation:(OrientationSensor*)orientation accelerometer:(AccelerometerSensor*)accelerometer acceleration:(AccelerationSensor*)acceleration rotation:(RotationSensor*)rotation{
 	self = [super init];
 	if (self) {
-		deallocating = NO;
 		NSLog(@"spatial provider init");
 		compassSensor = compass; orientationSensor = orientation; accelerometerSensor = accelerometer; accelerationSensor = acceleration; rotationSensor = rotation;		
 		motionManager = [[CMMotionManager alloc] init];
@@ -329,18 +328,12 @@ static const double G = 9.81;
 }
 
 - (void) dealloc {
-	//dealloc causes a ^block to be dealloced, which releases the spatial provider invoking dealloc again... prevent recursion
-	if (deallocating) return;
-	deallocating = YES;
-	
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[self setAccelerometerEnabled:NO];
 	[self setCompassEnabled:NO];
 	[self setOrientationEnabled:NO];
 	
 	[operations cancelAllOperations];
-	
-	
 }
 
 @end

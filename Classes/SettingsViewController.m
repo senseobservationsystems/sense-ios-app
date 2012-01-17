@@ -77,7 +77,7 @@ enum GeneralSectionRow{
 
 	//setup switches
 	senseSwitch = [[UISwitch alloc]init];
-	[senseSwitch setOn:[[generalSettings valueForKey:generalSettingSenseEnabledKey] boolValue]];
+	[senseSwitch setOn:[[[Settings sharedSettings] getSettingType:@"general" setting:generalSettingSenseEnabledKey] boolValue]];
 	[senseSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
 	
 	sensorEnableSwitches = [NSMutableArray new];
@@ -144,8 +144,11 @@ enum GeneralSectionRow{
 #pragma mark Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    // Return the number of sections.
-    return NR_SECTIONS;
+    //only show last section (the sensors), when the main switch is enabled
+    if (senseSwitch.on == YES)
+        return NR_SECTIONS;
+    else
+        return NR_SECTIONS - 1;
 }
 
 
@@ -236,7 +239,6 @@ enum GeneralSectionRow{
             cell.accessoryView = [sensorEnableSwitches objectAtIndex:idx];
 		}
 	}
-    
     return cell;
 }
 
@@ -281,8 +283,13 @@ enum GeneralSectionRow{
 */
 
 - (void) switchChanged:(UISwitch*) switchButton {
-	if (senseSwitch == switchButton)
-		[[Settings sharedSettings] setSenseEnabled:switchButton.on];
+	if (senseSwitch == switchButton) {
+		[[Settings sharedSettings] commitSettingType:@"general" setting:generalSettingSenseEnabledKey
+                                               value: (switchButton.on ? @"1" : @"0") persistent:YES];
+        //reload, as now the sensors section disappears
+        [self.tableView reloadData];
+        
+    }
 	else if (motionSwitch == switchButton) {
 		[[Settings sharedSettings] setSensor:[AccelerometerSensor class] enabled:switchButton.on];
 		[[Settings sharedSettings] setSensor:[AccelerationSensor class] enabled:switchButton.on];

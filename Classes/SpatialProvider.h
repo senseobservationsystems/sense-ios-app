@@ -30,7 +30,7 @@
     NSCondition* headingAvailable;
     BOOL updatingHeading;
 	
-	BOOL deallocating;
+//	BOOL deallocating;
 	
 	//shadow sensor.isEnabled variables since order of notificaion reception is undefined
 	BOOL compassEnabled;

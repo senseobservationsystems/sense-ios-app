@@ -145,45 +145,14 @@
 }
 
 - (void)audioRecorderDidFinishRecording:(AVAudioRecorder *)recorder successfully:(BOOL)didSucceed {
+	NSLog(@"recorder stopped");
 	[volumeTimer invalidate];
 	self.volumeTimer = nil;
 	if (didSucceed && nrVolumeSamples > 0)	{
 		//take timestamp
 		double timestamp = [[NSDate date] timeIntervalSince1970];
 
-		/*
-		NSInteger nrSamples;
-		AVURLAsset *recording = [AVURLAsset URLAssetWithURL:recorder.url options:nil];
-		AVAssetReader* recordingReader = [AVAssetReader assetReaderWithAsset:recording error:nil];
-		AVAssetReaderOutput* output =
-		[AVAssetReaderAudioMixOutput
-		  assetReaderAudioMixOutputWithAudioTracks:recording.tracks
-		 audioSettings: nil];
-		[recordingReader addOutput: output];
-		//process audio
-		CMSampleBufferRef nextBuffer;
-		NSInteger sum=0;
-	
-        [recordingReader startReading];
-		while (NULL != (nextBuffer =[output copyNextSampleBuffer])) {
-			size_t remaining, totalLength;
-			char* data;
-			OSStatus status = CMBlockBufferGetDataPointer (CMSampleBufferGetDataBuffer(nextBuffer),
-												  0,
-												  &remaining,
-												  &totalLength,
-												  &data);
-			nrSamples += remaining;
-			while (remaining) {
-				--remaining;
-				sum += data[remaining] * data[remaining];
-			}
-		}
-         NSLog(@"noise level: %g", 20 * log10(sqrt(sum * 1.0 / nrSamples)));
-        */
-		 
-
-		double level = 20 * log10(volumeSum / nrVolumeSamples);
+        double level = 20 * log10(volumeSum / nrVolumeSamples);
  
 		//TODO: save file...
 		[recorder deleteRecording];
@@ -233,11 +202,10 @@
 }
 
 - (void) dealloc {
-	NSLog(@"DEALLOCating noise sensor");
+	NSLog(@"Deallocating noise sensor");
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	self.isEnabled = NO;
-    [audioRecorder stop];
-	
+    [NSThread sleepForTimeInterval: 0.1];
 }
 
 @end

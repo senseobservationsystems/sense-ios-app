@@ -25,10 +25,18 @@
 
 #define IGNORE_DATA 0
 #if IGNORE_DATA != 0
-#warning Compiling with IGNORE_DATA, so no data will be committed to commonSense
+#warning Compiling with IGNORE_DATA, so no data will be uploaded to commonSense
 #endif
 
 #define MAX_POINTS_TO_UPLOAD_AT_ONCE 1000
+
+@interface SensorStore (private)
+    - (void) applyGeneralSettings;
+    - (void) uploadData;
+    - (void) instantiateSensors;
+    - (void) scheduleUpload;
+@end
+
 
 
 @implementation SensorStore
@@ -90,12 +98,10 @@ static SensorStore* sharedSensorStoreInstance = nil;
         sampleStrategy = [[SampleStrategy alloc] init];
         
 		//set settings and initialise sensors
+        [self instantiateSensors];
 		[self applyGeneralSettings];
-        
-		
 
 		//register for change in settings
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enabledChanged:) name:settingSenseEnabledChangedNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginChanged) name:settingLoginChangedNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(generalSettingChanged:) name:[Settings settingChangedNotificationNameForType:@"general"] object:nil];
 	}
@@ -158,7 +164,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 		}
 	}
 
-	//set self as data storage
+	//set self as data store
 	for (Sensor* sensor in sensors) {
 		sensor.dataStore = self;
 	}
@@ -179,11 +185,6 @@ static SensorStore* sharedSensorStoreInstance = nil;
 	}
 	
 	spatialProvider = [[SpatialProvider alloc] initWithCompass:compass orientation:orientation accelerometer:accelerometer acceleration:acceleration rotation:rotation];
-	
-	//enable sensors.
-	for (Sensor* sensor in sensors) {
-			[[Settings sharedSettings] sendNotificationForSensor:[sensor class]];
-	}
 }
 
 - (void) commitFormattedData:(NSDictionary*) data forSensorId:(NSString *)sensorId {
@@ -202,21 +203,36 @@ static SensorStore* sharedSensorStoreInstance = nil;
 }
 
 - (void) enabledChanged:(id) notification {
-	BOOL enable = [[notification object] boolValue];
+    BOOL enable = [[notification object] boolValue];
+    [self setEnabled:enable];
+}
+
+-(void) setEnabled:(BOOL) enable {
 	serviceEnabled = enable;
 
 	if (NO == enable) { 
-		//disable sensors
+		/* Previously sensors were deallocated (by removing their references), however that has some problems
+         * - the noise sensor uses a callback that cannot be unregistered, so deallocating the object while the callback may still use it is unwise
+         * - due to blocks being used as callbacks and other sources of references, it is actually quite hard to deallocate some objects. This might lead to multiple instances of the same sensor, which is not a good thing.
+         */
+        //disable sensors
 		for (Sensor* sensor in sensors) {
-			sensor.isEnabled = NO;
+			[[Settings sharedSettings] setSensor:[sensor class] enabled:NO permanent:NO];
 		}
-		//release sensors
-		spatialProvider = nil;
-		[sensors removeAllObjects];
+        
 		//flush data
 		[self forceDataFlush];
+        
+        //delete upload time
+        if (uploadTimer.isValid )
+            [uploadTimer invalidate];
 	} else {
-		[self instantiateSensors];
+        //send notifications to notify sensors whether they should activate themselves
+        for (Sensor* sensor in sensors) {
+			[[Settings sharedSettings] sendNotificationForSensor:[sensor class]];
+        }
+        //enable uploading
+        [self setSyncRate:syncRate];
 	}
     waitTime = 0;
 }
@@ -230,11 +246,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 
 	//change login
 	[sender setUser:[settings valueForKey:generalSettingUsernameKey] andPassword:[settings valueForKey:generalSettingPasswordKey]];
-	
-	if (serviceEnabled) {
-		//instantiate sensors
-		[self instantiateSensors];
-	}
+    
     sensorIdMap = nil;
     waitTime = 0;
 }
@@ -308,6 +320,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
                             [entry addObjectsFromArray:unsent];
                         }
                     }
+                    //Stop uploading altogether
                     goto breakSensorsLoop;
                 }
                 i += points;
@@ -324,21 +337,23 @@ static SensorStore* sharedSensorStoreInstance = nil;
     else {
         waitTime = MAX(2 * syncRate, MIN(2 * waitTime, 3600));
     }
-        
-    NSTimeInterval interval = MAX(waitTime, syncRate);
-    if (uploadTimer.isValid)
-        [uploadTimer invalidate];
-   	uploadTimer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(scheduleUpload) userInfo:nil repeats:NO];
-    NSRunLoop* runLoop = [NSRunLoop currentRunLoop];
-    [runLoop addTimer:uploadTimer forMode:NSRunLoopCommonModes];
-    NSLog(@"Uploading again in %f seconds.", interval);
     
-    //send notification about upload
-    ApplicationStateChangeMsg* msg = [[ApplicationStateChangeMsg alloc] init];
-    msg.applicationStateChange = succeed ? kUPLOAD_OK :kUPLOAD_FAILED;
-    [[NSNotificationCenter defaultCenter] postNotification: [NSNotification notificationWithName:applicationStateChangeNotification object:msg]];
+    if (serviceEnabled) {
+        NSTimeInterval interval = MAX(waitTime, syncRate);
+        if (uploadTimer.isValid)
+            [uploadTimer invalidate];
+        uploadTimer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(scheduleUpload)    userInfo:nil repeats:NO];
+        NSRunLoop* runLoop = [NSRunLoop currentRunLoop];
+        [runLoop addTimer:uploadTimer forMode:NSRunLoopCommonModes];
+        NSLog(@"Uploading again in %f seconds.", interval);
     
-    [runLoop run];
+        //send notification about upload
+        ApplicationStateChangeMsg* msg = [[ApplicationStateChangeMsg alloc] init];
+        msg.applicationStateChange = succeed ? kUPLOAD_OK :kUPLOAD_FAILED;
+        [[NSNotificationCenter defaultCenter] postNotification: [NSNotification notificationWithName:applicationStateChangeNotification object:msg]];
+    
+        [runLoop run];
+    }
 }
 
 - (void) applyGeneralSettings {
@@ -351,14 +366,8 @@ static SensorStore* sharedSensorStoreInstance = nil;
 		[sender setUser:[settings valueForKey:generalSettingUsernameKey] andPassword:[settings valueForKey:generalSettingPasswordKey]];
 		syncRate = [[[Settings sharedSettings] getSettingType:@"general" setting:generalSettingSynchronisationRateKey] doubleValue];
         [self setSyncRate:syncRate];
-				
-		serviceEnabled = [[settings valueForKey: generalSettingSenseEnabledKey] boolValue];
-		if (serviceEnabled) {
-			//it seems some sensors don't like to be launched from a non-main thread, locationManager seems to prefer the mainthread...
-			[self instantiateSensors];
-		}
 
-		//pollTimer = [NSTimer scheduledTimerWithTimeInterval:pollRate target:self selector:@selector(pollSensors) userInfo:nil repeats:YES];
+		[self setEnabled:[[[Settings sharedSettings] getSettingType:@"general" setting:generalSettingSenseEnabledKey] boolValue]];
 	}
 	@catch (NSException * e) {
 		NSLog(@"SenseStore: Exception thrown while updating general settings: %@", e);
@@ -384,16 +393,20 @@ static SensorStore* sharedSensorStoreInstance = nil;
 		NSLog(@"general setting changed: %@,%@", setting.name, setting.value);
 		if ([setting.name isEqualToString:generalSettingSynchronisationRateKey]) {
 			[self setSyncRate:[setting.value intValue]];
+		} else if ([setting.name isEqualToString:generalSettingSenseEnabledKey]) {
+			[self setEnabled:[setting.value boolValue]];
 		}
 	}
 
 }
 
 - (void) setSyncRate: (int) newRate {
-    if (uploadTimer.isValid )
-        [uploadTimer invalidate];
 	syncRate = newRate;
-	uploadTimer = [NSTimer scheduledTimerWithTimeInterval:syncRate target:self selector:@selector(scheduleUpload) userInfo:nil repeats:NO];
+    if (serviceEnabled) {
+        if (uploadTimer.isValid )
+            [uploadTimer invalidate];
+        uploadTimer = [NSTimer scheduledTimerWithTimeInterval:syncRate target:self selector:@selector(scheduleUpload) userInfo:nil repeats:NO];
+    }
 }
 
 + (NSDictionary*) device {
