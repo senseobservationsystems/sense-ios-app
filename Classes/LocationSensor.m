@@ -217,6 +217,7 @@ static CLLocation* lastAcceptedPoint;
             [self startUpdating];
             [self motion];
         }
+        //NOTE: using significant location updates doesn't allow the phone to sense while running in the background
         [locationManager performSelectorOnMainThread:@selector(startUpdatingLocation) withObject:nil waitUntilDone:YES];
         
 	}

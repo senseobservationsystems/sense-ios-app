@@ -8,6 +8,7 @@
 
 #import "Preferences.h"
 #import "PickerTable.h"
+#import <CoreLocation/CoreLocation.h>
 
 @implementation Preferences
 /* Settings menu */
@@ -299,23 +300,23 @@ enum AdaptiveSectionRow {
 					case 100:
 						prePicked = 2;
 						break;
-					case 500:
+					case 1000:
 						prePicked = 3;
 						break;
-					case 1000:
+					case 10000:
 						prePicked = 4;
 						break;
 				}
 				
-				NSArray* options = [[NSArray alloc] initWithObjects:@"best", @"50 meter", @"100 meter (recommended)", @"500 meter", @"1 km", nil];
+				NSArray* options = [[NSArray alloc] initWithObjects:@"best", @"50 meter", @"100 meter (recommended)", @"1 km", @"10 km", nil];
 				PickerTable* picker = [[PickerTable alloc] initWithStyle:UITableViewStyleGrouped name:@"Position accuracy" options: options prePicked: prePicked];
 				picker.callback = ^void (int picked) {
 					int accuracy;
 					if (picked == 0) accuracy = 0;
 					else if (picked == 1) accuracy = 50;
 					else if (picked == 2) accuracy = 100;
-					else if (picked == 3) accuracy = 500;
-					else if (picked == 4) accuracy = 1000;
+					else if (picked == 3) accuracy = 1000;
+					else if (picked == 4) accuracy = 10000;
 					else {
 						NSLog(@"Error unknown option picked for position accuracy.");
 						accuracy = 100;
