@@ -332,7 +332,7 @@ enum AdaptiveSectionRow {
 				NSString* currentOption = [[Settings sharedSettings] getSettingType:@"spatial" setting:@"pollInterval"];
 				NSTimeInterval optionValue = currentOption == nil ? -1 : [currentOption doubleValue];
                 double epsilon = 0.001;
-				if (fabsf(optionValue - 1) < epsilon) {
+				if (fabsf(optionValue - 5) < epsilon) {
                     prePicked = 0;
                 } else if (fabsf(optionValue - 15) < epsilon) {
                     prePicked = 1;
@@ -344,11 +344,11 @@ enum AdaptiveSectionRow {
                     prePicked = 2;
                 }
 				
-				NSArray* options = [[NSArray alloc] initWithObjects:@"every second", @"every 15 seconds", @"every minute ", @"every 5 minutes", nil];
+				NSArray* options = [[NSArray alloc] initWithObjects:@"every 5 seconds", @"every 15 seconds", @"every minute ", @"every 5 minutes", nil];
 				PickerTable* picker = [[PickerTable alloc] initWithStyle:UITableViewStyleGrouped name:@"Motion update" options: options prePicked: prePicked];
 				picker.callback = ^void (int picked) {
 					NSTimeInterval interval;
-					if (picked == 0) interval = 1;
+					if (picked == 0) interval = 5;
 					else if (picked == 1) interval = 15;
 					else if (picked == 2) interval = 60;
 					else if (picked == 3) interval = 300;

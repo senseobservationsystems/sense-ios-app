@@ -26,9 +26,12 @@ static const double G = 9.81;
 		//Set settings
 		@try {
 			interval = [[[Settings sharedSettings] getSettingType:@"spatial" setting:@"pollInterval"] doubleValue];
+   			frequency = [[[Settings sharedSettings] getSettingType:@"spatial" setting:@"frequency"] doubleValue];
+            sampleTime = [[[Settings sharedSettings] getSettingType:@"spatial" setting:@"sampleTime"] doubleValue];
 			motionManager.gyroUpdateInterval = interval;
 			motionManager.accelerometerUpdateInterval = interval;
 			motionManager.deviceMotionUpdateInterval = interval;
+            NSLog(@"freq=%f, dt=%f", frequency, sampleTime);
 		}
 		@catch (NSException * e) {
 			NSLog(@"spatial provider: Exception thrown while setting: %@", e);
@@ -54,10 +57,6 @@ static const double G = 9.81;
 		[[NSNotificationCenter defaultCenter] addObserver:self
 												 selector:@selector(orientationEnabledChanged:)
 													 name:[Settings enabledChangedNotificationNameForSensor:[orientationSensor class]] object:nil];
-
-		[[NSNotificationCenter defaultCenter] addObserver:self
-												 selector:@selector(compassEnabledChanged:)
-													 name:[Settings enabledChangedNotificationNameForSensor:[compassSensor class]] object:nil];
 		
 		//register for setting changes
 		[[NSNotificationCenter defaultCenter] addObserver:self
@@ -69,198 +68,203 @@ static const double G = 9.81;
 }
 
 - (void) accelerometerEnabledChanged: (id) notification {
-	accelerometerEnabled = [[notification object] boolValue];
-	//only enable if orientation is disabled (orientation will also report acceleration)
-	if (orientationEnabled == false) {
-		[self setAccelerometerEnabled:[[notification object] boolValue]];
-	}
-}
-
-- (void) setAccelerometerEnabled:(BOOL) enable {
-	if (enable) {
-		CMAccelerometerHandler accelerometerHandler = ^ (CMAccelerometerData *accelerometerData, NSError *error) {
-			CMAcceleration acceleration = accelerometerData.acceleration;
-			NSMutableDictionary* newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-											//acceleration
-											[NSString stringWithFormat:@"%.3f", acceleration.x * G], accelerationXKey,
-											[NSString stringWithFormat:@"%.3f", acceleration.y * G], accelerationYKey,
-											[NSString stringWithFormat:@"%.3f", acceleration.z * G], accelerationZKey,
-											nil];
-			
-            double timestamp = [[NSDate date] timeIntervalSince1970];
-			
-			NSDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
-												[newItem JSONRepresentation], @"value",
-												[NSString stringWithFormat:@"%.3f", timestamp], @"date",
-												nil];
-
-			[accelerometerSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:accelerometerSensor.sensorId];
-		};
-		[motionManager startAccelerometerUpdatesToQueue:operations withHandler:accelerometerHandler];
-	}
-	else {
-		[motionManager stopAccelerometerUpdates];
+	bool enable = [[notification object] boolValue];
+    //check to see wether the timer needs to be enabled/disabled
+    bool otherIsEnabled = (accelerationSensor != nil && accelerationSensor.isEnabled) || (rotationSensor != nil && rotationSensor.isEnabled) || (orientationSensor != nil && orientationSensor.isEnabled);
+    if (enable || otherIsEnabled) {
+        //make sure timer is scheduled
+        if (NO == [pollTimer isValid]) {
+            pollTimer = [NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(poll) userInfo:nil repeats:YES];
+        }
+    }
+	if (enable == NO && otherIsEnabled == NO) {
+        //stop the timer
+        [pollTimer invalidate];
 	}
 }
 
 - (void) rotationEnabledChanged: (id) notification {
-	rotationEnabled = [[notification object] boolValue] && (rotationSensor != nil);
-	//only enable if orientation is disabled (orientation will also report rotation)
-	if (orientationEnabled == false) {
-		[self setRotationEnabled:[[notification object] boolValue]];
+	bool enable = [[notification object] boolValue] && (rotationSensor != nil);
+    //check to see wether the timer needs to be enabled/disabled
+    bool otherIsEnabled = (accelerometerSensor != nil && accelerometerSensor.isEnabled) || (orientationSensor != nil && orientationSensor.isEnabled);
+    if (enable || otherIsEnabled) {
+        //make sure timer is scheduled
+        if (NO == [pollTimer isValid]) {
+            pollTimer = [NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(poll) userInfo:nil repeats:YES];
+        }
+    }
+	if (enable == NO && otherIsEnabled == NO) {
+        //stop the timer
+        [pollTimer invalidate];
 	}
 }
 
-- (void) setRotationEnabled:(BOOL) enable {
-	if (enable) {
-		
-		CMGyroHandler gyroHandler = ^ (CMGyroData *gyroData, NSError *error) {
-			CMRotationRate rotation = gyroData.rotationRate;
-			NSMutableDictionary* newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-											//acceleration
-											[NSString stringWithFormat:@"%.3f", rotation.x], accelerationXKey,
-											[NSString stringWithFormat:@"%.3f", rotation.y], accelerationYKey,
-											[NSString stringWithFormat:@"%.3f", rotation.z], accelerationZKey,
-											nil];
-			
-            double timestamp = [[NSDate date] timeIntervalSince1970];
-			
-			NSDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
-												[newItem JSONRepresentation], @"value",
-												[NSString stringWithFormat:@"%.3f", timestamp], @"date",
-												nil];
-			[rotationSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:rotationSensor.sensorId];
-		};
-		[motionManager startGyroUpdatesToQueue:operations withHandler:gyroHandler];
-	}
-	else {
-		[motionManager stopGyroUpdates];
+- (void) orientationEnabledChanged:(id)notification {
+	bool enable = [[notification object] boolValue] && (orientationSensor != nil);
+    //check to see wether the timer needs to be enabled/disabled
+    bool otherIsEnabled = (accelerationSensor != nil && accelerationSensor.isEnabled) || (rotationSensor != nil && rotationSensor.isEnabled) || (accelerometerSensor != nil && accelerometerSensor.isEnabled);
+    if (enable || otherIsEnabled) {
+        //make sure timer is scheduled
+        if (NO == [pollTimer isValid]) {
+            pollTimer = [NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(poll) userInfo:nil repeats:YES];
+        }
+    }
+	if (enable == NO && otherIsEnabled == NO) {
+        //stop the timer
+        [pollTimer invalidate];
 	}
 }
 
+- (void) poll {
+    NSLog(@"entered poll method");
+    
+    BOOL hasOrientation = orientationSensor != nil && orientationSensor.isEnabled;
+    BOOL hasAccelerometer = accelerometerSensor != nil && accelerometerSensor.isEnabled;
+    BOOL hasAcceleration = accelerationSensor != nil && accelerationSensor.isEnabled;
+    BOOL hasRotation = rotationSensor != nil && rotationSensor.isEnabled;
+    
+    
+    //prepare arrays for data
+    const int nrSamples = frequency * sampleTime;
+    CMAcceleration* accelerometerData = (CMAcceleration*) malloc(sizeof(CMAcceleration) * nrSamples);
+    CMAcceleration* accelerationData = (CMAcceleration*) malloc(sizeof(CMAcceleration) * nrSamples);
+    CMRotationRate* rotationRateData = (CMRotationRate*) malloc(sizeof(CMRotationRate) * nrSamples);
+    __block CMAttitude* attitude;
+    __block double timestamp;
+    __block int sample = 0;
 
-- (void) orientationEnabledChanged: (id) notification {
-	BOOL enable = [[notification object] boolValue];
-	orientationEnabled = enable && (orientationSensor != nil);
-	[self setOrientationEnabled:enable];
-	
-	if (orientationEnabled) { //disable accelerometer/gyro as orientation will report this now
-		[self setAccelerometerEnabled:false];
-		[self setRotationEnabled:false];
-	} else { //enable acceleration/gyro, this was provided by orientation
-		if (accelerometerEnabled) {
-			[self setAccelerometerEnabled:true];
-		}
-		if (rotationEnabled) {
-			[self setRotationEnabled:true];
-		}
-	}
+        NSCondition* dataCollectedCondition = [NSCondition new];
 
-}
-
-- (void) setOrientationEnabled:(BOOL) enable {
-	if (enable) {
-		CMDeviceMotionHandler deviceMotionHandler = ^ (CMDeviceMotion *deviceMotion, NSError *error) {
-            double timestamp = [[NSDate date] timeIntervalSince1970];
-			//report attitude
-			CMAttitude* attitude = deviceMotion.attitude;
-			//CMRotationRate rotation = deviceMotion.rotationRate;
-			const double radianInDegrees = 180 / M_PI;
-			
-			//TODO: convert to the desired format. i.e. pitch <-180, 180] and roll <-90,90], now the default iOS format has pitch <-90,90] and roll <-180,180]
-			double pitch = attitude.pitch * radianInDegrees;
-			double roll = attitude.roll * radianInDegrees;
-            
-            if (!updatingHeading) {
-                //wait for heading to be available 
-                [headingAvailable lock];
-                [locationManager startUpdatingHeading];
-                updatingHeading = YES;
-                [headingAvailable wait];
-                [headingAvailable unlock];
+        CMDeviceMotionHandler deviceMotionHandler = ^(CMDeviceMotion *deviceMotion, NSError *error) {
+            timestamp = [[NSDate date] timeIntervalSince1970];
+            if (sample >= nrSamples) {
+                return;
             }
-            
-            float heading = locationManager.heading.magneticHeading;
 
-			NSMutableDictionary* newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-											[NSString stringWithFormat:@"%.3f", pitch], attitudePitchKey,
-											[NSString stringWithFormat:@"%.3f", roll], attitudeRollKey,
-											[NSString stringWithFormat:@"%.0f", heading], attitudeYawKey,
-											nil];
-			
-			NSDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
-												[newItem JSONRepresentation], @"value",
-												[NSString stringWithFormat:@"%.3f", timestamp],@"date",
-												nil];
-			[orientationSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:orientationSensor.sensorId];
-			
+			//report attitude only once
+            if (attitude == nil && hasOrientation) {
+                attitude = [deviceMotion.attitude copy];
+            }
+
 			//report accelerometer
-			if (accelerometerSensor != nil && accelerometerSensor.isEnabled) { 
+			if (hasAccelerometer) { 
 				CMAcceleration acceleration = deviceMotion.userAcceleration;
 				CMAcceleration gravity = deviceMotion.gravity;
-				newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-						   [NSString stringWithFormat:@"%.3f", (acceleration.x + gravity.x)*G], accelerationXKey,
-						   [NSString stringWithFormat:@"%.3f", (acceleration.y + gravity.y)*G], accelerationYKey,
-						   [NSString stringWithFormat:@"%.3f", (acceleration.z + gravity.z)*G], accelerationZKey,
-						   nil];
-				valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
-									  [newItem JSONRepresentation], @"value",
-									  [NSString stringWithFormat:@"%.3f", timestamp],@"date",
-									  nil];
-				[accelerometerSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:accelerometerSensor.sensorId];
-			}
-			
-			//report device acceleration /without/ gravity
-			if (accelerationSensor != nil && accelerationSensor.isEnabled) { 
-				CMAcceleration acceleration = deviceMotion.userAcceleration;
-				newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-											[NSString stringWithFormat:@"%.3f", acceleration.x*G], accelerationXKey,
-   											[NSString stringWithFormat:@"%.3f", acceleration.y*G], accelerationYKey,
-											[NSString stringWithFormat:@"%.3f", acceleration.z*G], accelerationZKey,
-											nil];
-				valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
-									  [newItem JSONRepresentation], @"value",
-									  [NSString stringWithFormat:@"%.3f", timestamp],@"date",
-									  nil];
-				[accelerationSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:accelerationSensor.sensorId];
-			}
-			
-			//report device rotation rate
-			if (rotationSensor != nil && rotationSensor.isEnabled) {
-				CMRotationRate rotation = deviceMotion.rotationRate;
-				newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-						   [NSString stringWithFormat:@"%.3f", rotation.x], accelerationXKey,
-						   [NSString stringWithFormat:@"%.3f", rotation.y], accelerationYKey,
-						   [NSString stringWithFormat:@"%.3f", rotation.z], accelerationZKey,
-						   nil];
-				valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
-									  [newItem JSONRepresentation], @"value",
-									  [NSString stringWithFormat:@"%.3f", timestamp],@"date",
-									  nil];
-				[rotationSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:rotationSensor.sensorId];
-			}
+                accelerometerData[sample].x = (acceleration.x + gravity.x);
+                accelerometerData[sample].y = (acceleration.y + gravity.y);
+                accelerometerData[sample].z = (acceleration.z + gravity.z);
+            }
+            //report acceleration
+			if (hasAcceleration) { 
+				accelerationData[sample] = deviceMotion.userAcceleration;
+            }
+            
+            //report rotation
+            if (hasRotation) {
+   				rotationRateData[sample] = deviceMotion.rotationRate;
+            }
+            			
+            //and move on to the next sample, or stop the sampling
+            if (++sample >= nrSamples) {
+                [dataCollectedCondition broadcast];
+                 [motionManager stopDeviceMotionUpdates];
+            }
 		};
+        motionManager.deviceMotionUpdateInterval = 1./frequency;
+        [dataCollectedCondition lock];
 		[motionManager startDeviceMotionUpdatesToQueue:operations withHandler:deviceMotionHandler];
-	}
-	else {
-		[motionManager stopDeviceMotionUpdates];
-	}
+    // Aquire heading, this may take some time ( 1 second)
+    float heading = -1;
+    /*
+    if (hasOrientation) {
+     if (!updatingHeading) {
+     //wait for heading to be available 
+     [headingAvailable lock];
+     [locationManager startUpdatingHeading];
+     updatingHeading = YES;
+     [headingAvailable wait];
+     [headingAvailable unlock];
+     }
+     heading = locationManager.heading.magneticHeading;
+    }
+    */
+        //wait until all data collected
+        [dataCollectedCondition wait];
+        [dataCollectedCondition unlock];
+
+    const double radianInDegrees = 180 / M_PI;
+    
+    //TODO: convert to the desired format. i.e. pitch <-180, 180] and roll <-90,90], now the default iOS format has pitch <-90,90] and roll <-180,180]
+    //Commit samples for the sensors
+    if (hasOrientation) {
+        NSMutableDictionary* newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                        [NSString stringWithFormat:@"%.3f", attitude.pitch * radianInDegrees], attitudePitchKey,
+                                        [NSString stringWithFormat:@"%.3f", attitude.roll * radianInDegrees], attitudeRollKey,
+                                        [NSString stringWithFormat:@"%.0f", heading], attitudeYawKey,
+                                        nil];
+        
+        NSDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
+                                            [newItem JSONRepresentation], @"value",
+                                            [NSString stringWithFormat:@"%.3f", timestamp],@"date",
+                                            nil];
+        [orientationSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:orientationSensor.sensorId];
+
+    }
+        
+    if (hasAccelerometer) {
+        //generate csv from array data
+        NSMutableString* csv = [NSMutableString new];
+        for(int i=0; i < nrSamples; i++) {
+            [csv appendFormat:@"%.3f,%.3f,%.3f\n",accelerometerData[i].x * G, accelerometerData[i].y * G, accelerometerData[i].z * G];
+        }
+        NSMutableDictionary* value = [NSDictionary dictionaryWithObjectsAndKeys:
+                                      [NSString stringWithFormat:@"%.3f",frequency], @"frequency",
+                                      @"x,y,z", @"header",
+                                      csv, @"data",
+                                      nil];
+        NSMutableDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
+                              [value JSONRepresentation], @"value",
+                              [NSString stringWithFormat:@"%.3f", timestamp],@"date",
+                              nil];
+        [accelerometerSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:accelerometerSensor.sensorId];
+    }
+    
+    if (hasAcceleration) {
+            //generate csv from array data
+            NSMutableString* csv = [NSMutableString new];
+            for(int i=0; i < nrSamples; i++) {
+                [csv appendFormat:@"%.3f,%.3f,%.3f\n",accelerationData[i].x * G, accelerationData[i].y * G, accelerationData[i].z * G];
+            }
+            NSMutableDictionary* value = [NSDictionary dictionaryWithObjectsAndKeys:
+                                          [NSString stringWithFormat:@"%.3f",frequency], @"frequency",
+                                          @"x,y,z", @"header",
+                                          csv, @"data",
+                                          nil];
+            NSMutableDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                       [value JSONRepresentation], @"value",
+                                                       [NSString stringWithFormat:@"%.3f", timestamp],@"date",
+                                                       nil];
+            [accelerationSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:accelerationSensor.sensorId];
+    }
+
+    if (hasRotation) {
+    //generate csv from array data
+    NSMutableString* csv = [NSMutableString new];
+    for(int i=0; i < nrSamples; i++) {
+        [csv appendFormat:@"%.3f,%.3f,%.3f\n",rotationRateData[i].x * radianInDegrees, rotationRateData[i].y * radianInDegrees, rotationRateData[i].z * radianInDegrees];
+    }
+    NSMutableDictionary* value = [NSDictionary dictionaryWithObjectsAndKeys:
+                                  [NSString stringWithFormat:@"%.3f",frequency], @"frequency",
+                                  @"x,y,z", @"header",
+                                  csv, @"data",
+                                  nil];
+    NSMutableDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
+                                               [value JSONRepresentation], @"value",
+                                               [NSString stringWithFormat:@"%.3f", timestamp],@"date",
+                                               nil];
+    [rotationSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:rotationSensor.sensorId];
 }
 
-- (void) compassEnabledChanged: (id) notification {
-	BOOL enable = [[notification object] boolValue];
-	compassEnabled = enable;
-}
-
-- (void) setCompassEnabled:(BOOL) enable {
-	if (enable) {
-		[locationManager startUpdatingHeading];
-		NSLog(@"Enabling compass.");
-	} else {
-		[locationManager stopUpdatingHeading];
-		NSLog(@"Disabling compass.");
-	}
-    updatingHeading = enable;
 }
 
 - (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager {
@@ -278,36 +282,6 @@ static const double G = 9.81;
         updatingHeading = false;
         return;
     }
-    
-    //compass is enabled, so report these values
-	
-	NSNumber* heading = [NSNumber numberWithFloat:newHeading.magneticHeading];
-	NSNumber* accuracy = [NSNumber numberWithFloat:newHeading.headingAccuracy];
-	//values are normalised to the range [+128,-128], normalise to [+1,-1]
-	NSNumber* devX = [NSNumber numberWithFloat:newHeading.x / 128.0];
-	NSNumber* devY = [NSNumber numberWithFloat:newHeading.y / 128.0];
-	NSNumber* devZ = [NSNumber numberWithFloat:newHeading.z / 128.0];
-	
-	NSMutableDictionary* newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-									[NSString stringWithFormat:@"%.4f", devX], devXKey,
-									[NSString stringWithFormat:@"%.4f", devY], devYKey,
-									[NSString stringWithFormat:@"%.4f", devZ], devZKey,
-									nil];
-	
-	//include heading if no error indicated
-	if (newHeading.headingAccuracy >=0) {
-		[newItem setObject:[NSString stringWithFormat:@"%.0f", heading] forKey:magneticHeadingKey];
-		[newItem setObject:[NSString stringWithFormat:@"%.0f", accuracy] forKey:accuracyKey];
-	}
-  	
-	
-	double timestamp = [newHeading.timestamp timeIntervalSince1970];
-	
-	NSDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
-										[newItem JSONRepresentation], @"value",
-										[NSString stringWithFormat:@"%.3f", timestamp], @"date",
-										nil];
-	[compassSensor.dataStore commitFormattedData:valueTimestampPair forSensorId:[compassSensor sensorId]];
 }
 
 - (void) settingChanged: (NSNotification*) notification {
@@ -316,9 +290,10 @@ static const double G = 9.81;
 		NSLog(@"Spatial: setting %@ changed to %@.", setting.name, setting.value);
 		if ([setting.name isEqualToString:@"pollInterval"]) {
 			interval = [setting.value doubleValue];
-			motionManager.gyroUpdateInterval = interval;
-			motionManager.accelerometerUpdateInterval = interval;
-			motionManager.deviceMotionUpdateInterval = interval;
+		} else if ([setting.name isEqualToString:@"frequency"]) {
+			frequency = [setting.value doubleValue];
+		} else if ([setting.name isEqualToString:@"sampleTime"]) {
+			sampleTime = [setting.value doubleValue];
 		}
 	}
 	@catch (NSException * e) {
@@ -329,9 +304,7 @@ static const double G = 9.81;
 
 - (void) dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[self setAccelerometerEnabled:NO];
-	[self setCompassEnabled:NO];
-	[self setOrientationEnabled:NO];
+    [pollTimer invalidate];
 	
 	[operations cancelAllOperations];
 }

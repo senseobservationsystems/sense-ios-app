@@ -29,27 +29,17 @@
 	NSOperationQueue* operations;
     NSCondition* headingAvailable;
     BOOL updatingHeading;
-	
-//	BOOL deallocating;
-	
-	//shadow sensor.isEnabled variables since order of notificaion reception is undefined
-	BOOL compassEnabled;
-	BOOL orientationEnabled;
-	BOOL accelerometerEnabled;
-	BOOL rotationEnabled;
     
     NSTimeInterval interval;
+    double frequency, sampleTime;
+    NSTimer* pollTimer;
 }
 
 - (id) initWithCompass:(CompassSensor*)compass orientation:(OrientationSensor*)orientation accelerometer:(AccelerometerSensor*)accelerometer acceleration:(AccelerationSensor*)acceleration rotation:(RotationSensor*)rotation;
-- (void) setAccelerometerEnabled:(BOOL) enable;
 - (void) accelerometerEnabledChanged: (id) notification;
-- (void) setRotationEnabled:(BOOL) enable;
 - (void) rotationEnabledChanged: (id) notification;
 - (void) orientationEnabledChanged: (id) notification;
-- (void) setOrientationEnabled:(BOOL) enable;
-- (void) compassEnabledChanged: (id) notification;
-- (void) setCompassEnabled:(BOOL) enable;
 - (void) settingChanged: (NSNotification*) notification;
+- (void) poll;
 
 @end

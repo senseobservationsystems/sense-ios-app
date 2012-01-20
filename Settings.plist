@@ -41,6 +41,10 @@
 	<dict>
 		<key>pollInterval</key>
 		<string>60</string>
+		<key>frequency</key>
+		<string>50</string>
+		<key>sampleTime</key>
+		<string>2</string>
 	</dict>
 </dict>
 </plist>
