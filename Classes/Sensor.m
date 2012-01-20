@@ -57,8 +57,11 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (NSString*) sensorId {
++ (NSString*) sensorId {
     return [NSString stringWithFormat:@"%@", self.class];
+}
+- (NSString*) sensorId {
+    return [self.class sensorId];
 }
 
 @end

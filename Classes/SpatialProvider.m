@@ -26,8 +26,11 @@ static const double G = 9.81;
 		//Set settings
 		@try {
 			interval = [[[Settings sharedSettings] getSettingType:@"spatial" setting:@"pollInterval"] doubleValue];
-   			frequency = [[[Settings sharedSettings] getSettingType:@"spatial" setting:@"frequency"] doubleValue];
-            sampleTime = [[[Settings sharedSettings] getSettingType:@"spatial" setting:@"sampleTime"] doubleValue];
+   			//frequency = [[[Settings sharedSettings] getSettingType:@"spatial" setting:@"frequency"] doubleValue];
+            //sampleTime = [[[Settings sharedSettings] getSettingType:@"spatial" setting:@"sampleTime"] doubleValue];
+            //TODO: properly use the options
+            frequency = 50;
+            sampleTime = 1;
 			motionManager.gyroUpdateInterval = interval;
 			motionManager.accelerometerUpdateInterval = interval;
 			motionManager.deviceMotionUpdateInterval = interval;

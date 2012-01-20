@@ -17,6 +17,7 @@
 - (NSURL*) makeUrlForSensor:(NSString*) sensorId;
 - (NSURL*) makeUrlForAddingSensorToDevice:(NSString*) sensorId;
 - (NSURL*) makeSensorsUrlForDeviceId:(NSInteger)deviceId;
+- (NSURL*) makeUrlForSharingSensor:(NSString*) sensorId;
 @end
 
 @implementation Sender
@@ -193,6 +194,17 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 	NSDictionary* request = [NSDictionary dictionaryWithObject:device forKey:@"device"];
 	
 	[self doJsonRequestTo:[self makeUrlForAddingSensorToDevice:sensorId] withMethod:@"POST" withInput:request];
+	return YES;
+}
+
+- (BOOL) shareSensor: (NSString*)sensorId WithUser:(NSString*)user {
+//share sensor with username
+    NSDictionary* userEntry = [NSDictionary dictionaryWithObject:user forKey:@"username"];
+    NSDictionary* request = [NSDictionary dictionaryWithObject:userEntry forKey:@"user"];
+    NSLog(@"%@", [request JSONRepresentation]);
+	
+	[self doJsonRequestTo:[self makeUrlForSharingSensor:sensorId] withMethod:@"POST" withInput:request];
+    //TODO: this method should check wether the sharing succeeded
 	return YES;
 }
 
@@ -374,6 +386,17 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 					 [urls valueForKey:@"sensors"],
 					 sensorId,
  					 [urls valueForKey:@"sensorDevice"],
+					 [urls valueForKey:@"jsonSuffix"]];
+	
+	return [NSURL URLWithString:url];
+}
+
+- (NSURL*) makeUrlForSharingSensor:(NSString*) sensorId {
+	NSString* url = [NSString stringWithFormat: @"%@/%@/%@/%@%@",
+					 [urls valueForKey:@"baseUrl"],
+					 [urls valueForKey:@"sensors"],
+					 sensorId,
+ 					 [urls valueForKey:@"users"],
 					 [urls valueForKey:@"jsonSuffix"]];
 	
 	return [NSURL URLWithString:url];

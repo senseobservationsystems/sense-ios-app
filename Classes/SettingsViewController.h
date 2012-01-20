@@ -9,6 +9,7 @@
 #import "SensorStore.h"
 #import "WebViewController.h"
 #import "ApplicationStateChange.h"
+#import "ActivityFeedbackController.h"
 
 
 @interface SettingsViewController : UITableViewController {
@@ -16,6 +17,7 @@
 	
 	UIBarButtonItem* webViewButton;
 	WebViewController* webViewController;
+    ActivityFeedbackController* activityFeedbackController;
 	
 	//sensors
 	NSArray* sensorClasses;

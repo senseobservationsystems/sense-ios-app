@@ -11,6 +11,7 @@
 #import "SensorStore.h"
 #import "Settings.h"
 #import "Preferences.h"
+#import "ActivityFeedbackController.h"
 #import <UIKit/UIKit.h>
 
 //sensors
@@ -50,7 +51,7 @@ enum GeneralSectionRow{
 	
 	//setup navigation bar
 	self.navigationItem.title = @"Sense";
-	webViewButton= [[UIBarButtonItem alloc] initWithTitle:@"CommonSense" style:UIBarButtonItemStylePlain target:self action:@selector(gotoWebView)];
+	webViewButton= [[UIBarButtonItem alloc] initWithTitle:@"Feedback" style:UIBarButtonItemStylePlain target:self action:@selector(gotoWebView)];
 	self.navigationItem.rightBarButtonItem = webViewButton;
 	//self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Help" style:UIBarButtonItemStylePlain target:self action:@selector(displayWelcomeMessage)];
 	
@@ -59,7 +60,10 @@ enum GeneralSectionRow{
 	//filter out motion sensors
 	//NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"NOT (name == '')"];
 	NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"NOT (name == 'orientation' OR name == 'accelerometer' OR name == 'acceleration' OR name == 'gyroscope'\
-                                       OR name == 'battery' OR name == 'call state' OR name == 'connection type')"];
+                                       OR name == 'battery' OR name == 'call state' OR name == 'connection type' OR name == 'activityFeedback' OR name == 'preferences')"];
+    
+    //UGLY HACK TO ENABLE PREFERENCES
+    [[Settings sharedSettings] setSensor:[Preferences class] enabled:YES permanent:YES];
 
 	self.sensorClasses = [sensors filteredArrayUsingPredicate:availablePredicate];
 	//create single switch for motion sensors
@@ -379,6 +383,7 @@ enum GeneralSectionRow{
 }
 
 - (void) gotoWebView {
+    /*
 	//instantiate webview
 	if (webViewController == nil)
 		webViewController = [[WebViewController alloc] init];
@@ -390,7 +395,11 @@ enum GeneralSectionRow{
 		[alert show];
 		firstTimeCommonSense = NO;
 	}
-		
+     */
+
+    if (activityFeedbackController == nil)
+        activityFeedbackController = [ActivityFeedbackController new];
+    [self.navigationController pushViewController:activityFeedbackController animated:YES];
 }
 
 - (void) displayWelcomeMessage {

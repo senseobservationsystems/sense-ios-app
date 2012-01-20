@@ -34,4 +34,5 @@
 + (NSString*) deviceType;
 + (NSDictionary*) sensorDescription;
 + (BOOL) isAvailable;
++ (NSString*) sensorId;
 @end

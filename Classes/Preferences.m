@@ -332,29 +332,26 @@ enum AdaptiveSectionRow {
 				NSString* currentOption = [[Settings sharedSettings] getSettingType:@"spatial" setting:@"pollInterval"];
 				NSTimeInterval optionValue = currentOption == nil ? -1 : [currentOption doubleValue];
                 double epsilon = 0.001;
-				if (fabsf(optionValue - 5) < epsilon) {
+				if (fabsf(optionValue - 15) < epsilon) {
                     prePicked = 0;
-                } else if (fabsf(optionValue - 15) < epsilon) {
-                    prePicked = 1;
                 } else if (fabsf(optionValue - 60) < epsilon) {
-                    prePicked = 2;
+                    prePicked = 1;
                 } else if (fabsf(optionValue - 300) < epsilon) {
-                    prePicked = 3;
-                } else {
                     prePicked = 2;
+                } else {
+                    prePicked = 1;
                 }
 				
-				NSArray* options = [[NSArray alloc] initWithObjects:@"every 5 seconds", @"every 15 seconds", @"every minute ", @"every 5 minutes", nil];
+				NSArray* options = [[NSArray alloc] initWithObjects:@"every 15 seconds", @"every minute", @"every 5 minutes", nil];
 				PickerTable* picker = [[PickerTable alloc] initWithStyle:UITableViewStyleGrouped name:@"Motion update" options: options prePicked: prePicked];
 				picker.callback = ^void (int picked) {
 					NSTimeInterval interval;
-					if (picked == 0) interval = 5;
-					else if (picked == 1) interval = 15;
-					else if (picked == 2) interval = 60;
-					else if (picked == 3) interval = 300;
+					if (picked == 0) interval = 15;
+					else if (picked == 1) interval = 60;
+					else if (picked == 2) interval = 300;
 					else {
 						NSLog(@"Error unknown option picked for spatial update frequency.");
-						interval = 15;
+						interval = 60;
 					}
 					
 					[[Settings sharedSettings] commitSettingType:@"spatial" setting:@"pollInterval" value:[NSString stringWithFormat:@"%g",interval] persistent:YES];
@@ -368,28 +365,24 @@ enum AdaptiveSectionRow {
 				NSString* currentOption = [[Settings sharedSettings] getSettingType:@"noise" setting:@"interval"];
 				int optionValue = currentOption == nil ? -1 : [currentOption intValue];
 				switch (optionValue) {
-					case 5:
+					case 15:
 						prePicked = 0;
 						break;
-					case 30:
+					case 60:
 						prePicked = 1;
 						break;
-					case 60:
-						prePicked = 2;
-						break;
 					case 300:
-						prePicked = 3;
+						prePicked = 2;
 						break;
 				}
 				
-				NSArray* options = [[NSArray alloc] initWithObjects:@"every 5 seconds", @"every 30 seconds", @"every minute", @"every 5 minutes", nil];
+				NSArray* options = [[NSArray alloc] initWithObjects:@"every 15 seconds", @"every minute", @"every 5 minutes", nil];
 				PickerTable* picker = [[PickerTable alloc] initWithStyle:UITableViewStyleGrouped name:@"noise update" options: options prePicked: prePicked];
 				picker.callback = ^void (int picked) {
 					int interval;
-					if (picked == 0) interval = 5;
-					else if (picked == 1) interval = 30;
-					else if (picked == 2) interval = 60;
-					else if (picked == 3) interval = 300;
+					if (picked == 0) interval = 15;
+					else if (picked == 1) interval = 60;
+					else if (picked == 2) interval = 300;
 					else {
 						NSLog(@"Error unknown option picked for noise sample interval.");
 						interval = 60;

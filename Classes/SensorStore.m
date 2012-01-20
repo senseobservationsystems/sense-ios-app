@@ -22,6 +22,7 @@
 #import "ConnectionSensor.h"
 #import "PreferencesSensor.h"
 #import "MiscSensor.h"
+#import "ActivityFeedback.h"
 
 #define IGNORE_DATA 0
 #if IGNORE_DATA != 0
@@ -86,7 +87,8 @@ static SensorStore* sharedSensorStoreInstance = nil;
  							[AccelerometerSensor class],
 							[AccelerationSensor class],
 							[RotationSensor class],
-							//[PreferencesSensor class],
+							[PreferencesSensor class],
+                            [ActivityFeedback class],
 							//[MiscSensor class],
 							nil];
 		
@@ -143,6 +145,10 @@ static SensorStore* sharedSensorStoreInstance = nil;
    			if (description != nil && sensorIdString != nil) {
 				//link sensor to this device
 				[sender connectSensor:sensorIdString ToDevice:[SensorStore device]];
+                
+                //by default share this sensor with the data collection user
+                //[sender shareSensor:sensorIdString WithUser:@"unanonynous"];
+                
                 //store sensor id in the map
   				[sensorIdMap setValue:sensorIdString forKey:sensor.sensorId];
 				NSLog(@"Created %@ sensor with id %@", [sensor class], sensorIdString);
