@@ -27,6 +27,7 @@
 	RotationSensor* rotationSensor;
 	
 	NSOperationQueue* operations;
+  	NSOperationQueue* pollQueue;
     NSCondition* headingAvailable;
     BOOL updatingHeading;
     
@@ -40,6 +41,6 @@
 - (void) rotationEnabledChanged: (id) notification;
 - (void) orientationEnabledChanged: (id) notification;
 - (void) settingChanged: (NSNotification*) notification;
+- (void) schedulePoll;
 - (void) poll;
-
 @end

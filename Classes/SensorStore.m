@@ -80,7 +80,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
  							[ConnectionSensor class],
    							[NoiseSensor class],
 							[OrientationSensor class],
-							[CompassSensor class],
+							//[CompassSensor class],
 							//[UserProximity class],
 							//[OrientationStateSensor class],
  							[AccelerometerSensor class],
