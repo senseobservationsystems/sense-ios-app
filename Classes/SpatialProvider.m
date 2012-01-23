@@ -118,6 +118,7 @@ static const double G = 9.81;
         [pollTimer invalidate];
 	}
 }
+
 - (void) schedulePoll {
     @try {
         //make an upload operation
@@ -132,6 +133,8 @@ static const double G = 9.81;
 }
 
 - (void) poll {
+
+    NSLog(@"Polling motion sensors");
     BOOL hasOrientation = orientationSensor != nil && orientationSensor.isEnabled;
     BOOL hasAccelerometer = accelerometerSensor != nil && accelerometerSensor.isEnabled;
     BOOL hasAcceleration = accelerationSensor != nil && accelerationSensor.isEnabled;
@@ -303,7 +306,9 @@ static const double G = 9.81;
 		Setting* setting = notification.object;
 		NSLog(@"Spatial: setting %@ changed to %@.", setting.name, setting.value);
 		if ([setting.name isEqualToString:@"pollInterval"]) {
-			interval = [setting.value doubleValue];
+            interval = [setting.value doubleValue];
+            [pollTimer invalidate];
+            pollTimer = [NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(schedulePoll) userInfo:nil repeats:YES];
 		} else if ([setting.name isEqualToString:@"frequency"]) {
 			frequency = [setting.value doubleValue];
 		} else if ([setting.name isEqualToString:@"sampleTime"]) {

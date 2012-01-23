@@ -15,19 +15,26 @@
     NSArray*            activities;
     UILabel*            currentActivityLabel;
     UILabel*            lastActivityLabel;
+    UILabel*            batteryConsumptionLabel;
     UIButton*            startStopButton;
     UIButton*            cancelButton;
     
     Activity*   currentActivity;
     Activity*   lastActivity;
+    
+    //for calculating power consumption
+    NSMutableArray* consumptionWindow;
 }
 
 @property (strong, nonatomic) IBOutlet UIPickerView* activityPicker;
 @property (strong, nonatomic) IBOutlet UILabel* currentActivityLabel;
 @property (strong, nonatomic) IBOutlet UILabel* lastActivityLabel;
+@property (strong, nonatomic) IBOutlet UILabel* batteryConsumptionLabel;
 @property (strong, nonatomic) NSArray* activities;
 @property (strong, nonatomic) IBOutlet UIButton* startStopButton;
 @property (strong, nonatomic) IBOutlet UIButton* cancelButton;
 - (IBAction) startStopAction:(id)sender;
 - (IBAction) cancelAction:(id)sender;
+
+- (void) batteryStateChanged:(NSNotification*) notification;
 @end  
