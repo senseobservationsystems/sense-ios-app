@@ -21,7 +21,7 @@
 @synthesize startStopButton;
 @synthesize cancelButton;
 
-static const NSUInteger windowSize = 4;
+static const NSUInteger windowSize = 5;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -172,21 +172,20 @@ numberOfRowsInComponent:(NSInteger)component
 	if ([consumptionWindow count] >= windowSize)
 		[consumptionWindow removeLastObject];
 	//insert this sample at beginning
-	[consumptionWindow insertObject:entry atIndex:0];
+    [consumptionWindow insertObject:entry atIndex:0];
     
     //compute power over the last samples
     if ([consumptionWindow count] > 1 ) {
         //get least recent entry
         NSDictionary* lrEntry = [consumptionWindow lastObject];
-        NSTimeInterval dt = [[lrEntry objectForKey:@"date"] timeIntervalSinceNow];
+        NSTimeInterval dt = -[[lrEntry objectForKey:@"date"] timeIntervalSinceNow];
         double dE = [[lrEntry objectForKey:@"level"] doubleValue] - batteryLevel;
-        if (dt > 0 && dE > 0) {
-            [batteryConsumptionLabel setText: [NSString stringWithFormat:@"%.1f hours (based on last %.0f%)", 24 / (dE / dt), dE]];
+        if (dE > 0) {
+            [batteryConsumptionLabel setText: [NSString stringWithFormat:@"%.1f hours (based on last %.0f\% over %.1 hours)", 100 * dt / dE / 3600, dE, dt/3600]];
         }else {
             [batteryConsumptionLabel setText: [NSString stringWithFormat:@"Unknown"]];
         }
     }
-            [batteryConsumptionLabel setText:@"Method completed"];
 }
 
 @end
