@@ -179,8 +179,8 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 	
 	//if device unknown, then it follows it has no sensors
 	if (deviceId == -1) return nil;
-	
-	return[self doJsonRequestTo:[self makeSensorsUrlForDeviceId:deviceId] withMethod:@"GET" withInput:nil];
+
+	return [self doJsonRequestTo:[self makeSensorsUrlForDeviceId:deviceId] withMethod:@"GET" withInput:nil];
 }
 
 - (NSDictionary*) createSensorWithDescription:(NSDictionary*) description {	
@@ -198,8 +198,8 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 }
 
 - (BOOL) shareSensor: (NSString*)sensorId WithUser:(NSString*)user {
-//share sensor with username
-    NSDictionary* userEntry = [NSDictionary dictionaryWithObject:user forKey:@"username"];
+    //share sensor with username
+    NSDictionary* userEntry = [NSDictionary dictionaryWithObject:user forKey:@"id"];
     NSDictionary* request = [NSDictionary dictionaryWithObject:userEntry forKey:@"user"];
     NSLog(@"%@", [request JSONRepresentation]);
 	
@@ -268,11 +268,12 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 	//check response code
 	if ([response statusCode] < 200 || [response statusCode] > 300)
 	{
-		//Ai, some error that couldn't be resolved. Log and return error
+		//Ai, some error that couldn't be resolved. Log and throw exception
 		NSLog(@"%@ \"%@\" failed with status code %d", method, url, [response statusCode]);
 		NSString* responded = [[NSString alloc] initWithData:contents encoding:NSUTF8StringEncoding];
 		NSLog(@"Responded: %@", responded);
-		return nil;
+        //TODO: throw clean exception that details the exception
+		@throw [NSException exceptionWithName:@"Request failed" reason:nil userInfo:nil];
 	}
 
     if (contents) {

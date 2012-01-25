@@ -97,7 +97,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 		sensors = [[NSMutableArray alloc] init];
 
         //instantiate sample strategy
-        sampleStrategy = [[SampleStrategy alloc] init];
+        //sampleStrategy = [[SampleStrategy alloc] init];
         
 		//set settings and initialise sensors
         [self instantiateSensors];
@@ -113,10 +113,21 @@ static SensorStore* sharedSensorStoreInstance = nil;
 - (void) makeRemoteDeviceSensors {
     if (sensorIdMap == nil)
         sensorIdMap = [NSMutableDictionary new];
+    else {
+        //refreshing the mapping, remove 'old' mapping so we can recreate sensor that have been removed at the server.
+        [sensorIdMap removeAllObjects];
+    }
 
 
 	//get list of sensors from the server
-	NSDictionary* response = [sender listSensorsForDevice:[SensorStore device]];
+    NSDictionary* response;
+    @try {
+        response = [sender listSensorsForDevice:[SensorStore device]];
+    } @catch (NSException* e) {
+        //for some reason the request failed, so stop. Trying to create the sensors might result in duplicate sensors.
+        NSLog(@"Couldn't get a list of sensors for the device. Don't make ");
+        return;
+    }
 	NSArray* remoteSensors = [response valueForKey:@"sensors"];
 	
 	//forall local sensors
@@ -127,31 +138,34 @@ static SensorStore* sharedSensorStoreInstance = nil;
 			if ([remoteSensor isKindOfClass:[NSDictionary class]] && [[sensor class] matchesDescription:remoteSensor]) {
 				NSLog(@"Matched sensor of type %@", [sensor class]);
 				id sensorId = [remoteSensor valueForKey:@"id"];
-                //update dictionary
+                
+                //by default share this sensor with the data collection user. We do this everytime a sensor is matched, to be very sure it is shared.
+                //2107 is the group unanonymous
+                [sender shareSensor:sensorId WithUser:@"2107"];
+                
+                //update sensor id map
 				[sensorIdMap setValue:sensorId forKey:sensor.sensorId];
 				break;
 			}
 		}
 	}
-    
-    NSLog(@"List: %@", sensorIdMap);
 	
 	//create sensors that aren't assigned an id yet
 	for (Sensor* sensor in sensors) {
 		if ([sensorIdMap objectForKey:sensor.sensorId] == NULL) {
-            NSLog(@"Making sensor for id %@", [sensorIdMap objectForKey:sensor.sensorId]);
 			NSDictionary* description = [sender createSensorWithDescription:[[sensor class] sensorDescription]];
             id sensorIdString = [description valueForKey:@"id"];
    			if (description != nil && sensorIdString != nil) {
 				//link sensor to this device
 				[sender connectSensor:sensorIdString ToDevice:[SensorStore device]];
                 
-                //by default share this sensor with the data collection user
-                //[sender shareSensor:sensorIdString WithUser:@"unanonynous"];
+                //by default share this sensor with the data collection user. We do this everytime a sensor is matched, to be very sure it is shared.
+                //2107 is the group unanonymous
+                [sender shareSensor:sensorIdString WithUser:@"2107"];
                 
                 //store sensor id in the map
   				[sensorIdMap setValue:sensorIdString forKey:sensor.sensorId];
-				NSLog(@"Created %@ sensor with id %@", [sensor class], sensorIdString);
+				NSLog(@"Created %@ sensor with id %@", sensor.sensorId, sensorIdString);
 			}
 		}
 	}
@@ -298,7 +312,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 	for (NSString* sensorId in myData) {
 		@try {
 			NSMutableArray* data= [myData valueForKey:sensorId];
-			if (data == nil) continue;
+			if (data == nil || [sensorIdMap valueForKey:sensorId] == NULL) continue;
 			NSLog(@"Uploading data for sensor %@. %u point(s).", sensorId, data.count);
             //split the data, as the server doesn't like very big requests.
             int i=0;

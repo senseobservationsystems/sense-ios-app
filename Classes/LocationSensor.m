@@ -63,9 +63,6 @@ static CLLocation* lastAcceptedPoint;
 		samples = [[NSMutableArray alloc] initWithCapacity:maxSamples];
         previousLocation = nil;
         newSampleTimer = nil;
-        
-		//operations queue
-		operations = [[NSOperationQueue alloc] init];
 	}
 	return self;
 }
@@ -150,56 +147,9 @@ static CLLocation* lastAcceptedPoint;
 										nil];
 	[dataStore commitFormattedData:valueTimestampPair forSensorId:self.sensorId];
     
-    /* implement strategy to disable location for some time */
-    //noise is already filtered, so don't filter for accuracy
-    if (isAdaptive) {
-    if (locationManager.desiredAccuracy == 0 && abs([newLocation.timestamp timeIntervalSinceNow]) < 5 && abs([lastOn timeIntervalSinceNow]) > 30)  {
-        NSTimeInterval dt = previousLocation != nil ? [newLocation.timestamp timeIntervalSinceDate:(previousLocation.timestamp)] : 0;
-        double ds = [newLocation distanceFromLocation:previousLocation];
-        double maxDistance = MIN(previousLocation.horizontalAccuracy + newLocation.horizontalAccuracy + 20, 100);
-        if (previousLocation == nil || ds > maxDistance) {
-            previousLocation = newLocation;
-        } else if (dt > 60) { //60 is a threshold to prevent the gps from aquiring/releasing a lock too frequently, and has several advantages
-            //no change in location for a while, disable location and set the timer
-            NSTimeInterval interval = MIN (dt, 1800);
-            NSLog(@"invalidate");
-            @synchronized(self) {
-                [newSampleTimer invalidate];
-                newSampleTimer = [NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(startUpdating) userInfo:nil repeats:NO];
-                //[locationManager performSelectorOnMainThread:@selector(stopUpdatingLocation) withObject:nil waitUntilDone:YES];
-                locationManager.desiredAccuracy = 500;
-            }
-            NSLog(@"Suspending location updates for %d seconds", (NSInteger)interval);
-        }
-    } else if (locationManager.desiredAccuracy == 500){
-        //detect movement for very inaccurate samples
-        if ([newLocation distanceFromLocation:previousLocation] > newLocation.horizontalAccuracy + previousLocation.horizontalAccuracy + 20) {
-            NSLog(@"movement detected using inaccurate samples");
-            [self startUpdating];
-        }
-    }
-    }
-    
-    if ([[[Settings sharedSettings] getSettingType:@"adaptive" setting:@"energyAdaptive"] boolValue] && locationManager.desiredAccuracy < 500 &&
-        (abs([lastOn timeIntervalSinceNow]) > 60 || newLocation.horizontalAccuracy <= 20)) {
-        locationManager.desiredAccuracy = 1000;
-    }
-    /* end */
 }
 
 - (BOOL) isEnabled {return isEnabled;}
-
-- (void) startUpdating {
-    lastOn = [[NSDate alloc] init];
-    //[locationManager performSelectorOnMainThread:@selector(startUpdatingLocation) withObject:nil waitUntilDone:YES];
-    @synchronized(self) {
-        locationManager.desiredAccuracy = 0;
-        if (![[[Settings sharedSettings] getSettingType:@"adaptive" setting:@"energyAdaptive"] boolValue]) {
-            newSampleTimer = nil;
-        }
-    }
-    //NSLog(@"startUpdating");
-}
 
 - (void) setIsEnabled:(BOOL) enable {
 	//only react to changes
@@ -213,10 +163,6 @@ static CLLocation* lastAcceptedPoint;
 			NSLog(@"Exception setting position accuracy: %@", e);
 		}
 		[samples removeAllObjects];
-        if ([[[Settings sharedSettings] getSettingType:@"adaptive" setting:@"locationAdaptive"] boolValue]) {
-            [self startUpdating];
-            [self motion];
-        }
         //NOTE: using significant location updates doesn't allow the phone to sense while running in the background
         [locationManager performSelectorOnMainThread:@selector(startUpdatingLocation) withObject:nil waitUntilDone:YES];
         
@@ -226,42 +172,8 @@ static CLLocation* lastAcceptedPoint;
         [locationManager performSelectorOnMainThread:@selector(stopUpdatingLocation) withObject:nil waitUntilDone:YES];
 		//[locationManager stopUpdatingLocation];
 		[samples removeAllObjects];
-        [motionManager stopDeviceMotionUpdates];
-        motionManager = nil;
 	}
 	isEnabled = enable;
-}
-
-- (void) motion {
-    [motionManager stopDeviceMotionUpdates];
-    motionManager = [[CMMotionManager alloc] init];
-    motionManager.deviceMotionUpdateInterval = 1;
-    
-    CMDeviceMotionHandler deviceMotionHandler = ^ (CMDeviceMotion *deviceMotion, NSError *error) {
-    CMAcceleration a = deviceMotion.userAcceleration;
-        double magnitude = sqrt(a.x*a.x + a.y*a.y + a.z*a.z);
-        if (magnitude*9.81 > 2) {
-            NSLog(@"motion!");
-            @synchronized(self) {
-                if (newSampleTimer != nil) {
-                    NSTimeInterval deltaT = [[newSampleTimer fireDate] timeIntervalSinceNow];
-                    deltaT /= 1 + 0.15;
-                
-                    if (deltaT > 5) {
-                        NSLog(@"next sample in %d seconds", (int) deltaT);
-                        NSNumber* t = [NSNumber numberWithDouble:deltaT];
-                        [self performSelectorOnMainThread:@selector(setSampleInterval:) withObject:t waitUntilDone:YES];
-                    }
-                }
-            }
-        }
-    };
-    [motionManager startDeviceMotionUpdatesToQueue:operations withHandler:deviceMotionHandler];      
-}
-
-- (void) setSampleInterval:(NSNumber*) interval {
-    [newSampleTimer invalidate];
-    newSampleTimer = [NSTimer scheduledTimerWithTimeInterval:[interval doubleValue] target:self selector:@selector(startUpdating) userInfo:nil repeats:NO];
 }
 
 - (void) settingChanged: (NSNotification*) notification  {
@@ -272,17 +184,7 @@ static CLLocation* lastAcceptedPoint;
 		if ([setting.name isEqualToString:@"accuracy"]) {
 			locationManager.desiredAccuracy = [setting.value integerValue];
 		} else if ([setting.name isEqualToString:@"interval"]) {
-            [newSampleTimer invalidate];
-            newSampleTimer = [NSTimer scheduledTimerWithTimeInterval:[setting.value doubleValue] target:self selector:@selector(startUpdating) userInfo:nil repeats:YES];
         } else if ([setting.name isEqualToString:@"locationAdaptive"]) {
-            isAdaptive = [setting.value boolValue];
-            if (isAdaptive) {
-                [self startUpdating];
-                [self motion];
-            } else {
-                [motionManager stopDeviceMotionUpdates];
-                [newSampleTimer invalidate];
-            }
         }
 	}
 	@catch (NSException * e) {

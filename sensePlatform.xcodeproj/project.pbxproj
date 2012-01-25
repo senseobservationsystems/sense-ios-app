@@ -17,6 +17,7 @@
 		3E26296214C9CFF6002E3851 /* ActivityFeedbackController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E26296014C9CFF6002E3851 /* ActivityFeedbackController.xib */; };
 		3E26296614C9EC29002E3851 /* ActivityFeedback.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E26296514C9EC29002E3851 /* ActivityFeedback.m */; };
 		3E26296914C9EE1E002E3851 /* Activity.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E26296814C9EE1E002E3851 /* Activity.m */; };
+		3E26296C14CDAFC3002E3851 /* AlertPrompt.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E26296B14CDAFC3002E3851 /* AlertPrompt.m */; };
 		3E2B2170131B9483000D7A8F /* OrientationSensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E2B216F131B9483000D7A8F /* OrientationSensor.m */; };
 		3E2B217E131B9648000D7A8F /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2B217D131B9648000D7A8F /* CoreMotion.framework */; };
 		3E2B22C4131BEAF4000D7A8F /* UserProximity.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E2B22C3131BEAF4000D7A8F /* UserProximity.m */; };
@@ -74,7 +75,7 @@
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* senseLocationAppAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = senseLocationAppAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* senseLocationAppAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = senseLocationAppAppDelegate.m; sourceTree = "<group>"; };
-		1D6058910D05DD3D006BFB54 /* sensePlatform.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = sensePlatform.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D6058910D05DD3D006BFB54 /* activityTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = activityTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		28AD733E0D9D9553002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
@@ -87,6 +88,8 @@
 		3E26296514C9EC29002E3851 /* ActivityFeedback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityFeedback.m; sourceTree = "<group>"; };
 		3E26296714C9EE1E002E3851 /* Activity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Activity.h; sourceTree = "<group>"; };
 		3E26296814C9EE1E002E3851 /* Activity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Activity.m; sourceTree = "<group>"; };
+		3E26296A14CDAFC3002E3851 /* AlertPrompt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlertPrompt.h; sourceTree = "<group>"; };
+		3E26296B14CDAFC3002E3851 /* AlertPrompt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlertPrompt.m; sourceTree = "<group>"; };
 		3E2B216E131B9483000D7A8F /* OrientationSensor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrientationSensor.h; sourceTree = "<group>"; };
 		3E2B216F131B9483000D7A8F /* OrientationSensor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrientationSensor.m; sourceTree = "<group>"; };
 		3E2B217D131B9648000D7A8F /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
@@ -223,7 +226,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D6058910D05DD3D006BFB54 /* sensePlatform.app */,
+				1D6058910D05DD3D006BFB54 /* activityTracker.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -369,7 +372,6 @@
 		3EBA1894130ADAF700C5B924 /* sensors */ = {
 			isa = PBXGroup;
 			children = (
-				3E26296314C9EBDE002E3851 /* feedback */,
 				3E2C85B91309821500B1C6CC /* Sensor.h */,
 				3E2C85BA1309821500B1C6CC /* Sensor.m */,
 				3EA387B3133C9F41007E0309 /* ambient */,
@@ -387,6 +389,7 @@
 		3EBA1895130ADB2200C5B924 /* gui */ = {
 			isa = PBXGroup;
 			children = (
+				3E26296314C9EBDE002E3851 /* feedback */,
 				3EA62380137BFF90007F60D2 /* Preferences.h */,
 				3EA62381137BFF90007F60D2 /* Preferences.m */,
 				3EA622BD137AD8C5007F60D2 /* PickerTable.h */,
@@ -401,6 +404,8 @@
 				3E26295E14C9CFF6002E3851 /* ActivityFeedbackController.h */,
 				3E26295F14C9CFF6002E3851 /* ActivityFeedbackController.m */,
 				3E26296014C9CFF6002E3851 /* ActivityFeedbackController.xib */,
+				3E26296A14CDAFC3002E3851 /* AlertPrompt.h */,
+				3E26296B14CDAFC3002E3851 /* AlertPrompt.m */,
 			);
 			name = gui;
 			sourceTree = "<group>";
@@ -441,7 +446,7 @@
 			);
 			name = sensePlatform;
 			productName = senseLocationApp;
-			productReference = 1D6058910D05DD3D006BFB54 /* sensePlatform.app */;
+			productReference = 1D6058910D05DD3D006BFB54 /* activityTracker.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -537,6 +542,7 @@
 				3E26296114C9CFF6002E3851 /* ActivityFeedbackController.m in Sources */,
 				3E26296614C9EC29002E3851 /* ActivityFeedback.m in Sources */,
 				3E26296914C9EE1E002E3851 /* Activity.m in Sources */,
+				3E26296C14CDAFC3002E3851 /* AlertPrompt.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -569,7 +575,7 @@
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = "sensePlatform-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				PRODUCT_NAME = sensePlatform;
+				PRODUCT_NAME = activityTracker;
 				PROVISIONING_PROFILE = "";
 				STRIP_INSTALLED_PRODUCT = YES;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -585,7 +591,7 @@
 					armv6,
 				);
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_ENTITLEMENTS = Entitlements;
+				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				GCC_CHECK_RETURN_VALUE_OF_OPERATOR_NEW = YES;
@@ -601,7 +607,7 @@
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = "sensePlatform-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				PRODUCT_NAME = sensePlatform;
+				PRODUCT_NAME = activityTracker;
 				PROVISIONING_PROFILE = "";
 				STRIP_INSTALLED_PRODUCT = YES;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -627,7 +633,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "82DDD513-E882-4349-BEE1-A61B933FF8C4";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A06E8417-2C05-48A6-A5AA-18351B6B4AB2";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
@@ -644,7 +650,7 @@
 					armv6,
 				);
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_ENTITLEMENTS = Entitlements;
+				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				GCC_CHECK_RETURN_VALUE_OF_OPERATOR_NEW = YES;
@@ -660,7 +666,7 @@
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = "sensePlatform-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				PRODUCT_NAME = sensePlatform;
+				PRODUCT_NAME = activityTracker;
 				PROVISIONING_PROFILE = "";
 				STRIP_INSTALLED_PRODUCT = YES;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -720,7 +726,7 @@
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = "sensePlatform-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				PRODUCT_NAME = sensePlatform;
+				PRODUCT_NAME = activityTracker;
 				PROVISIONING_PROFILE = "";
 				STRIP_INSTALLED_PRODUCT = YES;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -732,7 +738,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_ENTITLEMENTS = EntitlementsDebug.plist;
+				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
@@ -759,6 +765,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Almende B V";
 				GCC_C_LANGUAGE_STANDARD = c99;

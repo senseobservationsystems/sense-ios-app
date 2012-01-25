@@ -12,9 +12,11 @@
 @interface Activity : NSObject {
     NSString* type;
     NSDate* start;
-    NSDate* stop;    
+    NSDate* stop; 
+    NSString* comment;
 }
 @property (strong, nonatomic) NSString* type;
 @property (strong, nonatomic) NSDate* start;
 @property (strong, nonatomic) NSDate* stop;
+@property (strong, nonatomic) NSString* comment;
 @end

@@ -15,6 +15,7 @@
 static NSString* typeKey = @"type";
 static NSString* startKey = @"start";
 static NSString* stopKey = @"stop";
+static NSString* commentKey = @"comment";
 
 + (NSString*) name {return @"activityFeedback";}
 + (NSString*) deviceType {return [self name];}
@@ -24,6 +25,7 @@ static NSString* stopKey = @"stop";
 	//create description for data format. programmer: make SURE it matches the format used to send data
 	NSDictionary* format = [NSDictionary dictionaryWithObjectsAndKeys:
 							@"string", typeKey,
+							@"string", commentKey,
 							@"float", startKey,
   							@"float", stopKey,
 							nil];
@@ -48,11 +50,12 @@ static NSString* stopKey = @"stop";
 + (void) commitActivity: (Activity*) activity {
     NSMutableDictionary* newItem = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                     activity.type, typeKey,
+                                    activity.comment, commentKey,
                                     [NSString stringWithFormat:@"%f",[activity.start timeIntervalSince1970]], startKey,
                                     [NSString stringWithFormat:@"%f",[activity.stop timeIntervalSince1970]], stopKey,
 									nil];
 	
-	NSNumber* timestamp = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
+	NSNumber* timestamp = [NSNumber numberWithDouble:[activity.start timeIntervalSince1970]];
 	
 	NSDictionary* valueTimestampPair = [NSDictionary dictionaryWithObjectsAndKeys:
 										[newItem JSONRepresentation], @"value",

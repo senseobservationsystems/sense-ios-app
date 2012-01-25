@@ -13,4 +13,5 @@
 @synthesize type;
 @synthesize start;
 @synthesize stop;
+@synthesize comment;
 @end

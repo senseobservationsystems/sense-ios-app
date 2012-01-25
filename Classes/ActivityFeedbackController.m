@@ -9,6 +9,7 @@
 #import "ActivityFeedbackController.h"
 #import "SensorStore.h"
 #import "ActivityFeedback.h"
+#import "AlertPrompt.h"
 
 
 @implementation ActivityFeedbackController
@@ -26,11 +27,6 @@ static const NSUInteger windowSize = 4;
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        consumptionWindow = [NSMutableArray arrayWithCapacity:windowSize];
-
-        [[NSNotificationCenter defaultCenter] addObserver:self
-												 selector:@selector(batteryStateChanged:)
-													 name:UIDeviceBatteryStateDidChangeNotification object:nil];
     }
     return self;
 }
@@ -48,11 +44,19 @@ static const NSUInteger windowSize = 4;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+     consumptionWindow = [NSMutableArray arrayWithCapacity:windowSize];
     self.activities = [[NSArray alloc] initWithObjects:
                          @"Idle", @"Walking", @"Running",
                          @"Biking", @"Else", nil];
     batteryConsumptionLabel.text = @"Unknown";
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(batteryStateChanged:)
+                                                 name:UIDeviceBatteryLevelDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(batteryStateChanged:)
+                                                 name:UIDeviceBatteryStateDidChangeNotification object:nil];
+    [UIDevice currentDevice].batteryMonitoringEnabled = YES;
 }
 
 - (void)viewDidUnload
@@ -107,17 +111,35 @@ numberOfRowsInComponent:(NSInteger)component
         currentActivityLabel.text = [NSString stringWithFormat:@"%@ since %@", currentActivity.type, [dateFormatter stringFromDate:currentActivity.start]];
     } else {
         currentActivity.stop = [NSDate new];
+        AlertPrompt *prompt = [AlertPrompt alloc];
+        prompt = [prompt initWithTitle:@"Comment on activity" message:@"Details" delegate:self cancelButtonTitle:@"Dismiss activity" okButtonTitle:@"Submit"];
+        [prompt show];
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    NSDateFormatter* dateFormatter = [NSDateFormatter new];
+    [dateFormatter setDateStyle:NSDateFormatterNoStyle];
+    [dateFormatter setTimeStyle:NSDateFormatterMediumStyle];
+    
+    if (buttonIndex != [alertView cancelButtonIndex])
+    {
+        NSString *entered = [(AlertPrompt *)alertView enteredText];
+        currentActivity.comment = entered;
         lastActivity = currentActivity;
-        currentActivity = nil;
         //update state
         lastActivityLabel.text = [NSString stringWithFormat:@"%@ from %@ till %@", lastActivity.type, [dateFormatter stringFromDate:lastActivity.start], [dateFormatter stringFromDate:lastActivity.stop]];
-        currentActivityLabel.text = @"None";
-        //update button
-        [startStopButton setTitle:@"Start" forState:UIControlStateNormal];
+
         //commit activity
         [ActivityFeedback commitActivity:lastActivity];
     }
+    //update button
+    [startStopButton setTitle:@"Start" forState:UIControlStateNormal];
+    currentActivity = nil;
+    currentActivityLabel.text = @"None";
 }
+
 
 - (IBAction)cancelAction:(id)sender {
     currentActivityLabel.text = @"None";
@@ -134,11 +156,13 @@ numberOfRowsInComponent:(NSInteger)component
     
     float batteryLevel = [currentDevice batteryLevel] * 100;
     BOOL plugged = batteryState == UIDeviceBatteryStateCharging || batteryState == UIDeviceBatteryStateFull;
+    NSLog(@"%@, %.0f", plugged?@"Plugged":@"Unplugged", batteryLevel);
     if (plugged) {
-        batteryConsumptionLabel.text = @"Charging";
+        [batteryConsumptionLabel setText:@"Charging"];
         [consumptionWindow removeAllObjects];
         return;
-    }
+    } else
+        [batteryConsumptionLabel setText:@"Measuring..."];
     NSDate* now = [NSDate new];
     //create entry with date and battery level
     NSMutableDictionary* entry = [NSMutableDictionary dictionaryWithObjectsAndKeys:now, @"date",
@@ -156,12 +180,13 @@ numberOfRowsInComponent:(NSInteger)component
         NSDictionary* lrEntry = [consumptionWindow lastObject];
         NSTimeInterval dt = [[lrEntry objectForKey:@"date"] timeIntervalSinceNow];
         double dE = [[lrEntry objectForKey:@"level"] doubleValue] - batteryLevel;
-        if (dt >0 && dE > 0) {
-            batteryConsumptionLabel.text = [NSString stringWithFormat:@"%.1f hours (based on last %.0f %)", 24 / (dE / dt), dE];
+        if (dt > 0 && dE > 0) {
+            [batteryConsumptionLabel setText: [NSString stringWithFormat:@"%.1f hours (based on last %.0f%)", 24 / (dE / dt), dE]];
         }else {
-             batteryConsumptionLabel.text = [NSString stringWithFormat:@"Unknown"];
+            [batteryConsumptionLabel setText: [NSString stringWithFormat:@"Unknown"]];
         }
     }
+            [batteryConsumptionLabel setText:@"Method completed"];
 }
 
 @end

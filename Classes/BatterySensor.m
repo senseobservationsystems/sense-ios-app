@@ -52,6 +52,7 @@ static NSString* levelKey = @"level";
 }
 
 - (void) commitBatteryState:(NSNotification*) notification {
+    if (isEnabled) {
 	//get battery infomation
 	UIDevice* currentDevice = [UIDevice currentDevice];
 	NSString* batteryState = @"unknown";
@@ -85,6 +86,7 @@ static NSString* levelKey = @"level";
 										timestamp,@"date",
 										nil];
 	[dataStore commitFormattedData:valueTimestampPair forSensorId:[self sensorId]];
+    }
 }
 
 - (BOOL) isEnabled {return isEnabled;}
@@ -94,7 +96,7 @@ static NSString* levelKey = @"level";
 	//if (enable == isEnabled) return;
 	
 	NSLog(@"Enabling battery sensor (id=%@): %@", self.sensorId, enable ? @"yes":@"no");
-	[UIDevice currentDevice].batteryMonitoringEnabled = enable;
+	[UIDevice currentDevice].batteryMonitoringEnabled = YES;
 	isEnabled = enable;
 }
 

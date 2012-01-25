@@ -17,17 +17,8 @@
     
     NSTimer* newSampleTimer;
     CLLocation* previousLocation;
-    NSDate* lastOn;
-    
-    CMMotionManager* motionManager;
-    NSOperationQueue* operations;
-    
-    BOOL isAdaptive;
 }
 
 @property BOOL isEnabled;
 - (void) settingChanged: (NSNotification*) notification;
-- (void) startUpdating;
-- (void) motion;
-- (void) setSampleInterval:(NSNumber*) interval;
 @end
