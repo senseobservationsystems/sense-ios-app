@@ -213,8 +213,9 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 							  data, @"data", nil];
     //make session
 	if (sessionCookie == nil) {
-		if (![self login])
+		if (NO == [self login])
 			return NO;
+        
 	}
 	NSString* method = @"POST";
     NSURL* url = [self makeUrlForSensor:sensorId];
@@ -232,15 +233,16 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 	}
     
 	//check response code
-	if ([response statusCode] < 200 || [response statusCode] > 300)
+	if ([response statusCode] > 200 && [response statusCode] < 300)
 	{
-		//Ai, some error that couldn't be resolved. Log and return error
+        return YES;
+	} else {
+        //Ai, some error that couldn't be resolved. Log and return error
 		NSLog(@"%@ \"%@\" failed with status code %d", method, url, [response statusCode]);
 		NSString* responded = [[NSString alloc] initWithData:contents encoding:NSUTF8StringEncoding];
 		NSLog(@"Responded: %@", responded);
 		return NO;
-	}
-    return YES;
+    }
 }
 
 #pragma mark -

@@ -181,7 +181,7 @@ numberOfRowsInComponent:(NSInteger)component
         NSTimeInterval dt = -[[lrEntry objectForKey:@"date"] timeIntervalSinceNow];
         double dE = [[lrEntry objectForKey:@"level"] doubleValue] - batteryLevel;
         if (dE > 0) {
-            [batteryConsumptionLabel setText: [NSString stringWithFormat:@"%.1f hours (based on last %.0f\% over %.1 hours)", 100 * dt / dE / 3600, dE, dt/3600]];
+            [batteryConsumptionLabel setText: [NSString stringWithFormat:@"%.1f hours (based on last %.0f%% over %.1f hours)", 100 * dt / dE / 3600, dE, 1.0*dt / 3600]];
         }else {
             [batteryConsumptionLabel setText: [NSString stringWithFormat:@"Unknown"]];
         }

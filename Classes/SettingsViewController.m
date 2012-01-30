@@ -53,7 +53,8 @@ enum GeneralSectionRow{
 	self.navigationItem.title = @"Sense";
 	webViewButton= [[UIBarButtonItem alloc] initWithTitle:@"Feedback" style:UIBarButtonItemStylePlain target:self action:@selector(gotoWebView)];
 	self.navigationItem.rightBarButtonItem = webViewButton;
-	//self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Help" style:UIBarButtonItemStylePlain target:self action:@selector(displayWelcomeMessage)];
+    //self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Help" style:UIBarButtonItemStylePlain target:self action:@selector(displayWelcomeMessage)];
+    activityFeedbackController = [ActivityFeedbackController new];
 	
 	//setup sensors
 	NSArray* sensors = [SensorStore sharedSensorStore].allAvailableSensorClasses;
@@ -397,8 +398,6 @@ enum GeneralSectionRow{
 	}
      */
 
-    if (activityFeedbackController == nil)
-        activityFeedbackController = [ActivityFeedbackController new];
     [self.navigationController pushViewController:activityFeedbackController animated:YES];
 }
 
