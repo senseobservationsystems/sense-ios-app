@@ -109,7 +109,15 @@ numberOfRowsInComponent:(NSInteger)component
         //update button text
         [startStopButton setTitle:@"Stop" forState:UIControlStateNormal];
         currentActivityLabel.text = [NSString stringWithFormat:@"%@ since %@", currentActivity.type, [dateFormatter stringFromDate:currentActivity.start]];
+        
+        //increase sampling rate
+       [[Settings sharedSettings] commitSettingType:@"spatial" setting:@"pollInterval" value:@"10" persistent:NO];
+        
     } else {
+        //decrease sampling rate
+        Settings* settings = [Settings sharedSettings];
+        [settings commitSettingType:@"spatial" setting:@"pollInterval" value:[settings getSettingType:@"spatial" setting:@"pollInterval"] persistent:NO];
+        
         currentActivity.stop = [NSDate new];
         AlertPrompt *prompt = [AlertPrompt alloc];
         prompt = [prompt initWithTitle:@"Comment on activity" message:@"Details" delegate:self cancelButtonTitle:@"Dismiss activity" okButtonTitle:@"Submit"];
@@ -147,6 +155,10 @@ numberOfRowsInComponent:(NSInteger)component
         currentActivity = nil;
         //update button
         [startStopButton setTitle:@"Start" forState:UIControlStateNormal];
+        
+        //decrease sampling rate
+        Settings* settings = [Settings sharedSettings];
+        [settings commitSettingType:@"spatial" setting:@"pollInterval" value:[settings getSettingType:@"spatial" setting:@"pollInterval"] persistent:NO];
     }
 }
 

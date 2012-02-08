@@ -370,8 +370,8 @@ static SensorStore* sharedSensorStoreInstance = nil;
     if (allSucceed)
         waitTime = 0; //no need to back off
     else {
-        //back off with a factor 2, max to one hour
-        waitTime = MIN(MAX_UPLOAD_INTERVAL, MAX(2 * syncRate, MIN(2 * waitTime, MAX_UPLOAD_INTERVAL)));
+        //back off with a factor 2, max to one hour or upload interval
+        waitTime = MIN(MAX(MAX_UPLOAD_INTERVAL, syncRate), MAX(2 * syncRate, 2 * waitTime));
     }
     
     if (serviceEnabled == YES) {

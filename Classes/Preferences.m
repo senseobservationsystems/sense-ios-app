@@ -263,7 +263,7 @@ enum AdaptiveSectionRow {
 						break;
 				}
 
-				NSArray* options = [[NSArray alloc] initWithObjects:@"every 10 seconds", @"every minute", @"every 5 minutes (recommended)", @"every 15 minutes", @"every hour", nil];
+				NSArray* options = [[NSArray alloc] initWithObjects:@"every 10 seconds", @"every minute", @"every 5 minutes (recommended)", @"every 15 minutes", @"every hour", @"Every six hour", nil];
 				PickerTable* picker = [[PickerTable alloc] initWithStyle:UITableViewStyleGrouped name:@"Upload" options: options prePicked: prePicked];
 				picker.callback = ^void (int picked) {
 					int interval;
@@ -272,6 +272,7 @@ enum AdaptiveSectionRow {
 					else if (picked == 2) interval = 300;
 					else if (picked == 3) interval = 900;
   					else if (picked == 4) interval = 3600;
+   					else if (picked == 5) interval = 6 * 3600;
 					else {
 						NSLog(@"Error unknown option picked for synchronisation rate.");
 						interval = 300;
