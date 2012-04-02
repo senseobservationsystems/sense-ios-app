@@ -324,7 +324,6 @@ static const double G = 9.81;
 	@catch (NSException * e) {
 		NSLog(@"spatial provider: Exception thrown while changing setting: %@", e);
 	}
-	
 }
 
 - (void) dealloc {

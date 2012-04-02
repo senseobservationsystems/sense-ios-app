@@ -15,7 +15,7 @@
 @implementation AccelerationSensor
 
 
-+ (NSString*) name {return @"acceleration";}
++ (NSString*) name {return @"linear acceleration";}
 + (NSString*) deviceType {return [self name];}
 //TODO: check for availability
 + (BOOL) isAvailable {

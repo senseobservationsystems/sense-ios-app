@@ -22,19 +22,24 @@
 #import "ConnectionSensor.h"
 #import "PreferencesSensor.h"
 #import "MiscSensor.h"
+#import "FootpodSensor.h"
 
 #define IGNORE_DATA 0
 #if IGNORE_DATA != 0
 #warning Compiling with IGNORE_DATA, so no data will be uploaded to commonSense
 #endif
 
-#define MAX_POINTS_TO_UPLOAD_AT_ONCE 1000
+
+//actual limit is 1mb, make it a little smaller to compensate for overhead and to be sure
+#define MAX_BYTES_TO_UPLOAD_AT_ONCE (800*1024)
+#define MAX_UPLOAD_INTERVAL 3600
 
 @interface SensorStore (private)
-    - (void) applyGeneralSettings;
-    - (void) uploadData;
-    - (void) instantiateSensors;
-    - (void) scheduleUpload;
+- (void) applyGeneralSettings;
+- (void) uploadData;
+- (void) instantiateSensors;
+- (void) scheduleUpload;
+- (NSUInteger) nrPointsToSend:(NSArray*) data;
 @end
 
 
@@ -88,19 +93,20 @@ static SensorStore* sharedSensorStoreInstance = nil;
 							[RotationSensor class],
 							//[PreferencesSensor class],
 							//[MiscSensor class],
+                            [FootpodSensor class],
 							nil];
 		
 		NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"isAvailable == YES"];
 		allAvailableSensorClasses = [allSensorClasses filteredArrayUsingPredicate:availablePredicate];
 		sensors = [[NSMutableArray alloc] init];
-
+        
         //instantiate sample strategy
-        sampleStrategy = [[SampleStrategy alloc] init];
+        //sampleStrategy = [[SampleStrategy alloc] init];
         
 		//set settings and initialise sensors
         [self instantiateSensors];
 		[self applyGeneralSettings];
-
+        
 		//register for change in settings
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginChanged) name:settingLoginChangedNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(generalSettingChanged:) name:[Settings settingChangedNotificationNameForType:@"general"] object:nil];
@@ -111,10 +117,21 @@ static SensorStore* sharedSensorStoreInstance = nil;
 - (void) makeRemoteDeviceSensors {
     if (sensorIdMap == nil)
         sensorIdMap = [NSMutableDictionary new];
-
-
+    else {
+        //refreshing the mapping, remove 'old' mapping so we can recreate sensor that have been removed at the server.
+        [sensorIdMap removeAllObjects];
+    }
+    
+    
 	//get list of sensors from the server
-	NSDictionary* response = [sender listSensorsForDevice:[SensorStore device]];
+    NSDictionary* response;
+    @try {
+        response = [sender listSensorsForDevice:[SensorStore device]];
+    } @catch (NSException* e) {
+        //for some reason the request failed, so stop. Trying to create the sensors might result in duplicate sensors.
+        NSLog(@"Couldn't get a list of sensors for the device. Don't make ");
+        return;
+    }
 	NSArray* remoteSensors = [response valueForKey:@"sensors"];
 	
 	//forall local sensors
@@ -125,19 +142,17 @@ static SensorStore* sharedSensorStoreInstance = nil;
 			if ([remoteSensor isKindOfClass:[NSDictionary class]] && [[sensor class] matchesDescription:remoteSensor]) {
 				NSLog(@"Matched sensor of type %@", [sensor class]);
 				id sensorId = [remoteSensor valueForKey:@"id"];
-                //update dictionary
+                
+                //update sensor id map
 				[sensorIdMap setValue:sensorId forKey:sensor.sensorId];
 				break;
 			}
 		}
 	}
-    
-    NSLog(@"List: %@", sensorIdMap);
 	
 	//create sensors that aren't assigned an id yet
 	for (Sensor* sensor in sensors) {
 		if ([sensorIdMap objectForKey:sensor.sensorId] == NULL) {
-            NSLog(@"Making sensor for id %@", [sensorIdMap objectForKey:sensor.sensorId]);
 			NSDictionary* description = [sender createSensorWithDescription:[[sensor class] sensorDescription]];
             id sensorIdString = [description valueForKey:@"id"];
    			if (description != nil && sensorIdString != nil) {
@@ -145,7 +160,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 				[sender connectSensor:sensorIdString ToDevice:[SensorStore device]];
                 //store sensor id in the map
   				[sensorIdMap setValue:sensorIdString forKey:sensor.sensorId];
-				NSLog(@"Created %@ sensor with id %@", [sensor class], sensorIdString);
+				NSLog(@"Created %@ sensor with id %@", sensor.sensorId, sensorIdString);
 			}
 		}
 	}
@@ -155,7 +170,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 	//release current sensors
 	spatialProvider=nil;
 	[sensors removeAllObjects];
-
+    
 	//instantiate sensors
 	for (Class aClass in allAvailableSensorClasses) {
 		if ([aClass isAvailable]) {
@@ -163,7 +178,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 			[sensors addObject:newSensor];
 		}
 	}
-
+    
 	//set self as data store
 	for (Sensor* sensor in sensors) {
 		sensor.dataStore = self;
@@ -196,7 +211,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 			entry = [[NSMutableArray alloc] init];
 			[sensorData setValue:entry forKey:sensorId];
 		}
-
+        
 		//add data
 		[entry addObject:data];
 	}
@@ -209,7 +224,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 
 -(void) setEnabled:(BOOL) enable {
 	serviceEnabled = enable;
-
+    
 	if (NO == enable) { 
 		/* Previously sensors were deallocated (by removing their references), however that has some problems
          * - the noise sensor uses a callback that cannot be unregistered, so deallocating the object while the callback may still use it is unwise
@@ -243,7 +258,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 	
 	//get new settings
 	NSDictionary* settings = [Settings sharedSettings].general;
-
+    
 	//change login
 	[sender setUser:[settings valueForKey:generalSettingUsernameKey] andPassword:[settings valueForKey:generalSettingPasswordKey]];
     
@@ -255,8 +270,8 @@ static SensorStore* sharedSensorStoreInstance = nil;
 	@try {
 		//make an upload operation
 		NSInvocationOperation* uploadOp = [[NSInvocationOperation alloc]
-											initWithTarget:self selector:@selector(uploadData) object:nil];
-
+                                           initWithTarget:self selector:@selector(uploadData) object:nil];
+        
 		[operationQueue addOperation:uploadOp];
 	}
 	@catch (NSException * e) {
@@ -269,11 +284,11 @@ static SensorStore* sharedSensorStoreInstance = nil;
 	@synchronized(self){
 		[sensorData removeAllObjects];
 	}
-		
+    
 }
 
 - (void) uploadData {
-    BOOL succeed = YES;
+    BOOL allSucceed = YES;
 	NSMutableDictionary* myData;
 	//take over sensorData
 	@synchronized(self){
@@ -283,62 +298,74 @@ static SensorStore* sharedSensorStoreInstance = nil;
     
     //refresh sensors, if one of the id's isn't in the map
 	for (NSString* sensorId in myData) {    
-        if ([sensorIdMap objectForKey:sensorId] == NULL) {
+        if (sensorIdMap == nil || [sensorIdMap objectForKey:sensorId] == NULL) {
             [self makeRemoteDeviceSensors];
             break;
         }
     }
-
-	for (NSString* sensorId in myData) {
-		@try {
-			NSMutableArray* data= [myData valueForKey:sensorId];
-			if (data == nil) continue;
-			NSLog(@"Uploading data for sensor %@. %u point(s).", sensorId, data.count);
-            //split the data, as the server doesn't like very big requests.
-            int i=0;
-            while (i < data.count) {
-                //take subset
-                int points = MIN(data.count-i, MAX_POINTS_TO_UPLOAD_AT_ONCE);
-                NSRange range = NSMakeRange(i, points);
-                NSArray* dataPart = [data subarrayWithRange:range];
-                
-                succeed = [sender uploadData:dataPart forSensorId: [sensorIdMap valueForKey:sensorId]];
-
-                if (succeed == NO ) {
-                    NSLog(@"Upload failed");
-                    //don't check the reason for failure, just erase this sensor id and reinsert the data
-                    [sensorIdMap removeObjectForKey:sensorId];
-                    //reinsert data into sensorData
-                    //only insert data from i, as the data before this was sent succesfully
-                    NSMutableArray* unsent = [[data subarrayWithRange:NSMakeRange(i, data.count - i)] mutableCopy];
-                        @synchronized(self) {
-                        NSMutableArray* entry = [sensorData valueForKey:sensorId];
-                        if (entry == nil) {
-                            [sensorData setValue:unsent forKey:sensorId];
-                        }
-                        else {
-                            [entry addObjectsFromArray:unsent];
-                        }
-                    }
-                    //Stop uploading altogether
-                    goto breakSensorsLoop;
-                }
-                i += points;
-			}
-		} @catch (NSException* e) {
-			NSLog(@"SenseStore: Exception while uploading data: %@", e);
-		}
-	}
-    breakSensorsLoop:
     
-    //exponentially back off at failures (max 1 hour), to avoid spamming the server
-    if (succeed)
-        waitTime = 0;
-    else {
-        waitTime = MAX(2 * syncRate, MIN(2 * waitTime, 3600));
+    //for all sensors we have data for, send the data
+	for (NSString* sensorId in myData) {
+        NSMutableArray* data= [myData valueForKey:sensorId];
+        if ([sensorIdMap valueForKey:sensorId] == NULL) {
+            allSucceed = NO;
+            continue;
+        }
+        NSLog(@"Uploading data for sensor %@. %u point(s).", sensorId, data.count);
+        //split the data, as the server limits the size per request
+        //TODO: refactor this ugly but critical code, a proper transparent implementation should be done with respect to error handling
+        while (data.count > 0) {
+            //determine number of points to sent use heuristic to estimate size
+            NSUInteger points = [self nrPointsToSend:data];
+
+            NSRange range = NSMakeRange(0, points);
+            NSArray* dataPart = [data subarrayWithRange:range];
+            BOOL succeed = NO;
+            @try {
+                //NSLog(@"Uploading batch of %d points.",points);
+                succeed = [sender uploadData:dataPart forSensorId: [sensorIdMap valueForKey:sensorId]];
+            } @catch (NSException* e) {
+                //NSLog(@"SenseStore: Exception while uploading data: %@", e);
+            }
+            
+            if (succeed == YES ) {
+                //remove sent data
+                [data removeObjectsInRange:range];
+            } else {
+                NSLog(@"Upload failed");
+                //don't check the reason for failure, just erase this sensor id
+                [sensorIdMap removeObjectForKey:sensorId];
+                //get out of this loop and continue with the next sensor.
+                break;
+            }
+        }
+	}
+    
+    //re submit unsent data (if any)  into sensorData
+    @synchronized(self) {
+        for (NSString* sensorId in myData) {
+            NSMutableArray* unsent = [myData valueForKey:sensorId];
+            if (unsent.count > 0) {
+                NSMutableArray* entry = [sensorData valueForKey:sensorId];
+                if (entry == nil) {
+                    [sensorData setValue:unsent forKey:sensorId];
+                }
+                else {
+                    [entry addObjectsFromArray:unsent];
+                }
+            }
+        }
     }
     
-    if (serviceEnabled) {
+    //exponentially back off at failures to avoid spamming the server
+    if (allSucceed)
+        waitTime = 0; //no need to back off
+    else {
+        //back off with a factor 2, max to one hour
+        waitTime = MIN(MAX_UPLOAD_INTERVAL, MAX(2 * syncRate, MIN(2 * waitTime, MAX_UPLOAD_INTERVAL)));
+    }
+    
+    if (serviceEnabled == YES) {
         NSTimeInterval interval = MAX(waitTime, syncRate);
         if (uploadTimer.isValid)
             [uploadTimer invalidate];
@@ -346,12 +373,12 @@ static SensorStore* sharedSensorStoreInstance = nil;
         NSRunLoop* runLoop = [NSRunLoop currentRunLoop];
         [runLoop addTimer:uploadTimer forMode:NSRunLoopCommonModes];
         NSLog(@"Uploading again in %f seconds.", interval);
-    
+        
         //send notification about upload
         ApplicationStateChangeMsg* msg = [[ApplicationStateChangeMsg alloc] init];
-        msg.applicationStateChange = succeed ? kUPLOAD_OK :kUPLOAD_FAILED;
+        msg.applicationStateChange = allSucceed ? kUPLOAD_OK :kUPLOAD_FAILED;
         [[NSNotificationCenter defaultCenter] postNotification: [NSNotification notificationWithName:applicationStateChangeNotification object:msg]];
-    
+        
         [runLoop run];
     }
 }
@@ -361,12 +388,12 @@ static SensorStore* sharedSensorStoreInstance = nil;
 		NSLog(@"applying general settings");
 		//get new settings
 		NSDictionary* settings = [Settings sharedSettings].general;
-	
+        
 		//apply properties one by one
 		[sender setUser:[settings valueForKey:generalSettingUsernameKey] andPassword:[settings valueForKey:generalSettingPasswordKey]];
 		syncRate = [[[Settings sharedSettings] getSettingType:@"general" setting:generalSettingSynchronisationRateKey] doubleValue];
         [self setSyncRate:syncRate];
-
+        
 		[self setEnabled:[[[Settings sharedSettings] getSettingType:@"general" setting:generalSettingSenseEnabledKey] boolValue]];
 	}
 	@catch (NSException * e) {
@@ -397,7 +424,7 @@ static SensorStore* sharedSensorStoreInstance = nil;
 			[self setEnabled:[setting.value boolValue]];
 		}
 	}
-
+    
 }
 
 - (void) setSyncRate: (int) newRate {
@@ -408,6 +435,24 @@ static SensorStore* sharedSensorStoreInstance = nil;
         uploadTimer = [NSTimer scheduledTimerWithTimeInterval:syncRate target:self selector:@selector(scheduleUpload) userInfo:nil repeats:NO];
     }
 }
+
+- (NSUInteger) nrPointsToSend:(NSArray*) data {
+    //Heuristic to estimate the nr of points to send.
+    NSUInteger points=0;
+    int size = 0;
+    int sizeOfNextPoint = [[[data objectAtIndex:points] JSONRepresentation] length];
+    do {
+        points++;
+        size += sizeOfNextPoint;
+        if (points >= data.count)
+            break; //there is no next point...
+        sizeOfNextPoint = [[[data objectAtIndex:points] JSONRepresentation] length];
+        //add some bytes for overhead
+        sizeOfNextPoint += 10;
+    } while (size + sizeOfNextPoint < MAX_BYTES_TO_UPLOAD_AT_ONCE);
+    return points;
+}
+
 
 + (NSDictionary*) device {
 	NSString* type = [[UIDevice currentDevice] model];

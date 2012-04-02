@@ -10,6 +10,7 @@
 #import "SettingsViewController.h"
 #import "WebViewController.h"
 #import "SensorStore.h"
+#import "AntPlusController.h"
 
 @interface senseLocationAppAppDelegate : NSObject <UIApplicationDelegate> {
     UIWindow *window;
@@ -18,6 +19,9 @@
 	SettingsViewController* settingsViewController;
 	
 	SensorStore* sensorStore;
+    
+    
+    AntPlusController* wahoo;
 }
 
 @property (nonatomic, strong) IBOutlet UIWindow *window;

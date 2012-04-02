@@ -35,12 +35,18 @@
 	<array>
 		<string>location</string>
 		<string>audio</string>
+		<string>external-accessory</string>
+		<string>bluetooth-central</string>
 	</array>
 	<key>UIRequiresPersistentWiFi</key>
 	<false/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedExternalAccessoryProtocols</key>
+	<array>
+		<string>com.momentumoftechnology.fisica</string>
 	</array>
 </dict>
 </plist>

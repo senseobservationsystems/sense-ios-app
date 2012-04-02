@@ -27,6 +27,8 @@
    
     [self.window makeKeyAndVisible];
 
+    wahoo = [[AntPlusController alloc] init];
+    
 	NSLog(@"app launched");
   
     return YES;

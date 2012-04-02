@@ -324,7 +324,7 @@ static const NSInteger STATUSCODE_UNAUTHORIZED;
 	
 	//log response
 	if (response) {
-		NSLog(@"%@ \"%@\" responded with status code %d", method, url, [response statusCode]);
+		//NSLog(@"%@ \"%@\" responded with status code %d", method, url, [response statusCode]);
 	}
 	
 	if (output != nil)
