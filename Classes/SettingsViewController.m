@@ -17,10 +17,12 @@
 #import "BatterySensor.h"
 #import "CallSensor.h"
 #import "ConnectionSensor.h"
+#import "AntViewController.h"
 
 
-
-@implementation SettingsViewController
+@implementation SettingsViewController {
+    AntViewController* antViewController;
+}
 @synthesize sensorClasses;
 
 /* Settings menu */
@@ -45,6 +47,8 @@ enum GeneralSectionRow{
 - (void)viewDidLoad {
     [super viewDidLoad];
 	firstTimeCommonSense = YES;
+    antViewController = [[AntViewController alloc] init];
+    
 	//load properties
 	generalSettings = [Settings sharedSettings].general;
 	
@@ -379,6 +383,8 @@ enum GeneralSectionRow{
 }
 
 - (void) gotoWebView {
+    	[self.navigationController pushViewController:antViewController animated:YES];
+    /*
 	//instantiate webview
 	if (webViewController == nil)
 		webViewController = [[WebViewController alloc] init];
@@ -390,6 +396,7 @@ enum GeneralSectionRow{
 		[alert show];
 		firstTimeCommonSense = NO;
 	}
+     */
 		
 }
 

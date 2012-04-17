@@ -29,6 +29,8 @@
 		3E2C86F8130A98B400B1C6CC /* LocationSensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E2C86F7130A98B400B1C6CC /* LocationSensor.m */; };
 		3E325B7E1427875900D0E6A8 /* MovingSensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E325B7D1427875900D0E6A8 /* MovingSensor.m */; };
 		3E36DC781460292200C456C3 /* ApplicationStateChange.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E36DC771460292100C456C3 /* ApplicationStateChange.m */; };
+		3E52E05F153C104E001295C0 /* AntViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E52E05D153C104E001295C0 /* AntViewController.m */; };
+		3E52E060153C104E001295C0 /* AntViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E52E05E153C104E001295C0 /* AntViewController.xib */; };
 		3E562A51135D9A6D00B54448 /* CallSensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E562A50135D9A6D00B54448 /* CallSensor.m */; };
 		3E562A66135D9DA800B54448 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E562A65135D9DA800B54448 /* CoreTelephony.framework */; };
 		3E5D41C9136957640057D124 /* AccelerationSensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E5D41C8136957640057D124 /* AccelerationSensor.m */; };
@@ -109,6 +111,9 @@
 		3E36DC761460292000C456C3 /* ApplicationStateChange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationStateChange.h; sourceTree = "<group>"; };
 		3E36DC771460292100C456C3 /* ApplicationStateChange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApplicationStateChange.m; sourceTree = "<group>"; };
 		3E3734B71525DDD2000A1EF5 /* wf_api.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = wf_api.zip; path = ../../../../Downloads/wf_api.zip; sourceTree = "<group>"; };
+		3E52E05C153C104E001295C0 /* AntViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AntViewController.h; sourceTree = "<group>"; };
+		3E52E05D153C104E001295C0 /* AntViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AntViewController.m; sourceTree = "<group>"; };
+		3E52E05E153C104E001295C0 /* AntViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AntViewController.xib; sourceTree = "<group>"; };
 		3E562A4F135D9A6D00B54448 /* CallSensor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallSensor.h; sourceTree = "<group>"; };
 		3E562A50135D9A6D00B54448 /* CallSensor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallSensor.m; sourceTree = "<group>"; };
 		3E562A65135D9DA800B54448 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
@@ -407,6 +412,9 @@
 				3EDB0B1C13153A3500936309 /* WebViewController.h */,
 				3EDB0B1D13153A3500936309 /* WebViewController.m */,
 				3EBA2034130D731700C5B924 /* LoginSettings.h */,
+				3E52E05C153C104E001295C0 /* AntViewController.h */,
+				3E52E05D153C104E001295C0 /* AntViewController.m */,
+				3E52E05E153C104E001295C0 /* AntViewController.xib */,
 				3EBA2035130D731700C5B924 /* LoginSettings.m */,
 				3EBA2036130D731700C5B924 /* LoginSettings.xib */,
 			);
@@ -495,6 +503,7 @@
 				3EA626EA13814A5F007F60D2 /* Default.png in Resources */,
 				3EA6278B1381664C007F60D2 /* Default@2x.png in Resources */,
 				3EC5AAA513C7407400CDACED /* MainWindow-iPad.xib in Resources */,
+				3E52E060153C104E001295C0 /* AntViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -543,6 +552,7 @@
 				3E36DC781460292200C456C3 /* ApplicationStateChange.m in Sources */,
 				3E1BBFA51525EDDE00BA0A6D /* AntPlusController.m in Sources */,
 				3E1BBFA81529965100BA0A6D /* FootpodSensor.m in Sources */,
+				3E52E05F153C104E001295C0 /* AntViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -746,7 +756,7 @@
 					armv6,
 				);
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Pim Nijdam (NK65QFXJ36)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

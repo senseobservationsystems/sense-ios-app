@@ -8,6 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import <WFConnector/WFConnector.h>
+#import <WFConnector/WFAntFs.h>
 
-@interface AntPlusController : NSObject <WFHardwareConnectorDelegate>
+@interface AntPlusController : NSObject <WFHardwareConnectorDelegate, WFAntFSDeviceDelegate> {
+    UITextView* textView;
+}
+
+
+//DEBUG API
+- (id) initWithTextView:(UITextView*) tv;
+- (void) connectToBloodPressure;
+- (void) scan;
+- (void) getDirectoryInfo;
+- (void) syncTime;
 @end
