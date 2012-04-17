@@ -54,7 +54,7 @@
     [antPlus connectToBloodPressure];
 }
 - (IBAction) getDirectoryInfo {
-    [antPlus syncTime];
+    [antPlus getDirectoryInfo];
 }
 - (IBAction) getFile {
     //nothing
