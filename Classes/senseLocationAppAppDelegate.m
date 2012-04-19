@@ -7,8 +7,11 @@
 //
 
 #import "senseLocationAppAppDelegate.h"
+#import "SensePlatform.h"
 
-@implementation senseLocationAppAppDelegate
+@implementation senseLocationAppAppDelegate {
+    SensePlatform* sensePlatform;
+}
 
 @synthesize window;
 @synthesize navigationController;
@@ -20,9 +23,10 @@
 #pragma mark Application lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
-	//We need the sensorstore to be up and running, so make sure it is created.
-	sensorStore = [SensorStore sharedSensorStore];
 
+    //initialize the sense platform
+    [SensePlatform initialize];
+    
 	[window addSubview:[navigationController view]];
    
     [self.window makeKeyAndVisible];
@@ -71,7 +75,7 @@
      Called when the application is about to terminate.
      See also applicationDidEnterBackground:.
      */
-	[[SensorStore sharedSensorStore] forceDataFlush];
+	[SensePlatform willTerminate];
 	NSLog(@"App terminated");
 }
 
@@ -84,7 +88,7 @@
      Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
      */
 	NSLog(@"Received memory warning.");
-	[[SensorStore sharedSensorStore] forceDataFlush];
+	//[[SensorStore sharedSensorStore] forceDataFlush];
 }
 
 

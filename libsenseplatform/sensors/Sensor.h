@@ -6,7 +6,6 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 #import <Foundation/Foundation.h>
-#import "DataStore.h"
 
 @interface Sensor : NSObject {
 	BOOL isEnabled;
@@ -15,12 +14,11 @@
 }
 
 @property (assign) BOOL isEnabled;
-@property (retain) id dataStore;
+@property (strong) id dataStore;
 @property (readonly) NSString* sensorId;
 
 
-//TODO: use selector for comparison
-+ (BOOL) matchesDescription:(NSDictionary*) description;
+- (BOOL) matchesDescription:(NSDictionary*) description;
 
 //common methods
 - (void) enabledChanged: (id) notification;
@@ -29,9 +27,10 @@
 - (void) dealloc;
 
 //overridden by subclass
-+ (NSString*) name;
-+ (NSString*) displayName;
-+ (NSString*) deviceType;
-+ (NSDictionary*) sensorDescription;
+- (NSString*) name;
+- (NSString*) displayName;
+- (NSString*) deviceType;
+- (NSDictionary*) sensorDescription;
 + (BOOL) isAvailable;
+- (NSString*) sensorId;
 @end

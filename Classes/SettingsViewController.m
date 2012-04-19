@@ -8,20 +8,14 @@
 
 #import "SettingsViewController.h"
 #import "LoginSettings.h"
-#import "SensorStore.h"
 #import "Settings.h"
 #import "Preferences.h"
 #import <UIKit/UIKit.h>
+#import "SensePlatform.h"
 
-//sensors
-#import "BatterySensor.h"
-#import "CallSensor.h"
-#import "ConnectionSensor.h"
-#import "AntViewController.h"
 
 
 @implementation SettingsViewController {
-    AntViewController* antViewController;
 }
 @synthesize sensorClasses;
 
@@ -47,10 +41,9 @@ enum GeneralSectionRow{
 - (void)viewDidLoad {
     [super viewDidLoad];
 	firstTimeCommonSense = YES;
-    antViewController = [[AntViewController alloc] init];
     
 	//load properties
-	generalSettings = [Settings sharedSettings].general;
+	//generalSettings = [Settings sharedSettings].general;
 	
 	//setup navigation bar
 	self.navigationItem.title = @"Sense";
@@ -59,7 +52,7 @@ enum GeneralSectionRow{
 	//self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Help" style:UIBarButtonItemStylePlain target:self action:@selector(displayWelcomeMessage)];
 	
 	//setup sensors
-	NSArray* sensors = [SensorStore sharedSensorStore].allAvailableSensorClasses;
+	NSArray* sensors = [SensePlatform availableSensors];
 	//filter out motion sensors
 	//NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"NOT (name == '')"];
 	NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"NOT (name == 'orientation' OR name == 'accelerometer' OR name == 'acceleration' OR name == 'gyroscope'\
@@ -68,7 +61,7 @@ enum GeneralSectionRow{
 	self.sensorClasses = [sensors filteredArrayUsingPredicate:availablePredicate];
 	//create single switch for motion sensors
 	motionSwitch = [[UISwitch alloc]init];
-	[motionSwitch setOn:[[Settings sharedSettings] isSensorEnabled:[AccelerometerSensor class]]];
+	//[motionSwitch setOn:[[Settings sharedSettings] isSensorEnabled:AccelerometerSensor.sensor]];
 	[motionSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
     if (false == [self supportsBackground]) {
         [self foregroundEnabled: motionSwitch.on];
@@ -81,7 +74,7 @@ enum GeneralSectionRow{
 
 	//setup switches
 	senseSwitch = [[UISwitch alloc]init];
-	[senseSwitch setOn:[[[Settings sharedSettings] getSettingType:@"general" setting:generalSettingSenseEnabledKey] boolValue]];
+	[senseSwitch setOn:[[[Settings sharedSettings] getSettingType:kSettingTypeGeneral setting:kGeneralSettingSenseEnabled] boolValue]];
 	[senseSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
 	
 	sensorEnableSwitches = [NSMutableArray new];
@@ -99,13 +92,13 @@ enum GeneralSectionRow{
 	NSString* displayed = [[Settings sharedSettings] getSettingType: @"messages" setting:@"welcomeMessageDisplayed"];
 	if (![displayed isEqual:@"true"]) {
 		[self displayWelcomeMessage];
-		[[Settings sharedSettings] commitSettingType: @"messages" setting:@"welcomeMessageDisplayed" value:@"true" persistent:YES];
+		[[Settings sharedSettings] setSettingType: @"messages" setting:@"welcomeMessageDisplayed" value:@"true" persistent:YES];
 	}
     
 	
 	//show login immediately if we don't have a username
-    NSLog(@"username: '%@'",[generalSettings valueForKey:generalSettingUsernameKey]);
-	if ([[generalSettings valueForKey:generalSettingUsernameKey] isEqualToString:@""]) {
+    NSString* userName = [[Settings sharedSettings] getSettingType:kSettingTypeGeneral setting:kGeneralSettingUsername];
+	if (userName == nil || [userName isEqualToString:@""]) {
 			//create LoginSettings
 			LoginSettings* login = [[LoginSettings alloc] initWithNibName:@"LoginSettings" bundle:[NSBundle mainBundle]];
 			[self.navigationController pushViewController:login animated:YES];
@@ -206,7 +199,7 @@ enum GeneralSectionRow{
 			}
 			case generalSectionLogin:
 			{
-                NSString* user = [generalSettings valueForKey:generalSettingUsernameKey];
+                NSString* user = [[Settings sharedSettings] getSettingType:kSettingTypeGeneral setting:kGeneralSettingUsername];
 				NSString* detail = [user isEqualToString:@""] ? @"No account" : user;
 				cell.textLabel.text = @"Account";
 				cell.detailTextLabel.text = detail;
@@ -288,7 +281,7 @@ enum GeneralSectionRow{
 
 - (void) switchChanged:(UISwitch*) switchButton {
 	if (senseSwitch == switchButton) {
-		[[Settings sharedSettings] commitSettingType:@"general" setting:generalSettingSenseEnabledKey
+		[[Settings sharedSettings] setSettingType:kSettingTypeGeneral setting:kGeneralSettingSenseEnabled
                                                value: (switchButton.on ? @"1" : @"0") persistent:YES];
         //reload, as now the sensors section disappears
         [self.tableView reloadData];
@@ -378,13 +371,10 @@ enum GeneralSectionRow{
 
 
 - (void) edited {
-	generalSettings = [Settings sharedSettings].general;
 	[self.tableView reloadData];
 }
 
 - (void) gotoWebView {
-    	[self.navigationController pushViewController:antViewController animated:YES];
-    /*
 	//instantiate webview
 	if (webViewController == nil)
 		webViewController = [[WebViewController alloc] init];
@@ -396,7 +386,6 @@ enum GeneralSectionRow{
 		[alert show];
 		firstTimeCommonSense = NO;
 	}
-     */
 		
 }
 

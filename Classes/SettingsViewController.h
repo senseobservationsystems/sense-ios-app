@@ -6,14 +6,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SensorStore.h"
 #import "WebViewController.h"
 #import "ApplicationStateChange.h"
 
 
 @interface SettingsViewController : UITableViewController {
-	NSDictionary* generalSettings;
-	
 	UIBarButtonItem* webViewButton;
 	WebViewController* webViewController;
 	

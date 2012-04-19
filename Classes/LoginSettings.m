@@ -7,8 +7,8 @@
 //
 
 #import "LoginSettings.h"
-#import "SensorStore.h"
-#import "Sender.h"
+#import "SensePlatform.h"
+#import "Settings.h"
 
 
 @implementation LoginSettings
@@ -32,9 +32,9 @@
     [super viewDidLoad];
 	self.navigationItem.title = @"Login account";
 	Settings* settings = [Settings sharedSettings];
-	username.text = [settings.general valueForKey:generalSettingUsernameKey];
+	username.text = [settings getSettingType:kSettingTypeGeneral setting:kGeneralSettingUsername];
 	//really?
-	password.text = [settings.general valueForKey:generalSettingPasswordKey];
+	password.text = [settings getSettingType:kSettingTypeGeneral setting:kGeneralSettingPassword];
 }
 
 
@@ -78,7 +78,8 @@
 	
 	//register new user
 	NSString* error = nil;
-	BOOL succes = [[SensorStore sharedSensorStore].sender registerUser:username.text withPassword:password.text error:&error];
+	BOOL succes = [SensePlatform registerhUser:username.text withPassword:password.text];
+    
 	[activityIndicator stopAnimating];
 	[activityIndicator removeFromSuperview];
 	
@@ -100,8 +101,8 @@
 	[self.view bringSubviewToFront:activityIndicator];
 	[activityIndicator startAnimating];
 	
-	[[SensorStore sharedSensorStore].sender setUser:username.text andPassword:password.text];
-	BOOL succes = [[SensorStore sharedSensorStore].sender login];
+	//[[SensorStore sharedSensorStore].sender setUser:username.text andPassword:password.text];
+	BOOL succes = [SensePlatform loginWithUser:username.text andPassword:password.text];
 	[activityIndicator stopAnimating];
 	[activityIndicator removeFromSuperview];
 	

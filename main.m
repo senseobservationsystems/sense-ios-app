@@ -7,11 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+void exceptionHandler(NSException *exception);
+void exceptionHandler(NSException *exception) {
+    NSLog(@"Uncaught exception %@(%@):\n%@", exception.name, exception.description, exception.callStackSymbols);
+}
 
 int main(int argc, char *argv[]) {
-    
-    @autoreleasepool {
-        int retVal = UIApplicationMain(argc, argv, nil, nil);
-        return retVal;
-    }
+      	NSSetUncaughtExceptionHandler(&exceptionHandler);
+    int retVal;
+        retVal = UIApplicationMain(argc, argv, nil, nil);
+    return retVal;
 }
+
