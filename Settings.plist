@@ -40,7 +40,11 @@
 	<key>SettingsTypespatial</key>
 	<dict>
 		<key>pollInterval</key>
-		<string>60</string>
+		<string>300</string>
+		<key>frequency</key>
+		<string>6</string>
+		<key>number of samples</key>
+		<string>18</string>
 	</dict>
 </dict>
 </plist>
