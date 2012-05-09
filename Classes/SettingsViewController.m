@@ -12,6 +12,7 @@
 #import "Preferences.h"
 #import <UIKit/UIKit.h>
 #import "SensePlatform.h"
+#import "SensorIds.h"
 
 
 
@@ -61,7 +62,7 @@ enum GeneralSectionRow{
 	self.sensorClasses = [sensors filteredArrayUsingPredicate:availablePredicate];
 	//create single switch for motion sensors
 	motionSwitch = [[UISwitch alloc]init];
-	//[motionSwitch setOn:[[Settings sharedSettings] isSensorEnabled:AccelerometerSensor.sensor]];
+	[motionSwitch setOn:[[Settings sharedSettings] isSensorEnabled:kSENSOR_ACCELEROMETER]];
 	[motionSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
     if (false == [self supportsBackground]) {
         [self foregroundEnabled: motionSwitch.on];
@@ -69,7 +70,7 @@ enum GeneralSectionRow{
     
     //create single switch for phone state
     phoneStateSwitch = [[UISwitch alloc]init];
-	[phoneStateSwitch setOn:[[Settings sharedSettings] isSensorEnabled:[BatterySensor class]]];
+	[phoneStateSwitch setOn:[[Settings sharedSettings] isSensorEnabled:kSENSOR_BATTERY]];
 	[phoneStateSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
 
 	//setup switches
@@ -78,9 +79,9 @@ enum GeneralSectionRow{
 	[senseSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
 	
 	sensorEnableSwitches = [NSMutableArray new];
-	for (Class sensorClass in sensorClasses) {
+	for (Sensor* sensor in sensorClasses) {
 		UISwitch*  enableSwitch = [[UISwitch alloc]init];
-		[enableSwitch setOn:[[Settings sharedSettings] isSensorEnabled:sensorClass]];
+		[enableSwitch setOn:[[Settings sharedSettings] isSensorEnabled:[sensor sensorId]]];
 		[enableSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
 		[sensorEnableSwitches addObject:enableSwitch];
 	}
@@ -227,9 +228,9 @@ enum GeneralSectionRow{
 			cell.accessoryView = motionSwitch;
 		} else {
             NSInteger idx = indexPath.row - 2;
-            Class sensorClass = [sensorClasses objectAtIndex:idx];
-            cell.textLabel.text = [sensorClass displayName];
-            if (sensorClass == [LocationSensor class])
+            Sensor* sensor = [sensorClasses objectAtIndex:idx];
+            cell.textLabel.text = [sensor displayName];
+            if ([kSENSOR_LOCATION isEqualToString:sensor.sensorId])
                 cell.detailTextLabel.text = @"Required for background mode";
             else
 				cell.detailTextLabel.text = nil;//[sensorClass guiDescription];
@@ -288,10 +289,10 @@ enum GeneralSectionRow{
         
     }
 	else if (motionSwitch == switchButton) {
-		[[Settings sharedSettings] setSensor:[AccelerometerSensor class] enabled:switchButton.on];
-		[[Settings sharedSettings] setSensor:[AccelerationSensor class] enabled:switchButton.on];
-		[[Settings sharedSettings] setSensor:[RotationSensor class] enabled:switchButton.on];
-		[[Settings sharedSettings] setSensor:[OrientationSensor class] enabled:switchButton.on];
+		[[Settings sharedSettings] setSensor:kSENSOR_ACCELERATION enabled:switchButton.on];
+		[[Settings sharedSettings] setSensor:kSENSOR_ACCELEROMETER enabled:switchButton.on];
+		[[Settings sharedSettings] setSensor:kSENSOR_ROTATION enabled:switchButton.on];
+		[[Settings sharedSettings] setSensor:kSENSOR_ORIENTATION enabled:switchButton.on];
 		if (false == [self supportsBackground]) {
             [self foregroundEnabled: motionSwitch.on]; 
             if (switchButton.on) {
@@ -300,18 +301,18 @@ enum GeneralSectionRow{
             }
         }
 	} else if (phoneStateSwitch == switchButton) {
-		[[Settings sharedSettings] setSensor:[BatterySensor class] enabled:switchButton.on];
-		[[Settings sharedSettings] setSensor:[CallSensor class] enabled:switchButton.on];
-		[[Settings sharedSettings] setSensor:[ConnectionSensor class] enabled:switchButton.on];
+		[[Settings sharedSettings] setSensor:kSENSOR_BATTERY enabled:switchButton.on];
+		[[Settings sharedSettings] setSensor:kSENSOR_CALL enabled:switchButton.on];
+		[[Settings sharedSettings] setSensor:kSENSOR_CONNECTION_TYPE enabled:switchButton.on];
     }
     else {
 		NSInteger sensorClassIdx = [sensorEnableSwitches indexOfObject:switchButton];
 		if (sensorClassIdx == NSNotFound) {
 			NSLog(@"Internal error in gui switch logic");
 		}
-		Class sensorClass = [sensorClasses objectAtIndex:sensorClassIdx];
-		NSLog(@"switch for %@ changed", sensorClass);
-		[[Settings sharedSettings] setSensor:sensorClass enabled:switchButton.on];
+		Sensor* sensor = [sensorClasses objectAtIndex:sensorClassIdx];
+		NSLog(@"switch for %@ changed", sensor.sensorId);
+		[[Settings sharedSettings] setSensor:sensor.sensorId enabled:switchButton.on];
 	}
 	//[self edited];
 }

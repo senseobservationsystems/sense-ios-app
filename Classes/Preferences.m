@@ -244,7 +244,7 @@ enum AdaptiveSectionRow {
 			case generalSectionWifi: {
 				int prePicked = -1;
 				//get current option
-				NSString* currentOption = [[Settings sharedSettings] getSettingType:@"general" setting:kGeneralSettingUploadInterval];
+				NSString* currentOption = [[Settings sharedSettings] getSettingType:kSettingTypeGeneral setting:kGeneralSettingUploadInterval];
 				int optionValue = currentOption == nil ? -1 : [currentOption intValue];
 				switch (optionValue) {
 					case 10:
@@ -278,7 +278,7 @@ enum AdaptiveSectionRow {
 						interval = 300;
 					}
 
-					[[Settings sharedSettings] setSettingType:@"general" setting:kGeneralSettingUploadInterval value:[NSString stringWithFormat:@"%d",interval] persistent:YES];
+					[[Settings sharedSettings] setSettingType:kSettingTypeGeneral setting:kGeneralSettingUploadInterval value:[NSString stringWithFormat:@"%d",interval] persistent:YES];
 				};
 				[self.navigationController pushViewController:picker animated:YES];
 
@@ -289,7 +289,7 @@ enum AdaptiveSectionRow {
 			case sensorSectionPositionAccuracy: {
 				int prePicked = -1;
 				//get current option
-				NSString* currentOption = [[Settings sharedSettings] getSettingType:@"position" setting:@"accuracy"];
+				NSString* currentOption = [[Settings sharedSettings] getSettingType:kSettingTypeLocation setting:kLocationSettingAccuracy];
 				int optionValue = currentOption == nil ? -1 : [currentOption intValue];
 				switch (optionValue) {
 					case 0:
@@ -323,19 +323,17 @@ enum AdaptiveSectionRow {
 						accuracy = 100;
 					}
 					
-					[[Settings sharedSettings] setSettingType:@"position" setting:@"accuracy" value:[NSString stringWithFormat:@"%d",accuracy] persistent:YES];
+					[[Settings sharedSettings] setSettingType:kSettingTypeLocation setting:kLocationSettingAccuracy value:[NSString stringWithFormat:@"%d",accuracy] persistent:YES];
 				};
 				[self.navigationController pushViewController:picker animated:YES];
 			} break;
 			case sensorSectionMotionPollInterval: {
 				NSInteger prePicked = -1;
 				//get current option
-				NSString* currentOption = [[Settings sharedSettings] getSettingType:@"spatial" setting:@"pollInterval"];
+				NSString* currentOption = [[Settings sharedSettings] getSettingType:kSettingTypeSpatial setting:kSpatialSettingInterval];
 				NSTimeInterval optionValue = currentOption == nil ? -1 : [currentOption doubleValue];
                 double epsilon = 0.001;
-				if (fabsf(optionValue - 1) < epsilon) {
-                    prePicked = 0;
-                } else if (fabsf(optionValue - 15) < epsilon) {
+                if (fabsf(optionValue - 15) < epsilon) {
                     prePicked = 1;
                 } else if (fabsf(optionValue - 60) < epsilon) {
                     prePicked = 2;
@@ -345,20 +343,19 @@ enum AdaptiveSectionRow {
                     prePicked = 2;
                 }
 				
-				NSArray* options = [[NSArray alloc] initWithObjects:@"every second", @"every 15 seconds", @"every minute ", @"every 5 minutes", nil];
+				NSArray* options = [[NSArray alloc] initWithObjects:@"every 15 seconds", @"every minute ", @"every 5 minutes", nil];
 				PickerTable* picker = [[PickerTable alloc] initWithStyle:UITableViewStyleGrouped name:@"Motion update" options: options prePicked: prePicked];
 				picker.callback = ^void (int picked) {
 					NSTimeInterval interval;
-					if (picked == 0) interval = 1;
-					else if (picked == 1) interval = 15;
-					else if (picked == 2) interval = 60;
-					else if (picked == 3) interval = 300;
+					if (picked == 0) interval = 15;
+					else if (picked == 1) interval = 60;
+					else if (picked == 2) interval = 300;
 					else {
 						NSLog(@"Error unknown option picked for spatial update frequency.");
 						interval = 15;
 					}
 					
-					[[Settings sharedSettings] setSettingType:@"spatial" setting:@"pollInterval" value:[NSString stringWithFormat:@"%g",interval] persistent:YES];
+					[[Settings sharedSettings] setSettingType:kSettingTypeSpatial setting:kSpatialSettingInterval value:[NSString stringWithFormat:@"%g",interval] persistent:YES];
 				};
 				[self.navigationController pushViewController:picker animated:YES];
 				
@@ -366,7 +363,7 @@ enum AdaptiveSectionRow {
             case sensorSectionNoisePollInterval: {
 				int prePicked = -1;
 				//get current option
-				NSString* currentOption = [[Settings sharedSettings] getSettingType:@"noise" setting:@"interval"];
+				NSString* currentOption = [[Settings sharedSettings] getSettingType:kSettingTypeAmbience setting:kAmbienceSettingInterval];
 				int optionValue = currentOption == nil ? -1 : [currentOption intValue];
 				switch (optionValue) {
 					case 5:
@@ -396,7 +393,7 @@ enum AdaptiveSectionRow {
 						interval = 60;
 					}
 					
-					[[Settings sharedSettings] setSettingType:@"noise" setting:@"interval" value:[NSString stringWithFormat:@"%d", interval] persistent:YES];
+					[[Settings sharedSettings] setSettingType:kSettingTypeAmbience setting:kAmbienceSettingInterval value:[NSString stringWithFormat:@"%d", interval] persistent:YES];
 				};
 				[self.navigationController pushViewController:picker animated:YES];
 			} break;		
