@@ -1,9 +1,9 @@
 //
-// Prefix header for all source files of the 'senseLocationApp' target in the 'senseLocationApp' project
+// Prefix header for all source files of the sense platform
 //
 
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
     #import <UIKit/UIKit.h>
-	#import "SensePlatform.h"
+	#import "SensePlatform/CSSensePlatform.h"
 #endif

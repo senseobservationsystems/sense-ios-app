@@ -8,12 +8,11 @@
 
 #import "SettingsViewController.h"
 #import "LoginSettings.h"
-#import "Settings.h"
+#import "Senseplatform/CSSensePlatform.h"
+#import "SensePlatform/CSSettings.h"
 #import "Preferences.h"
 #import <UIKit/UIKit.h>
-#import "SensePlatform.h"
-#import "SensorIds.h"
-
+#import "SensePlatform/CSSensorIds.h"
 
 
 @implementation SettingsViewController {
@@ -48,21 +47,22 @@ enum GeneralSectionRow{
 	
 	//setup navigation bar
 	self.navigationItem.title = @"Sense";
-	webViewButton= [[UIBarButtonItem alloc] initWithTitle:@"CommonSense" style:UIBarButtonItemStylePlain target:self action:@selector(gotoWebView)];
-	self.navigationItem.rightBarButtonItem = webViewButton;
+	//webViewButton= [[UIBarButtonItem alloc] initWithTitle:@"CommonSense" style:UIBarButtonItemStylePlain target:self action:@selector(gotoWebView)];
+	//self.navigationItem.rightBarButtonItem = webViewButton;
 	//self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Help" style:UIBarButtonItemStylePlain target:self action:@selector(displayWelcomeMessage)];
 	
 	//setup sensors
-	NSArray* sensors = [SensePlatform availableSensors];
+	NSArray* sensors = [CSSensePlatform availableSensors];
 	//filter out motion sensors
 	//NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"NOT (name == '')"];
-	NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"NOT (name == 'orientation' OR name == 'accelerometer' OR name == 'acceleration' OR name == 'gyroscope'\
-                                       OR name == 'battery' OR name == 'call state' OR name == 'connection type')"];
+	NSPredicate* availablePredicate = [NSPredicate predicateWithFormat:@"NOT (name == 'orientation' OR name == 'accelerometer' OR name == 'acceleration' OR name == 'gyroscope' OR name == 'linear acceleration'\
+        OR name == 'battery' OR name == 'call state' OR name == 'connection type'\
+        OR name == 'compass')"];
 
 	self.sensorClasses = [sensors filteredArrayUsingPredicate:availablePredicate];
 	//create single switch for motion sensors
 	motionSwitch = [[UISwitch alloc]init];
-	[motionSwitch setOn:[[Settings sharedSettings] isSensorEnabled:kSENSOR_ACCELEROMETER]];
+	[motionSwitch setOn:[[CSSettings sharedSettings] isSensorEnabled:kCSSENSOR_ACCELEROMETER]];
 	[motionSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
     if (false == [self supportsBackground]) {
         [self foregroundEnabled: motionSwitch.on];
@@ -70,35 +70,35 @@ enum GeneralSectionRow{
     
     //create single switch for phone state
     phoneStateSwitch = [[UISwitch alloc]init];
-	[phoneStateSwitch setOn:[[Settings sharedSettings] isSensorEnabled:kSENSOR_BATTERY]];
+	[phoneStateSwitch setOn:[[CSSettings sharedSettings] isSensorEnabled:kCSSENSOR_BATTERY]];
 	[phoneStateSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
 
 	//setup switches
 	senseSwitch = [[UISwitch alloc]init];
-	[senseSwitch setOn:[[[Settings sharedSettings] getSettingType:kSettingTypeGeneral setting:kGeneralSettingSenseEnabled] boolValue]];
+	[senseSwitch setOn:[[[CSSettings sharedSettings] getSettingType:kCSSettingTypeGeneral setting:kCSGeneralSettingSenseEnabled] boolValue]];
 	[senseSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
 	
 	sensorEnableSwitches = [NSMutableArray new];
-	for (Sensor* sensor in sensorClasses) {
+	for (CSSensor* sensor in sensorClasses) {
 		UISwitch*  enableSwitch = [[UISwitch alloc]init];
-		[enableSwitch setOn:[[Settings sharedSettings] isSensorEnabled:[sensor sensorId]]];
+		[enableSwitch setOn:[[CSSettings sharedSettings] isSensorEnabled:sensor.name]];
 		[enableSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
 		[sensorEnableSwitches addObject:enableSwitch];
 	}
     
     //register for notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationStateChanged:) name:applicationStateChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationStateChanged:) name:CSapplicationStateChangeNotification object:nil];
     
     
-	NSString* displayed = [[Settings sharedSettings] getSettingType: @"messages" setting:@"welcomeMessageDisplayed"];
+	NSString* displayed = [[CSSettings sharedSettings] getSettingType: @"messages" setting:@"welcomeMessageDisplayed"];
 	if (![displayed isEqual:@"true"]) {
 		[self displayWelcomeMessage];
-		[[Settings sharedSettings] setSettingType: @"messages" setting:@"welcomeMessageDisplayed" value:@"true" persistent:YES];
+		[[CSSettings sharedSettings] setSettingType: @"messages" setting:@"welcomeMessageDisplayed" value:@"true" persistent:YES];
 	}
     
 	
 	//show login immediately if we don't have a username
-    NSString* userName = [[Settings sharedSettings] getSettingType:kSettingTypeGeneral setting:kGeneralSettingUsername];
+    NSString* userName = [[CSSettings sharedSettings] getSettingType:kCSSettingTypeGeneral setting:kCSGeneralSettingUsername];
 	if (userName == nil || [userName isEqualToString:@""]) {
 			//create LoginSettings
 			LoginSettings* login = [[LoginSettings alloc] initWithNibName:@"LoginSettings" bundle:[NSBundle mainBundle]];
@@ -200,7 +200,7 @@ enum GeneralSectionRow{
 			}
 			case generalSectionLogin:
 			{
-                NSString* user = [[Settings sharedSettings] getSettingType:kSettingTypeGeneral setting:kGeneralSettingUsername];
+                NSString* user = [[CSSettings sharedSettings] getSettingType:kCSSettingTypeGeneral setting:kCSGeneralSettingUsername];
 				NSString* detail = [user isEqualToString:@""] ? @"No account" : user;
 				cell.textLabel.text = @"Account";
 				cell.detailTextLabel.text = detail;
@@ -228,9 +228,9 @@ enum GeneralSectionRow{
 			cell.accessoryView = motionSwitch;
 		} else {
             NSInteger idx = indexPath.row - 2;
-            Sensor* sensor = [sensorClasses objectAtIndex:idx];
+            CSSensor* sensor = [sensorClasses objectAtIndex:idx];
             cell.textLabel.text = [sensor displayName];
-            if ([kSENSOR_LOCATION isEqualToString:sensor.sensorId])
+            if ([kCSSENSOR_LOCATION isEqualToString:sensor.name])
                 cell.detailTextLabel.text = @"Required for background mode";
             else
 				cell.detailTextLabel.text = nil;//[sensorClass guiDescription];
@@ -282,37 +282,37 @@ enum GeneralSectionRow{
 
 - (void) switchChanged:(UISwitch*) switchButton {
 	if (senseSwitch == switchButton) {
-		[[Settings sharedSettings] setSettingType:kSettingTypeGeneral setting:kGeneralSettingSenseEnabled
+		[[CSSettings sharedSettings] setSettingType:kCSSettingTypeGeneral setting:kCSGeneralSettingSenseEnabled
                                                value: (switchButton.on ? @"1" : @"0") persistent:YES];
         //reload, as now the sensors section disappears
         [self.tableView reloadData];
         
     }
 	else if (motionSwitch == switchButton) {
-		[[Settings sharedSettings] setSensor:kSENSOR_ACCELERATION enabled:switchButton.on];
-		[[Settings sharedSettings] setSensor:kSENSOR_ACCELEROMETER enabled:switchButton.on];
-		[[Settings sharedSettings] setSensor:kSENSOR_ROTATION enabled:switchButton.on];
-		[[Settings sharedSettings] setSensor:kSENSOR_ORIENTATION enabled:switchButton.on];
+		[[CSSettings sharedSettings] setSensor:kCSSENSOR_ACCELERATION enabled:switchButton.on];
+		[[CSSettings sharedSettings] setSensor:kCSSENSOR_ACCELEROMETER enabled:switchButton.on];
+		[[CSSettings sharedSettings] setSensor:kCSSENSOR_ROTATION enabled:switchButton.on];
+		[[CSSettings sharedSettings] setSensor:kCSSENSOR_ORIENTATION enabled:switchButton.on];
 		if (false == [self supportsBackground]) {
             [self foregroundEnabled: motionSwitch.on]; 
             if (switchButton.on) {
-                UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Foreground" message:@"Motion sensors only work when this app is running in the foreground. Autolocking is disabled and the display will be    disabled when you put the device in your pocket." delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
+                UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Foreground" message:@"Motion sensors only work when this app is running in the foreground. Autolocking is disabled and the display will be disabled when you put the device in your pocket." delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
                 [alert show];
             }
         }
 	} else if (phoneStateSwitch == switchButton) {
-		[[Settings sharedSettings] setSensor:kSENSOR_BATTERY enabled:switchButton.on];
-		[[Settings sharedSettings] setSensor:kSENSOR_CALL enabled:switchButton.on];
-		[[Settings sharedSettings] setSensor:kSENSOR_CONNECTION_TYPE enabled:switchButton.on];
+		[[CSSettings sharedSettings] setSensor:kCSSENSOR_BATTERY enabled:switchButton.on];
+		[[CSSettings sharedSettings] setSensor:kCSSENSOR_CALL enabled:switchButton.on];
+		[[CSSettings sharedSettings] setSensor:kCSSENSOR_CONNECTION_TYPE enabled:switchButton.on];
     }
     else {
 		NSInteger sensorClassIdx = [sensorEnableSwitches indexOfObject:switchButton];
 		if (sensorClassIdx == NSNotFound) {
 			NSLog(@"Internal error in gui switch logic");
 		}
-		Sensor* sensor = [sensorClasses objectAtIndex:sensorClassIdx];
-		NSLog(@"switch for %@ changed", sensor.sensorId);
-		[[Settings sharedSettings] setSensor:sensor.sensorId enabled:switchButton.on];
+		CSSensor* sensor = [sensorClasses objectAtIndex:sensorClassIdx];
+		NSLog(@"switch for %@ changed", sensor.name);
+		[[CSSettings sharedSettings] setSensor:sensor.name enabled:switchButton.on];
 	}
 	//[self edited];
 }
@@ -397,13 +397,13 @@ enum GeneralSectionRow{
 }
 
 - (void) applicationStateChanged:(NSNotification*) notification {
-   ApplicationStateChangeMsg* msg = notification.object;
+   CSApplicationStateChangeMsg* msg = notification.object;
     NSString* newState;
     switch (msg.applicationStateChange) {
-        case kUPLOAD_OK:
+        case kCSUPLOAD_OK:
             newState = nil;
             break;
-        case kUPLOAD_FAILED:
+        case kCSUPLOAD_FAILED:
             newState = @"Upload problems";
             break;
     }

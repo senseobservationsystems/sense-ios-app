@@ -7,13 +7,14 @@
 //
 
 #import "LoginSettings.h"
-#import "SensePlatform.h"
-#import "Settings.h"
+#import "Senseplatform/CSSensePlatform.h"
+#import "SensePlatform/CSSettings.h"
+#import "RegisterUserView.h"
 
-
-@implementation LoginSettings
-@synthesize username;
-@synthesize password;
+@implementation LoginSettings {
+    UIAlertView* loginAlert;
+    UIAlertView* registerAlert;
+}
 
 // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
@@ -31,10 +32,32 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	self.navigationItem.title = @"Login account";
-	Settings* settings = [Settings sharedSettings];
-	username.text = [settings getSettingType:kSettingTypeGeneral setting:kGeneralSettingUsername];
-	//really?
-	password.text = [settings getSettingType:kSettingTypeGeneral setting:kGeneralSettingPassword];
+	    
+    //Initialize alert views
+    loginAlert = [[UIAlertView alloc] initWithTitle:@"Login" message:@"Username and password?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Login",nil];
+    loginAlert.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
+    
+    registerAlert = [[UIAlertView alloc] initWithTitle:@"Register" message:@"Enter your details" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Register",nil];
+    registerAlert.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
+//    [registerAlert textFieldAtIndex:2] = [[UITextField alloc] init];
+}
+
+
+- (void)viewWillAppear:(BOOL)animated {
+    [self updateText];
+}
+
+- (void) updateText {
+    CSSettings* settings = [CSSettings sharedSettings];
+    
+	NSString* username = [settings getSettingType:kCSSettingTypeGeneral setting:kCSGeneralSettingUsername];
+    NSString* text;
+    if (username) {
+        text = [NSString stringWithFormat:@"Logged in as %@.", username];
+    } else {
+        text = [NSString stringWithFormat:@"Not logged in."];
+    }
+    [self.textLabel setText:text];
 }
 
 
@@ -59,14 +82,16 @@
     // e.g. self.myOutlet = nil;
 }
 
-
-
-- (BOOL)textFieldShouldReturn:(UITextField *)theTextField {
-    [theTextField resignFirstResponder];
-    return YES;
-}
-
 - (IBAction) registerAccount {
+        [self updateText];
+    RegisterUserView* view = [[RegisterUserView alloc] initWithStyle:UITableViewStyleGrouped];
+    self.navigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    [self.navigationController presentViewController:view animated:YES completion:^(void){}];
+    //[self.navigationController presentModalViewController:view animated:YES];
+    //[self.navigationController pushViewController:view animated:YES];
+    //Show UIView with the fields
+    
+    /*
 	//show activity indicator
 	UIActivityIndicatorView* activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
 	activityIndicator.center = self.view.center;
@@ -75,10 +100,9 @@
 	[activityIndicator setNeedsDisplay];
 	[activityIndicator startAnimating];
 
-	
 	//register new user
 	NSString* error = nil;
-	BOOL succes = [SensePlatform registerhUser:username.text withPassword:password.text];
+	BOOL succes = [CSSensePlatform registerUser:username.text withPassword:password.text];
     
 	[activityIndicator stopAnimating];
 	[activityIndicator removeFromSuperview];
@@ -91,32 +115,56 @@
 		//and login
 		[self loginAccount];
 	}
+     */
 }
 
+
 - (IBAction) loginAccount {
-	//show activity indicator
-	UIActivityIndicatorView* activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-	activityIndicator.center = self.view.center;
-	[self.view addSubview:activityIndicator];
-	[self.view bringSubviewToFront:activityIndicator];
-	[activityIndicator startAnimating];
-	
-	//[[SensorStore sharedSensorStore].sender setUser:username.text andPassword:password.text];
-	BOOL succes = [SensePlatform loginWithUser:username.text andPassword:password.text];
-	[activityIndicator stopAnimating];
-	[activityIndicator removeFromSuperview];
-	
-	
-	//Alert on failure
-	if (!succes) {
-		UIAlertView* alert = [[UIAlertView alloc] initWithTitle:nil message:@"Couldn't login" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
-		[alert show];
-	} else {
-		//save settings
-		[[Settings sharedSettings] setLogin:username.text withPassword:password.text];
-		//dismiss this view
-		[self.navigationController popViewControllerAnimated:YES];
-	}
+    [loginAlert show];
+}
+
+- (void) performLoginWithUser:(NSString*) user andPassword:(NSString*) password {    
+     //show activity indicator
+     UIActivityIndicatorView* activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+     activityIndicator.center = self.view.center;
+     [self.view addSubview:activityIndicator];
+     [self.view bringSubviewToFront:activityIndicator];
+     [activityIndicator startAnimating];
+     
+     //[[SensorStore sharedSensorStore].sender setUser:username.text andPassword:password.text];
+     BOOL succes = [CSSensePlatform loginWithUser:user andPassword:password];
+     [activityIndicator stopAnimating];
+     [activityIndicator removeFromSuperview];
+     
+     
+     //Alert on failure
+     if (!succes) {
+         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:nil message:@"Couldn't login" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
+         [alert show];
+     } else {
+         //save settings
+         [[CSSettings sharedSettings] setLogin:user withPassword:password];
+         //dismiss this view
+         [self.navigationController popViewControllerAnimated:YES];
+     }
+
+}
+
+
+- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (alertView == loginAlert) {
+        switch (buttonIndex) {
+            case 0:
+                break;
+            case 1: {
+                NSString* username = [alertView textFieldAtIndex:0].text;
+                NSString* password = [alertView textFieldAtIndex:1].text;
+                [self performLoginWithUser:username andPassword:password];
+                
+                break;
+            }
+        }
+    }
 }
 
 @end

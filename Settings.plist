@@ -2,15 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>general</key>
-	<dict>
-		<key>password</key>
-		<string></string>
-		<key>senseEnabled</key>
-		<true/>
-		<key>username</key>
-		<string></string>
-	</dict>
 	<key>SettingsTypeadaptive</key>
 	<dict>
 		<key>recordedTime</key>
@@ -26,10 +17,14 @@
 	<dict>
 		<key>synchronisationRate</key>
 		<string>300</string>
+		<key>upload to CommonSense</key>
+		<string>YES</string>
+		<key>senseEnabled</key>
+		<string>YES</string>
 	</dict>
 	<key>SettingsTypenoise</key>
 	<dict>
-		<key>interval</key>
+		<key>pollInterval</key>
 		<string>60</string>
 	</dict>
 	<key>SettingsTypeposition</key>

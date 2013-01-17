@@ -9,7 +9,7 @@
 #import "Preferences.h"
 #import "PickerTable.h"
 #import <CoreLocation/CoreLocation.h>
-#import "Settings.h"
+#import "SensePlatform/CSSettings.h"
 
 @implementation Preferences
 /* Settings menu */
@@ -49,11 +49,11 @@ enum AdaptiveSectionRow {
     
     //initialise switches
 	adaptiveSwitch = [[UISwitch alloc]init];
-	[adaptiveSwitch setOn:[[[Settings sharedSettings] getSettingType:@"adaptive" setting:@"energyAdaptive"] boolValue]];
+	[adaptiveSwitch setOn:[[[CSSettings sharedSettings] getSettingType:@"adaptive" setting:@"energyAdaptive"] boolValue]];
 	[adaptiveSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
     
     locationMotionSwitch = [[UISwitch alloc]init];
-	[locationMotionSwitch setOn:[[[Settings sharedSettings] getSettingType:@"adaptive" setting:@"locationAdaptive"] boolValue]];
+	[locationMotionSwitch setOn:[[[CSSettings sharedSettings] getSettingType:@"adaptive" setting:@"locationAdaptive"] boolValue]];
 	[locationMotionSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
     
     //charge cycle slider
@@ -62,7 +62,7 @@ enum AdaptiveSectionRow {
     chargeCycleSlider.maximumValue = 48;
     chargeCycleSlider.continuous = NO;
     //[chargeCycleSlider setShowValue:YES];
-    [chargeCycleSlider setValue: [[[Settings sharedSettings] getSettingType:@"adaptive" setting:@"chargeCycle"] floatValue] / 3600];
+    [chargeCycleSlider setValue: [[[CSSettings sharedSettings] getSettingType:@"adaptive" setting:@"chargeCycle"] floatValue] / 3600];
     [chargeCycleSlider addTarget:self action:@selector(sliderChanged:) forControlEvents:UIControlEventValueChanged];
 }
 
@@ -100,12 +100,10 @@ enum AdaptiveSectionRow {
 
 #pragma mark -
 #pragma mark Table view data source
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
-    return NR_SECTIONS -1; //minus adaptive
+    return NR_SECTIONS - 1; //minus adaptive section 
 }
-
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
@@ -244,7 +242,7 @@ enum AdaptiveSectionRow {
 			case generalSectionWifi: {
 				int prePicked = -1;
 				//get current option
-				NSString* currentOption = [[Settings sharedSettings] getSettingType:kSettingTypeGeneral setting:kGeneralSettingUploadInterval];
+				NSString* currentOption = [[CSSettings sharedSettings] getSettingType:kCSSettingTypeGeneral setting:kCSGeneralSettingUploadInterval];
 				int optionValue = currentOption == nil ? -1 : [currentOption intValue];
 				switch (optionValue) {
 					case 10:
@@ -278,7 +276,7 @@ enum AdaptiveSectionRow {
 						interval = 300;
 					}
 
-					[[Settings sharedSettings] setSettingType:kSettingTypeGeneral setting:kGeneralSettingUploadInterval value:[NSString stringWithFormat:@"%d",interval] persistent:YES];
+					[[CSSettings sharedSettings] setSettingType:kCSSettingTypeGeneral setting:kCSGeneralSettingUploadInterval value:[NSString stringWithFormat:@"%d",interval] persistent:YES];
 				};
 				[self.navigationController pushViewController:picker animated:YES];
 
@@ -289,7 +287,7 @@ enum AdaptiveSectionRow {
 			case sensorSectionPositionAccuracy: {
 				int prePicked = -1;
 				//get current option
-				NSString* currentOption = [[Settings sharedSettings] getSettingType:kSettingTypeLocation setting:kLocationSettingAccuracy];
+				NSString* currentOption = [[CSSettings sharedSettings] getSettingType:kCSSettingTypeLocation setting:kCSLocationSettingAccuracy];
 				int optionValue = currentOption == nil ? -1 : [currentOption intValue];
 				switch (optionValue) {
 					case 0:
@@ -323,24 +321,24 @@ enum AdaptiveSectionRow {
 						accuracy = 100;
 					}
 					
-					[[Settings sharedSettings] setSettingType:kSettingTypeLocation setting:kLocationSettingAccuracy value:[NSString stringWithFormat:@"%d",accuracy] persistent:YES];
+					[[CSSettings sharedSettings] setSettingType:kCSSettingTypeLocation setting:kCSLocationSettingAccuracy value:[NSString stringWithFormat:@"%d",accuracy] persistent:YES];
 				};
 				[self.navigationController pushViewController:picker animated:YES];
 			} break;
 			case sensorSectionMotionPollInterval: {
 				NSInteger prePicked = -1;
 				//get current option
-				NSString* currentOption = [[Settings sharedSettings] getSettingType:kSettingTypeSpatial setting:kSpatialSettingInterval];
+				NSString* currentOption = [[CSSettings sharedSettings] getSettingType:kCSSettingTypeSpatial setting:kCSSpatialSettingInterval];
 				NSTimeInterval optionValue = currentOption == nil ? -1 : [currentOption doubleValue];
                 double epsilon = 0.001;
                 if (fabsf(optionValue - 15) < epsilon) {
-                    prePicked = 1;
+                    prePicked = 0;
                 } else if (fabsf(optionValue - 60) < epsilon) {
-                    prePicked = 2;
+                    prePicked = 1;
                 } else if (fabsf(optionValue - 300) < epsilon) {
-                    prePicked = 3;
-                } else {
                     prePicked = 2;
+                } else {
+                    prePicked = 1;
                 }
 				
 				NSArray* options = [[NSArray alloc] initWithObjects:@"every 15 seconds", @"every minute ", @"every 5 minutes", nil];
@@ -355,7 +353,7 @@ enum AdaptiveSectionRow {
 						interval = 15;
 					}
 					
-					[[Settings sharedSettings] setSettingType:kSettingTypeSpatial setting:kSpatialSettingInterval value:[NSString stringWithFormat:@"%g",interval] persistent:YES];
+					[[CSSettings sharedSettings] setSettingType:kCSSettingTypeSpatial setting:kCSSpatialSettingInterval value:[NSString stringWithFormat:@"%g",interval] persistent:YES];
 				};
 				[self.navigationController pushViewController:picker animated:YES];
 				
@@ -363,7 +361,7 @@ enum AdaptiveSectionRow {
             case sensorSectionNoisePollInterval: {
 				int prePicked = -1;
 				//get current option
-				NSString* currentOption = [[Settings sharedSettings] getSettingType:kSettingTypeAmbience setting:kAmbienceSettingInterval];
+				NSString* currentOption = [[CSSettings sharedSettings] getSettingType:kCSSettingTypeAmbience setting:kCSAmbienceSettingInterval];
 				int optionValue = currentOption == nil ? -1 : [currentOption intValue];
 				switch (optionValue) {
 					case 5:
@@ -393,7 +391,7 @@ enum AdaptiveSectionRow {
 						interval = 60;
 					}
 					
-					[[Settings sharedSettings] setSettingType:kSettingTypeAmbience setting:kAmbienceSettingInterval value:[NSString stringWithFormat:@"%d", interval] persistent:YES];
+					[[CSSettings sharedSettings] setSettingType:kCSSettingTypeAmbience setting:kCSAmbienceSettingInterval value:[NSString stringWithFormat:@"%d", interval] persistent:YES];
 				};
 				[self.navigationController pushViewController:picker animated:YES];
 			} break;		
@@ -404,10 +402,10 @@ enum AdaptiveSectionRow {
 - (void) switchChanged:(UISwitch*) switchButton {
     NSString* on = switchButton.on ? @"1" : @"0";
 	if (switchButton == adaptiveSwitch) {
-        [[Settings sharedSettings] setSettingType:@"adaptive" setting:@"energyAdaptive" value:on persistent:YES];
+        [[CSSettings sharedSettings] setSettingType:@"adaptive" setting:@"energyAdaptive" value:on persistent:YES];
         
     } else if (switchButton == locationMotionSwitch) {
-        [[Settings sharedSettings] setSettingType:@"adaptive" setting:@"locationAdaptive" value:on persistent:YES];
+        [[CSSettings sharedSettings] setSettingType:@"adaptive" setting:@"locationAdaptive" value:on persistent:YES];
         
     }
 }
@@ -416,7 +414,7 @@ enum AdaptiveSectionRow {
     NSString* value = [NSString stringWithFormat:@"%f", round(slider.value) * 3600];
     if (slider == chargeCycleSlider) {
         [chargeCycleSlider setValue:round(slider.value)];
-        [[Settings sharedSettings] setSettingType:@"adaptive" setting:@"chargeCycle" value:value persistent:YES];
+        [[CSSettings sharedSettings] setSettingType:@"adaptive" setting:@"chargeCycle" value:value persistent:YES];
     }
 }
 

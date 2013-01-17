@@ -9,14 +9,11 @@
 #import <UIKit/UIKit.h>
 
 
-@interface LoginSettings : UIViewController <UITextFieldDelegate>{
-	UITextField* username;
-	UITextField* password;
-
+@interface LoginSettings : UIViewController <UIAlertViewDelegate>{
+    UILabel* textLabel;
 }
 
-@property (nonatomic, strong) IBOutlet UITextField* username;
-@property (nonatomic, strong) IBOutlet UITextField* password;
+@property (nonatomic, strong) IBOutlet UILabel* textLabel;
 
 - (IBAction) registerAccount;
 - (IBAction) loginAccount;

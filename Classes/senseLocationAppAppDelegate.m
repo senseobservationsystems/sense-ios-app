@@ -7,10 +7,9 @@
 //
 
 #import "senseLocationAppAppDelegate.h"
-#import "SensePlatform.h"
+#import "SensePlatform/CSSensePlatform.h"
 
 @implementation senseLocationAppAppDelegate {
-    SensePlatform* sensePlatform;
 }
 
 @synthesize window;
@@ -25,16 +24,13 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
 
     //initialize the sense platform
-    [SensePlatform initialize];
+    [CSSensePlatform initialize];
     
 	[window addSubview:[navigationController view]];
    
     [self.window makeKeyAndVisible];
 
     //wahoo = [[AntPlusController alloc] init];
-    
-	NSLog(@"app launched");
-  
     return YES;
 }
 
@@ -75,7 +71,7 @@
      Called when the application is about to terminate.
      See also applicationDidEnterBackground:.
      */
-	[SensePlatform willTerminate];
+	[CSSensePlatform willTerminate];
 	NSLog(@"App terminated");
 }
 
@@ -90,8 +86,5 @@
 	NSLog(@"Received memory warning.");
 	//[[SensorStore sharedSensorStore] forceDataFlush];
 }
-
-
-
 
 @end

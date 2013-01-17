@@ -7,7 +7,7 @@
 
 #import <UIKit/UIKit.h>
 #import "WebViewController.h"
-#import "ApplicationStateChange.h"
+#import "SensePlatform/CSApplicationStateChange.h"
 
 
 @interface SettingsViewController : UITableViewController {
