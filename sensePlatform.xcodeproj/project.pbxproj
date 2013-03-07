@@ -437,7 +437,7 @@
 				PROVISIONING_PROFILE = "";
 				STRIP_INSTALLED_PRODUCT = YES;
 				TARGETED_DEVICE_FAMILY = 1;
-				USER_HEADER_SEARCH_PATHS = "/Users/pim/Documents/iosProjects/sense-library/include";
+				USER_HEADER_SEARCH_PATHS = "/Users/pim/Documents/iosProjects/sense-library/include/**";
 			};
 			name = Debug;
 		};
@@ -447,7 +447,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Pim Nijdam (NK65QFXJ36)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -480,10 +481,11 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = sensePlatform;
-				PROVISIONING_PROFILE = "DB044908-D156-4888-86F9-A0986D34F056";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				STRIP_INSTALLED_PRODUCT = YES;
 				TARGETED_DEVICE_FAMILY = 1;
-				USER_HEADER_SEARCH_PATHS = "/Users/pim/Documents/iosProjects/sense-library/include";
+				USER_HEADER_SEARCH_PATHS = "/Users/pim/Documents/iosProjects/sense-library/include/**";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -520,7 +522,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -554,9 +557,10 @@
 				);
 				PRODUCT_NAME = sensePlatform;
 				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				STRIP_INSTALLED_PRODUCT = YES;
 				TARGETED_DEVICE_FAMILY = 1;
-				USER_HEADER_SEARCH_PATHS = "/Users/pim/Documents/iosProjects/sense-library/include";
+				USER_HEADER_SEARCH_PATHS = "/Users/pim/Documents/iosProjects/sense-library/include/**";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Distribute;
@@ -595,6 +599,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -627,10 +632,11 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = sensePlatform;
-				PROVISIONING_PROFILE = "DB044908-D156-4888-86F9-A0986D34F056";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				STRIP_INSTALLED_PRODUCT = YES;
 				TARGETED_DEVICE_FAMILY = 1;
-				USER_HEADER_SEARCH_PATHS = "/Users/pim/Documents/iosProjects/sense-library/include";
+				USER_HEADER_SEARCH_PATHS = "/Users/pim/Documents/iosProjects/sense-library/include/**";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = "Distribute appStore";
