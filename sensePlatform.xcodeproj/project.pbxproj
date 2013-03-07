@@ -12,12 +12,10 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
-		3E1125E716A5900A00805102 /* libSense platform.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E1125E016A58FEB00805102 /* libSense platform.a */; };
 		3E1125EE16A5941E00805102 /* CommonSense.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3E1125EC16A5941E00805102 /* CommonSense.plist */; };
 		3E1125EF16A5941E00805102 /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3E1125ED16A5941E00805102 /* Settings.plist */; };
 		3E11260816A5BF7300805102 /* RegisterUserView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E11260716A5BF7300805102 /* RegisterUserView.m */; };
 		3E11260A16A6F1D600805102 /* RegisterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E11260916A6F1D600805102 /* RegisterView.xib */; };
-		3E18BB23154AC1D0005EED30 /* IvitalityTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E18BB22154AC1D0005EED30 /* IvitalityTest.m */; };
 		3E9C158715D8EB1100F520D0 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EBA192F130AE7F000C5B924 /* CoreLocation.framework */; };
 		3E9C158815D8EB2200F520D0 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EE0F772131D004500DE2609 /* AVFoundation.framework */; };
 		3E9C158915D8EB2C00F520D0 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EE0F95E131E75EA00DE2609 /* CoreAudio.framework */; };
@@ -25,13 +23,13 @@
 		3E9C158B15D8EB4600F520D0 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E562A65135D9DA800B54448 /* CoreTelephony.framework */; };
 		3E9C158C15D8EB4E00F520D0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E5D4286136AE4970057D124 /* SystemConfiguration.framework */; };
 		3E9C158D15D8EB6100F520D0 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2B217D131B9648000D7A8F /* CoreMotion.framework */; };
+		3EA4196A16E8B0FF000F2FB3 /* libSense platform.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EA4196316E8B04A000F2FB3 /* libSense platform.a */; };
 		3EA6225F137AC237007F60D2 /* EntitlementsDebug.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3EA6225E137AC237007F60D2 /* EntitlementsDebug.plist */; };
 		3EA622BF137AD8C5007F60D2 /* PickerTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EA622BE137AD8C5007F60D2 /* PickerTable.m */; };
 		3EA62382137BFF90007F60D2 /* Preferences.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EA62381137BFF90007F60D2 /* Preferences.m */; };
 		3EA626CD13812A3B007F60D2 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3EA626CC13812A3B007F60D2 /* icon@2x.png */; };
 		3EA626EA13814A5F007F60D2 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 3EA626E913814A5F007F60D2 /* Default.png */; };
 		3EA6278B1381664C007F60D2 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3EA6278A1381664C007F60D2 /* Default@2x.png */; };
-		3EAAD3AF15821C5D006BD4A8 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EAAD3AE15821C5D006BD4A8 /* ExternalAccessory.framework */; };
 		3EAAD3B115821C63006BD4A8 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EAAD3B015821C63006BD4A8 /* CoreBluetooth.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		3EBA1C80130C2FC600C5B924 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EBA1C7E130C2FC600C5B924 /* SettingsViewController.m */; };
 		3EBA2037130D731700C5B924 /* LoginSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EBA2035130D731700C5B924 /* LoginSettings.m */; };
@@ -42,30 +40,30 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		3E1125DF16A58FEB00805102 /* PBXContainerItemProxy */ = {
+		3EA4196216E8B04A000F2FB3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 3E1125D516A58FEB00805102 /* Sense platform.xcodeproj */;
+			containerPortal = 3EA4195816E8B049000F2FB3 /* Sense platform.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 3E820D6A15D40AB50001A3EC;
 			remoteInfo = "Sense platform";
 		};
-		3E1125E116A58FEB00805102 /* PBXContainerItemProxy */ = {
+		3EA4196416E8B04A000F2FB3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 3E1125D516A58FEB00805102 /* Sense platform.xcodeproj */;
+			containerPortal = 3EA4195816E8B049000F2FB3 /* Sense platform.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 3E148B91160A12000010A0D1;
 			remoteInfo = SensePlatformTestApp;
 		};
-		3E1125E316A58FEB00805102 /* PBXContainerItemProxy */ = {
+		3EA4196616E8B04A000F2FB3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 3E1125D516A58FEB00805102 /* Sense platform.xcodeproj */;
+			containerPortal = 3EA4195816E8B049000F2FB3 /* Sense platform.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 3E148BA8160A12010010A0D1;
 			remoteInfo = SensePlatformTestAppTests;
 		};
-		3E1125E516A5900000805102 /* PBXContainerItemProxy */ = {
+		3EA4196816E8B0F9000F2FB3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 3E1125D516A58FEB00805102 /* Sense platform.xcodeproj */;
+			containerPortal = 3EA4195816E8B049000F2FB3 /* Sense platform.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = 3E820D6915D40AB50001A3EC;
 			remoteInfo = "Sense platform";
@@ -82,18 +80,16 @@
 		28AD733E0D9D9553002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* sensePlatform_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sensePlatform_Prefix.pch; sourceTree = "<group>"; };
-		3E1125D516A58FEB00805102 /* Sense platform.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "Sense platform.xcodeproj"; path = "../../sense-library/Sense platform.xcodeproj"; sourceTree = "<group>"; };
 		3E1125EC16A5941E00805102 /* CommonSense.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = CommonSense.plist; sourceTree = "<group>"; };
 		3E1125ED16A5941E00805102 /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
 		3E11260616A5BF7200805102 /* RegisterUserView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegisterUserView.h; sourceTree = "<group>"; };
 		3E11260716A5BF7300805102 /* RegisterUserView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegisterUserView.m; sourceTree = "<group>"; };
 		3E11260916A6F1D600805102 /* RegisterView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RegisterView.xib; sourceTree = "<group>"; };
-		3E18BB21154AC1D0005EED30 /* IvitalityTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IvitalityTest.h; sourceTree = "<group>"; };
-		3E18BB22154AC1D0005EED30 /* IvitalityTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IvitalityTest.m; sourceTree = "<group>"; };
 		3E2B217D131B9648000D7A8F /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		3E562A65135D9DA800B54448 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		3E562B11135F26B200B54448 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
 		3E5D4286136AE4970057D124 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		3EA4195816E8B049000F2FB3 /* Sense platform.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "Sense platform.xcodeproj"; path = "../sense-library/Sense platform.xcodeproj"; sourceTree = "<group>"; };
 		3EA6225E137AC237007F60D2 /* EntitlementsDebug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = EntitlementsDebug.plist; sourceTree = "<group>"; };
 		3EA622BD137AD8C5007F60D2 /* PickerTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PickerTable.h; sourceTree = "<group>"; };
 		3EA622BE137AD8C5007F60D2 /* PickerTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PickerTable.m; sourceTree = "<group>"; };
@@ -102,8 +98,6 @@
 		3EA626CC13812A3B007F60D2 /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon@2x.png"; sourceTree = "<group>"; };
 		3EA626E913814A5F007F60D2 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		3EA6278A1381664C007F60D2 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
-		3EAAD3AC15821B79006BD4A8 /* WFConnector.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WFConnector.framework; path = ../../libs/wf_api_2.1.5.b1/dependencies/WFConnector.framework; sourceTree = "<group>"; };
-		3EAAD3AE15821C5D006BD4A8 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
 		3EAAD3B015821C63006BD4A8 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		3EAE90C81356E94100E79918 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		3EBA192F130AE7F000C5B924 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -127,7 +121,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3E1125E716A5900A00805102 /* libSense platform.a in Frameworks */,
+				3EA4196A16E8B0FF000F2FB3 /* libSense platform.a in Frameworks */,
 				3E9C158D15D8EB6100F520D0 /* CoreMotion.framework in Frameworks */,
 				3E9C158C15D8EB4E00F520D0 /* SystemConfiguration.framework in Frameworks */,
 				3E9C158B15D8EB4600F520D0 /* CoreTelephony.framework in Frameworks */,
@@ -136,7 +130,6 @@
 				3E9C158815D8EB2200F520D0 /* AVFoundation.framework in Frameworks */,
 				3E9C158715D8EB1100F520D0 /* CoreLocation.framework in Frameworks */,
 				3EAAD3B115821C63006BD4A8 /* CoreBluetooth.framework in Frameworks */,
-				3EAAD3AF15821C5D006BD4A8 /* ExternalAccessory.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 			);
@@ -166,10 +159,8 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				3E1125D516A58FEB00805102 /* Sense platform.xcodeproj */,
+				3EA4195816E8B049000F2FB3 /* Sense platform.xcodeproj */,
 				3EAAD3B015821C63006BD4A8 /* CoreBluetooth.framework */,
-				3EAAD3AE15821C5D006BD4A8 /* ExternalAccessory.framework */,
-				3EAAD3AC15821B79006BD4A8 /* WFConnector.framework */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -185,8 +176,6 @@
 			children = (
 				32CA4F630368D1EE00C91783 /* sensePlatform_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
-				3E18BB21154AC1D0005EED30 /* IvitalityTest.h */,
-				3E18BB22154AC1D0005EED30 /* IvitalityTest.m */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -226,12 +215,12 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		3E1125D616A58FEB00805102 /* Products */ = {
+		3EA4195916E8B049000F2FB3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3E1125E016A58FEB00805102 /* libSense platform.a */,
-				3E1125E216A58FEB00805102 /* SensePlatformTestApp.app */,
-				3E1125E416A58FEB00805102 /* SensePlatformTestAppTests.octest */,
+				3EA4196316E8B04A000F2FB3 /* libSense platform.a */,
+				3EA4196516E8B04A000F2FB3 /* SensePlatformTestApp.app */,
+				3EA4196716E8B04A000F2FB3 /* SensePlatformTestAppTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -279,7 +268,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				3E1125E616A5900000805102 /* PBXTargetDependency */,
+				3EA4196916E8B0F9000F2FB3 /* PBXTargetDependency */,
 			);
 			name = sensePlatform;
 			productName = senseLocationApp;
@@ -310,8 +299,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 3E1125D616A58FEB00805102 /* Products */;
-					ProjectRef = 3E1125D516A58FEB00805102 /* Sense platform.xcodeproj */;
+					ProductGroup = 3EA4195916E8B049000F2FB3 /* Products */;
+					ProjectRef = 3EA4195816E8B049000F2FB3 /* Sense platform.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -322,25 +311,25 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		3E1125E016A58FEB00805102 /* libSense platform.a */ = {
+		3EA4196316E8B04A000F2FB3 /* libSense platform.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = "libSense platform.a";
-			remoteRef = 3E1125DF16A58FEB00805102 /* PBXContainerItemProxy */;
+			remoteRef = 3EA4196216E8B04A000F2FB3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3E1125E216A58FEB00805102 /* SensePlatformTestApp.app */ = {
+		3EA4196516E8B04A000F2FB3 /* SensePlatformTestApp.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
 			path = SensePlatformTestApp.app;
-			remoteRef = 3E1125E116A58FEB00805102 /* PBXContainerItemProxy */;
+			remoteRef = 3EA4196416E8B04A000F2FB3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3E1125E416A58FEB00805102 /* SensePlatformTestAppTests.octest */ = {
+		3EA4196716E8B04A000F2FB3 /* SensePlatformTestAppTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = SensePlatformTestAppTests.octest;
-			remoteRef = 3E1125E316A58FEB00805102 /* PBXContainerItemProxy */;
+			remoteRef = 3EA4196616E8B04A000F2FB3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -378,7 +367,6 @@
 				3EDB0B1E13153A3500936309 /* WebViewController.m in Sources */,
 				3EA622BF137AD8C5007F60D2 /* PickerTable.m in Sources */,
 				3EA62382137BFF90007F60D2 /* Preferences.m in Sources */,
-				3E18BB23154AC1D0005EED30 /* IvitalityTest.m in Sources */,
 				3E11260816A5BF7300805102 /* RegisterUserView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -386,10 +374,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		3E1125E616A5900000805102 /* PBXTargetDependency */ = {
+		3EA4196916E8B0F9000F2FB3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "Sense platform";
-			targetProxy = 3E1125E516A5900000805102 /* PBXContainerItemProxy */;
+			targetProxy = 3EA4196816E8B0F9000F2FB3 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -402,12 +390,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../../libs/wf_api_2.1.5.b1 2/dependencies\"",
-					"\"$(SRCROOT)/../../libs/wf_api_2.1.5.rc/dependencies\"",
-					"\"$(SRCROOT)/../../libs/wf_api_2.1.5.b1/dependencies\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_CHECK_RETURN_VALUE_OF_OPERATOR_NEW = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
@@ -423,11 +406,6 @@
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = "sensePlatform-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../../libs/wf_api_2.1.5.b1 2/dependencies/WFConnector.framework/Versions/A\"",
-					"\"$(SRCROOT)/../../libs/wf_api_2.1.5.rc/dependencies/WFConnector.framework/Versions/A\"",
-				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-lstdc++",
@@ -450,12 +428,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../../libs/wf_api_2.1.5.b1 2/dependencies\"",
-					"\"$(SRCROOT)/../../libs/wf_api_2.1.5.rc/dependencies\"",
-					"\"$(SRCROOT)/../../libs/wf_api_2.1.5.b1/dependencies\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_CHECK_RETURN_VALUE_OF_OPERATOR_NEW = YES;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -470,11 +443,6 @@
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = "sensePlatform-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../../libs/wf_api_2.1.5.b1 2/dependencies/WFConnector.framework/Versions/A\"",
-					"\"$(SRCROOT)/../../libs/wf_api_2.1.5.rc/dependencies/WFConnector.framework/Versions/A\"",
-				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-lstdc++",
@@ -525,12 +493,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../../libs/wf_api_2.1.5.b1 2/dependencies\"",
-					"\"$(SRCROOT)/../../libs/wf_api_2.1.5.rc/dependencies\"",
-					"\"$(SRCROOT)/../../libs/wf_api_2.1.5.b1/dependencies\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_CHECK_RETURN_VALUE_OF_OPERATOR_NEW = YES;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -545,11 +508,6 @@
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = "sensePlatform-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../../libs/wf_api_2.1.5.b1 2/dependencies/WFConnector.framework/Versions/A\"",
-					"\"$(SRCROOT)/../../libs/wf_api_2.1.5.rc/dependencies/WFConnector.framework/Versions/A\"",
-				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-lstdc++",
@@ -601,12 +559,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../../libs/wf_api_2.1.5.b1 2/dependencies\"",
-					"\"$(SRCROOT)/../../libs/wf_api_2.1.5.rc/dependencies\"",
-					"\"$(SRCROOT)/../../libs/wf_api_2.1.5.b1/dependencies\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_CHECK_RETURN_VALUE_OF_OPERATOR_NEW = YES;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -621,11 +574,6 @@
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = "sensePlatform-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../../libs/wf_api_2.1.5.b1 2/dependencies/WFConnector.framework/Versions/A\"",
-					"\"$(SRCROOT)/../../libs/wf_api_2.1.5.rc/dependencies/WFConnector.framework/Versions/A\"",
-				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-lstdc++",
