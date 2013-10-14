@@ -16,14 +16,15 @@
 		3E1125EF16A5941E00805102 /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3E1125ED16A5941E00805102 /* Settings.plist */; };
 		3E11260816A5BF7300805102 /* RegisterUserView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E11260716A5BF7300805102 /* RegisterUserView.m */; };
 		3E11260A16A6F1D600805102 /* RegisterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E11260916A6F1D600805102 /* RegisterView.xib */; };
+		3E4D07AB17EAFDBA00321738 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3E4D07AA17EAFDBA00321738 /* Default-568h@2x.png */; };
+		3E94457917ECBE8000DBCEAD /* libSensePlatform.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E4D07A217EAFCA300321738 /* libSensePlatform.a */; };
+		3E94457A17ECC02000DBCEAD /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2B217D131B9648000D7A8F /* CoreMotion.framework */; };
 		3E9C158715D8EB1100F520D0 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EBA192F130AE7F000C5B924 /* CoreLocation.framework */; };
 		3E9C158815D8EB2200F520D0 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EE0F772131D004500DE2609 /* AVFoundation.framework */; };
 		3E9C158915D8EB2C00F520D0 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EE0F95E131E75EA00DE2609 /* CoreAudio.framework */; };
 		3E9C158A15D8EB3500F520D0 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EAE90C81356E94100E79918 /* AudioToolbox.framework */; };
 		3E9C158B15D8EB4600F520D0 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E562A65135D9DA800B54448 /* CoreTelephony.framework */; };
 		3E9C158C15D8EB4E00F520D0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E5D4286136AE4970057D124 /* SystemConfiguration.framework */; };
-		3E9C158D15D8EB6100F520D0 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2B217D131B9648000D7A8F /* CoreMotion.framework */; };
-		3EA4196A16E8B0FF000F2FB3 /* libSense platform.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EA4196316E8B04A000F2FB3 /* libSense platform.a */; };
 		3EA6225F137AC237007F60D2 /* EntitlementsDebug.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3EA6225E137AC237007F60D2 /* EntitlementsDebug.plist */; };
 		3EA622BF137AD8C5007F60D2 /* PickerTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EA622BE137AD8C5007F60D2 /* PickerTable.m */; };
 		3EA62382137BFF90007F60D2 /* Preferences.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EA62381137BFF90007F60D2 /* Preferences.m */; };
@@ -35,38 +36,39 @@
 		3EBA2037130D731700C5B924 /* LoginSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EBA2035130D731700C5B924 /* LoginSettings.m */; };
 		3EBA2038130D731700C5B924 /* LoginSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3EBA2036130D731700C5B924 /* LoginSettings.xib */; };
 		3EC5AAA513C7407400CDACED /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3EC5AAA413C7407400CDACED /* MainWindow-iPad.xib */; };
+		3EC97922180C285A00EA042A /* icon-120x120.png in Resources */ = {isa = PBXBuildFile; fileRef = 3EC97921180C285A00EA042A /* icon-120x120.png */; };
 		3EDB0B1E13153A3500936309 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EDB0B1D13153A3500936309 /* WebViewController.m */; };
 		3EE0F9D6131E963000DE2609 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3EE0F9D5131E963000DE2609 /* icon.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		3EA4196216E8B04A000F2FB3 /* PBXContainerItemProxy */ = {
+		3E4D07A117EAFCA300321738 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 3EA4195816E8B049000F2FB3 /* Sense platform.xcodeproj */;
+			containerPortal = 3E4D079B17EAFCA300321738 /* SensePlatform.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 3E820D6A15D40AB50001A3EC;
-			remoteInfo = "Sense platform";
+			remoteInfo = SensePlatform;
 		};
-		3EA4196416E8B04A000F2FB3 /* PBXContainerItemProxy */ = {
+		3E4D07A317EAFCA300321738 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 3EA4195816E8B049000F2FB3 /* Sense platform.xcodeproj */;
+			containerPortal = 3E4D079B17EAFCA300321738 /* SensePlatform.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 3E148B91160A12000010A0D1;
 			remoteInfo = SensePlatformTestApp;
 		};
-		3EA4196616E8B04A000F2FB3 /* PBXContainerItemProxy */ = {
+		3E4D07A517EAFCA300321738 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 3EA4195816E8B049000F2FB3 /* Sense platform.xcodeproj */;
+			containerPortal = 3E4D079B17EAFCA300321738 /* SensePlatform.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 3E148BA8160A12010010A0D1;
 			remoteInfo = SensePlatformTestAppTests;
 		};
-		3EA4196816E8B0F9000F2FB3 /* PBXContainerItemProxy */ = {
+		3E94457717ECBE7A00DBCEAD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 3EA4195816E8B049000F2FB3 /* Sense platform.xcodeproj */;
+			containerPortal = 3E4D079B17EAFCA300321738 /* SensePlatform.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = 3E820D6915D40AB50001A3EC;
-			remoteInfo = "Sense platform";
+			remoteInfo = SensePlatform;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -86,10 +88,11 @@
 		3E11260716A5BF7300805102 /* RegisterUserView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegisterUserView.m; sourceTree = "<group>"; };
 		3E11260916A6F1D600805102 /* RegisterView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RegisterView.xib; sourceTree = "<group>"; };
 		3E2B217D131B9648000D7A8F /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		3E4D079B17EAFCA300321738 /* SensePlatform.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SensePlatform.xcodeproj; path = "../sense-library/SensePlatform.xcodeproj"; sourceTree = "<group>"; };
+		3E4D07AA17EAFDBA00321738 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		3E562A65135D9DA800B54448 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		3E562B11135F26B200B54448 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
 		3E5D4286136AE4970057D124 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		3EA4195816E8B049000F2FB3 /* Sense platform.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "Sense platform.xcodeproj"; path = "../sense-library/Sense platform.xcodeproj"; sourceTree = "<group>"; };
 		3EA6225E137AC237007F60D2 /* EntitlementsDebug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = EntitlementsDebug.plist; sourceTree = "<group>"; };
 		3EA622BD137AD8C5007F60D2 /* PickerTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PickerTable.h; sourceTree = "<group>"; };
 		3EA622BE137AD8C5007F60D2 /* PickerTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PickerTable.m; sourceTree = "<group>"; };
@@ -107,6 +110,7 @@
 		3EBA2035130D731700C5B924 /* LoginSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginSettings.m; sourceTree = "<group>"; };
 		3EBA2036130D731700C5B924 /* LoginSettings.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoginSettings.xib; sourceTree = "<group>"; };
 		3EC5AAA413C7407400CDACED /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "iPad/MainWindow-iPad.xib"; sourceTree = "<group>"; };
+		3EC97921180C285A00EA042A /* icon-120x120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-120x120.png"; sourceTree = "<group>"; };
 		3EDB0B1C13153A3500936309 /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
 		3EDB0B1D13153A3500936309 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
 		3EE0F772131D004500DE2609 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -121,8 +125,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3EA4196A16E8B0FF000F2FB3 /* libSense platform.a in Frameworks */,
-				3E9C158D15D8EB6100F520D0 /* CoreMotion.framework in Frameworks */,
+				3E94457A17ECC02000DBCEAD /* CoreMotion.framework in Frameworks */,
+				3E94457917ECBE8000DBCEAD /* libSensePlatform.a in Frameworks */,
 				3E9C158C15D8EB4E00F520D0 /* SystemConfiguration.framework in Frameworks */,
 				3E9C158B15D8EB4600F520D0 /* CoreTelephony.framework in Frameworks */,
 				3E9C158A15D8EB3500F520D0 /* AudioToolbox.framework in Frameworks */,
@@ -159,7 +163,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				3EA4195816E8B049000F2FB3 /* Sense platform.xcodeproj */,
+				3E4D079B17EAFCA300321738 /* SensePlatform.xcodeproj */,
 				3EAAD3B015821C63006BD4A8 /* CoreBluetooth.framework */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -183,6 +187,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				3EC97921180C285A00EA042A /* icon-120x120.png */,
+				3E4D07AA17EAFDBA00321738 /* Default-568h@2x.png */,
 				3E1125EC16A5941E00805102 /* CommonSense.plist */,
 				3E1125ED16A5941E00805102 /* Settings.plist */,
 				3EA626E913814A5F007F60D2 /* Default.png */,
@@ -215,12 +221,12 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		3EA4195916E8B049000F2FB3 /* Products */ = {
+		3E4D079C17EAFCA300321738 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3EA4196316E8B04A000F2FB3 /* libSense platform.a */,
-				3EA4196516E8B04A000F2FB3 /* SensePlatformTestApp.app */,
-				3EA4196716E8B04A000F2FB3 /* SensePlatformTestAppTests.octest */,
+				3E4D07A217EAFCA300321738 /* libSensePlatform.a */,
+				3E4D07A417EAFCA300321738 /* SensePlatformTestApp.app */,
+				3E4D07A617EAFCA300321738 /* .octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -268,7 +274,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				3EA4196916E8B0F9000F2FB3 /* PBXTargetDependency */,
+				3E94457817ECBE7A00DBCEAD /* PBXTargetDependency */,
 			);
 			name = sensePlatform;
 			productName = senseLocationApp;
@@ -281,8 +287,13 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Almende B.V.";
+				TargetAttributes = {
+					1D6058900D05DD3D006BFB54 = {
+						DevelopmentTeam = MT2K5TW3U7;
+					};
+				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "sensePlatform" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -299,8 +310,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 3EA4195916E8B049000F2FB3 /* Products */;
-					ProjectRef = 3EA4195816E8B049000F2FB3 /* Sense platform.xcodeproj */;
+					ProductGroup = 3E4D079C17EAFCA300321738 /* Products */;
+					ProjectRef = 3E4D079B17EAFCA300321738 /* SensePlatform.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -311,25 +322,25 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		3EA4196316E8B04A000F2FB3 /* libSense platform.a */ = {
+		3E4D07A217EAFCA300321738 /* libSensePlatform.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = "libSense platform.a";
-			remoteRef = 3EA4196216E8B04A000F2FB3 /* PBXContainerItemProxy */;
+			path = libSensePlatform.a;
+			remoteRef = 3E4D07A117EAFCA300321738 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3EA4196516E8B04A000F2FB3 /* SensePlatformTestApp.app */ = {
+		3E4D07A417EAFCA300321738 /* SensePlatformTestApp.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
 			path = SensePlatformTestApp.app;
-			remoteRef = 3EA4196416E8B04A000F2FB3 /* PBXContainerItemProxy */;
+			remoteRef = 3E4D07A317EAFCA300321738 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3EA4196716E8B04A000F2FB3 /* SensePlatformTestAppTests.octest */ = {
+		3E4D07A617EAFCA300321738 /* .octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = SensePlatformTestAppTests.octest;
-			remoteRef = 3EA4196616E8B04A000F2FB3 /* PBXContainerItemProxy */;
+			path = .octest;
+			remoteRef = 3E4D07A517EAFCA300321738 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -343,7 +354,9 @@
 				3EBA2038130D731700C5B924 /* LoginSettings.xib in Resources */,
 				3EE0F9D6131E963000DE2609 /* icon.png in Resources */,
 				3EA6225F137AC237007F60D2 /* EntitlementsDebug.plist in Resources */,
+				3EC97922180C285A00EA042A /* icon-120x120.png in Resources */,
 				3EA626CD13812A3B007F60D2 /* icon@2x.png in Resources */,
+				3E4D07AB17EAFDBA00321738 /* Default-568h@2x.png in Resources */,
 				3EA626EA13814A5F007F60D2 /* Default.png in Resources */,
 				3EA6278B1381664C007F60D2 /* Default@2x.png in Resources */,
 				3EC5AAA513C7407400CDACED /* MainWindow-iPad.xib in Resources */,
@@ -374,10 +387,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		3EA4196916E8B0F9000F2FB3 /* PBXTargetDependency */ = {
+		3E94457817ECBE7A00DBCEAD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = "Sense platform";
-			targetProxy = 3EA4196816E8B0F9000F2FB3 /* PBXContainerItemProxy */;
+			name = SensePlatform;
+			targetProxy = 3E94457717ECBE7A00DBCEAD /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -386,7 +399,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -405,8 +417,7 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = "sensePlatform-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				ONLY_ACTIVE_ARCH = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_LDFLAGS = (
 					"-lstdc++",
 					"-all_load",
@@ -423,9 +434,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -442,8 +452,7 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = "sensePlatform-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				ONLY_ACTIVE_ARCH = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_LDFLAGS = (
 					"-lstdc++",
 					"-all_load",
@@ -461,7 +470,6 @@
 		3E562AFB135F258500B54448 /* Distribute */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Almende B V";
@@ -473,7 +481,7 @@
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "82DDD513-E882-4349-BEE1-A61B933FF8C4";
@@ -488,9 +496,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -507,8 +514,7 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = "sensePlatform-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				ONLY_ACTIVE_ARCH = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_LDFLAGS = (
 					"-lstdc++",
 					"-all_load",
@@ -526,7 +532,6 @@
 		3EA627C613816F1E007F60D2 /* Distribute appStore */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Almende B V";
@@ -539,7 +544,7 @@
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "82DDD513-E882-4349-BEE1-A61B933FF8C4";
@@ -554,9 +559,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -573,8 +577,7 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				INFOPLIST_FILE = "sensePlatform-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				ONLY_ACTIVE_ARCH = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_LDFLAGS = (
 					"-lstdc++",
 					"-all_load",
@@ -592,7 +595,6 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_ENTITLEMENTS = EntitlementsDebug.plist;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -606,7 +608,8 @@
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -619,7 +622,6 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				GCC_C_LANGUAGE_STANDARD = c99;
@@ -630,7 +632,7 @@
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";

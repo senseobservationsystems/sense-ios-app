@@ -10,7 +10,6 @@
 
 
 @interface LoginSettings : UIViewController <UIAlertViewDelegate>{
-    UILabel* textLabel;
 }
 
 @property (nonatomic, strong) IBOutlet UILabel* textLabel;

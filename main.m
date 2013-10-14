@@ -14,8 +14,6 @@ void exceptionHandler(NSException *exception) {
 
 int main(int argc, char *argv[]) {
       	NSSetUncaughtExceptionHandler(&exceptionHandler);
-    int retVal;
-        retVal = UIApplicationMain(argc, argv, nil, nil);
-    return retVal;
+        return UIApplicationMain(argc, argv, nil, nil);
 }
 

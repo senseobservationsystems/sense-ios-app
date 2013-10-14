@@ -33,7 +33,7 @@
         usernameField.autoresizesSubviews=YES;
         [usernameField setBorderStyle:UITextBorderStyleNone];
         [usernameField setPlaceholder:@"Required"];
-        [usernameField setTextAlignment:UITextAlignmentRight];
+        [usernameField setTextAlignment:NSTextAlignmentRight];
         usernameField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         usernameField.autocorrectionType = UITextAutocorrectionTypeNo;
         
@@ -42,7 +42,7 @@
         passwordField.autoresizesSubviews=YES;
         [passwordField setBorderStyle:UITextBorderStyleNone];
         [passwordField setPlaceholder:@"Required"];
-        [passwordField setTextAlignment:UITextAlignmentRight];
+        [passwordField setTextAlignment:NSTextAlignmentRight];
         passwordField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         passwordField.secureTextEntry = YES;
         passwordField.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -52,7 +52,7 @@
         password2Field.autoresizesSubviews=YES;
         [password2Field setBorderStyle:UITextBorderStyleNone];
         [password2Field setPlaceholder:@"Required"];
-        [password2Field setTextAlignment:UITextAlignmentRight];
+        [password2Field setTextAlignment:NSTextAlignmentRight];
         password2Field.autocapitalizationType = UITextAutocapitalizationTypeNone;
         password2Field.secureTextEntry = YES;
         password2Field.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -62,7 +62,7 @@
         emailField.autoresizesSubviews=YES;
         [emailField setBorderStyle:UITextBorderStyleNone];
         [emailField setPlaceholder:@"Required"];
-        [emailField setTextAlignment:UITextAlignmentRight];
+        [emailField setTextAlignment:NSTextAlignmentRight];
         emailField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         [emailField setKeyboardType:UIKeyboardTypeEmailAddress];
         emailField.autocorrectionType = UITextAutocorrectionTypeNo;
